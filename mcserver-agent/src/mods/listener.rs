@@ -17,6 +17,7 @@ pub async fn listen<S>(receiver: &mut S)
 where
     S: Stream<Item = Result<Message, Error>> + Unpin,
 {
+    let mut process = svstarter::ServerProcess::default().dir(String::from("/home/oreo/mcserver/"));
     while let Some(msg) = receiver.next().await {
         if let Message::Text(text) = msg.unwrap() {
             if let Ok(message) = serde_json::from_str::<AgentActions>(text.as_str()) {
@@ -25,8 +26,17 @@ where
                         println!("Received message action: {}", content);
                     }
                     AgentActions::sv_start => {
-                        if svstarter::start_server().is_err() {
-                            println!("Error starting server");
+                        if let Err(e) = process.start_server() {
+                            println!("Error starting server: {}", e);
+                        } else {
+                            println!("Server started successfully");
+                        }
+                    }
+                    AgentActions::sv_stop => {
+                        if let Err(e) = process.stop_server() {
+                            println!("Error stopping server: {}", e);
+                        } else {
+                            println!("Server stopped successfully");
                         }
                     }
                     _ => {

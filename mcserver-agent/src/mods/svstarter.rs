@@ -1,18 +1,71 @@
 use std::io::*;
 use std::process::*;
 
-pub fn start_server() -> std::io::Result<Child> {
-    Command::new("java")
-        .current_dir("/home/oreo/mcserver")
-        .arg("-Xmx1024M")
-        .arg("-Xms1024M")
-        .arg("-jar")
-        .arg("server.jar")
-        .arg("nogui")
-        .stdin(Stdio::piped())
-        .spawn()
-}
-
 pub fn stop_server(mut stdin: ChildStdin) {
     let _result = writeln!(stdin, "stop");
+}
+
+pub struct ServerProcess {
+    xms: u32,
+    xmx: u32,
+    dir: String,
+    jar: String,
+    child: Option<Child>,
+}
+
+impl Default for ServerProcess {
+    fn default() -> Self {
+        Self {
+            xms: 1024,
+            xmx: 1024,
+            dir: String::from("./"),
+            jar: String::from("server.jar"),
+            child: None,
+        }
+    }
+}
+impl ServerProcess {
+    pub fn start_server(&mut self) -> Result<()> {
+        let child = Command::new("java")
+            .current_dir(&self.dir)
+            .arg(format!("-Xmx{}M", self.xmx))
+            .arg(format!("-Xms{}M", self.xms))
+            .arg("-jar")
+            .arg(&self.jar)
+            .arg("nogui")
+            .stdin(Stdio::piped())
+            .spawn()?;
+        self.child = Some(child);
+        Ok(())
+    }
+
+    pub fn stop_server(&mut self) -> Result<()> {
+        if let Some(child) = &mut self.child {
+            if let Some(stdin) = &mut child.stdin {
+                writeln!(stdin, "stop")?;
+            }
+            let _ = child.wait();
+        } else {
+            println!("No server process to stop");
+        }
+        self.child = None;
+        Ok(())
+    }
+
+    pub fn xms(mut self, xms: u32) -> Self {
+        self.xms = xms;
+        self
+    }
+    pub fn xmx(mut self, xmx: u32) -> Self {
+        self.xmx = xmx;
+        self
+    }
+    pub fn dir(mut self, dir: String) -> Self {
+        self.dir = dir;
+        self
+    }
+    pub fn jar(mut self, jar: String) -> Self {
+        self.jar = jar;
+        self
+    }
 }

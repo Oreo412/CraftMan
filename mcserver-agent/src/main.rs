@@ -21,8 +21,6 @@ async fn main() {
 
     let (ws_stream, _) = connect_async(url).await.expect("Failed to connect");
 
-    let appstate = appstate::AppState::new();
-
     println!("Connected to server");
 
     let (mut write, mut read) = ws_stream.split();
