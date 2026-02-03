@@ -1,0 +1,11 @@
+[package]
+name = "mcserver-agent"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio-tungstenite = "0.28"
+tokio.workspace = true
+futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
+dotenvy = "0.15"
+serde.workspace = true
