@@ -1,5 +1,6 @@
 use anyhow::Result;
 use axum::extract::ws::Message;
+use protocol::agentactions::AgentActions;
 use std::{collections::HashMap, sync::Arc};
 use tokio::sync::{RwLock, mpsc};
 
@@ -26,13 +27,15 @@ impl AppState {
         connections.get(id).cloned()
     }
 
-    pub async fn send_message(&self, id: String, message: String) -> Result<()> {
+    pub async fn send_message(&self, id: String, message: AgentActions) -> Result<()> {
         print!("Sending message to id: {}", id);
         let sender = self
             .find_connection(&id)
             .await
             .ok_or(anyhow::anyhow!("No connection found for id: {}", id))?;
-        sender.send(Message::Text(message.into()))?;
+        sender.send(Message::Text(
+            serde_json::to_string(&message).unwrap().into(),
+        ))?;
         Ok(())
     }
 }

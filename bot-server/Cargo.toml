@@ -12,3 +12,5 @@ serenity = { version = "0.12", features = ["client", "gateway", "rustls_backend"
 dotenvy = "0.15"
 anyhow = "1"
 serde.workspace = true
+protocol.workspace = true
+serde_json.workspace = true

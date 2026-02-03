@@ -31,23 +31,5 @@ async fn main() {
     write.send(Message::Text("stinky".into())).await.unwrap();
 
     // Listen for messages
-    while let Some(msg) = read.next().await {
-        let msg = msg.unwrap();
-        if let Message::Text(text) = msg {
-            println!("Received: {}", text);
-        }
-    }
+    listener::listen(&mut read).await;
 }
-
-/*
-fn main() {
-    let child = svstarter::start_server();
-
-    println!("Server running. Press Enter to stop...");
-    let _result = std::io::stdin().read_line(&mut String::new());
-
-    svstarter::stop_server(child.unwrap().stdin.unwrap());
-
-    println!("Maybe the server stopped or something idk")
-}
-    */

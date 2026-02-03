@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-enum agentactions {
+pub enum AgentActions {
     sv_start,
+    message(String),
 }

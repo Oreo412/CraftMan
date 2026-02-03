@@ -1,3 +1,4 @@
+use crate::bot::*;
 use crate::mods::*;
 use serenity::async_trait;
 use serenity::builder::{
@@ -22,6 +23,14 @@ impl EventHandler for Handler {
                 let _result = match command.data.name.as_str() {
                     "send_ws" => {
                         crate::bot::send_ws::run(&ctx, &command, self.app_state.clone()).await
+                    }
+                    "startserver" => {
+                        crate::bot::startserver::start_mc_server(
+                            &ctx,
+                            &command,
+                            self.app_state.clone(),
+                        )
+                        .await
                     }
                     _ => {
                         command
@@ -59,7 +68,10 @@ impl EventHandler for Handler {
         );
 
         let commands = guild_id
-            .set_commands(&ctx.http, vec![crate::bot::send_ws::register()])
+            .set_commands(
+                &ctx.http,
+                vec![send_ws::register(), startserver::register()],
+            )
             .await;
 
         println!("I now have the following guild slash commands: {commands:#?}");

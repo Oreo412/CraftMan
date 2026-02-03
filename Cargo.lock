@@ -139,7 +139,9 @@ dependencies = [
  "axum",
  "dotenvy",
  "futures-util",
+ "protocol",
  "serde",
+ "serde_json",
  "serenity",
  "tokio",
  "tower",
@@ -849,7 +851,9 @@ version = "0.1.0"
 dependencies = [
  "dotenvy",
  "futures-util",
+ "protocol",
  "serde",
+ "serde_json",
  "tokio",
  "tokio-tungstenite 0.28.0",
 ]
@@ -1008,8 +1012,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "protocal"
+name = "protocol"
 version = "0.1.0"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "pulldown-cmark"

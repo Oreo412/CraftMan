@@ -1,7 +1,9 @@
 [workspace]
-members = ["bot-server", "mcserver-agent", "protocal"]
-resolver = "2"
+members = ["bot-server", "mcserver-agent", "protocol"]
+resolver = "3"
 
 [workspace.dependencies]
-serde = { version = "1", features = ["derive"] }
+serde = { version = "1.0.228", features = ["derive"] }
 tokio = { version = "1", features = ["full"] }
+protocol = { path = "protocol"}
+serde_json = {version = "1"}
