@@ -12,6 +12,7 @@ use std::env;
 
 pub struct Handler {
     pub app_state: crate::appstate::AppState,
+    pub twilight_client: twilight_http::Client,
 }
 
 #[async_trait]
@@ -31,6 +32,17 @@ impl EventHandler for Handler {
                             self.app_state.clone(),
                         )
                         .await
+                    }
+                    "stopserver" => {
+                        crate::bot::stopserver::start_mc_server(
+                            &ctx,
+                            &command,
+                            self.app_state.clone(),
+                        )
+                        .await
+                    }
+                    "twilighttest" => {
+                        crate::bot::settingsview::run(&self.twilight_client, command).await
                     }
                     _ => {
                         command
@@ -70,7 +82,12 @@ impl EventHandler for Handler {
         let commands = guild_id
             .set_commands(
                 &ctx.http,
-                vec![send_ws::register(), startserver::register()],
+                vec![
+                    send_ws::register(),
+                    startserver::register(),
+                    stopserver::register(),
+                    settingsview::register(),
+                ],
             )
             .await;
 
