@@ -49,8 +49,17 @@ async fn handle_socket(mut socket: WebSocket, app_state: appstate::AppState) {
     while let Some(Ok(msg)) = receiver.next().await {
         match msg {
             Message::Text(text) => {
-                app_state.add_connection(text.to_string(), c_sender).await;
+                app_state
+                    .add_connection(
+                        text.to_string(),
+                        agents::Agent::new(text.to_string(), c_sender),
+                    )
+                    .await;
                 println!("Registered new connection with id: {}", text);
+                tokio::spawn(listener::listen(
+                    receiver,
+                    app_state.find_connection(&text).await.unwrap(),
+                ));
                 break;
             }
             Message::Close(_) => {
@@ -62,7 +71,6 @@ async fn handle_socket(mut socket: WebSocket, app_state: appstate::AppState) {
     }
 
     tokio::spawn(write(sender, c_receiver));
-    tokio::spawn(read(receiver));
 }
 
 async fn read(mut receiver: SplitStream<WebSocket>) {

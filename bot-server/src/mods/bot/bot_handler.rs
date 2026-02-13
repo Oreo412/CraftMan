@@ -26,38 +26,73 @@ impl EventHandler for Handler {
                         crate::bot::send_ws::run(&ctx, &command, self.app_state.clone()).await
                     }
                     "startserver" => {
-                        crate::bot::startserver::start_mc_server(
-                            &ctx,
-                            &command,
-                            self.app_state.clone(),
-                        )
-                        .await
-                    }
-                    "stopserver" => {
-                        crate::bot::stopserver::start_mc_server(
-                            &ctx,
-                            &command,
-                            self.app_state.clone(),
-                        )
-                        .await
-                    }
-                    "twilighttest" => {
-                        crate::bot::settingsview::run(&self.twilight_client, command).await
-                    }
-                    _ => {
-                        command
-                            .create_response(ctx.http, CreateInteractionResponse::Acknowledge)
+                        crate::bot::startserver::start_mc_server(&ctx, &command, &self.app_state)
                             .await
                     }
+                    "stopserver" => {
+                        crate::bot::stopserver::start_mc_server(&ctx, &command, &self.app_state)
+                            .await
+                    }
+                    "serverproperties" => {
+                        if let Err(e) = crate::bot::settingsview::run(
+                            &self.twilight_client,
+                            command,
+                            &self.app_state,
+                        )
+                        .await
+                        {
+                            eprintln!("Error running settingsview: {}", e);
+                        }
+                        Ok(())
+                    }
+                    _ => command
+                        .create_response(ctx.http, CreateInteractionResponse::Acknowledge)
+                        .await
+                        .map_err(|e| Box::new(e) as Box<dyn std::error::Error>),
                 };
             }
-            Interaction::Component(component) => match component.data.custom_id.as_str() {
-                _ => {
-                    let _response = component
-                        .create_response(&ctx.http, CreateInteractionResponse::Acknowledge)
-                        .await;
+            Interaction::Component(component) => {
+                let (action, id) = component
+                    .data
+                    .custom_id
+                    .split_once(':')
+                    .unwrap_or(("unknown", "unknown"));
+                if let Some(agent) = self.app_state.find_connection(id).await {
+                    match action {
+                        "allowflightbutton" => {
+                            if let Ok(props) = agent
+                                .edit_props(protocol::properties::property::allow_flight)
+                                .await
+                            {
+                                if let Err(e) = crate::bot::settingsview::update_settings_view(
+                                    &self.twilight_client,
+                                    &component,
+                                    &props,
+                                    id,
+                                )
+                                .await
+                                {
+                                    println!("Error updating settings view: {}", e);
+                                } else {
+                                    println!("Updated settings view")
+                                }
+                            } else {
+                                println!("Props was not received");
+                            }
+                            let _response = component
+                                .create_response(&ctx.http, CreateInteractionResponse::Acknowledge)
+                                .await;
+                        }
+                        _ => {
+                            let _response = component
+                                .create_response(&ctx.http, CreateInteractionResponse::Acknowledge)
+                                .await;
+                        }
+                    }
+                } else {
+                    eprintln!("No agent found for ID: {}", id);
                 }
-            },
+            }
             Interaction::Modal(modal) => match modal.data.custom_id.as_str() {
                 _ => {
                     let _response = modal

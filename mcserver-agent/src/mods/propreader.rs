@@ -1,8 +1,15 @@
+use futures_util::{
+    sink::SinkExt,
+    stream::{SplitSink, SplitStream, StreamExt},
+};
+use protocol::serveractions::ServerActions;
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::{BufReader, BufWriter, Seek, SeekFrom};
+use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
+use uuid::Uuid;
 
 pub struct ServerProperties {
     properties: HashMap<String, String>,
@@ -53,5 +60,39 @@ impl ServerProperties {
         let reader = BufReader::new(File::open(format!("{}/server.properties", self.dir))?);
         self.properties = java_properties::read(reader)?;
         Ok(())
+    }
+    pub async fn send_update<S>(
+        &mut self,
+        sender: &mut S,
+    ) -> Result<(), <S as futures_util::Sink<Message>>::Error>
+    where
+        S: SinkExt<Message> + Unpin,
+    {
+        sender
+            .send(Message::Text(
+                serde_json::to_string(&ServerActions::props_update(self.properties.clone()))
+                    .unwrap()
+                    .into(),
+            ))
+            .await
+    }
+    pub async fn send_response<S>(
+        &self,
+        sender: &mut S,
+        uuid: Uuid,
+    ) -> Result<(), <S as futures_util::Sink<Message>>::Error>
+    where
+        S: SinkExt<Message> + Unpin,
+    {
+        sender
+            .send(Message::Text(
+                serde_json::to_string(&ServerActions::response_props(
+                    uuid,
+                    self.properties.clone(),
+                ))
+                .unwrap()
+                .into(),
+            ))
+            .await
     }
 }

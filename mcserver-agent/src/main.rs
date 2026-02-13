@@ -29,5 +29,5 @@ async fn main() {
     write.send(Message::Text("stinky".into())).await.unwrap();
 
     // Listen for messages
-    listener::listen(&mut read).await;
+    listener::listen(&mut read, &mut write).await;
 }

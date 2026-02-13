@@ -12,7 +12,7 @@ pub struct ServerProcess {
     xmx: u32,
     dir: String,
     jar: String,
-    properties: Option<ServerProperties>,
+    pub properties: Option<ServerProperties>,
     child: Option<Child>,
 }
 

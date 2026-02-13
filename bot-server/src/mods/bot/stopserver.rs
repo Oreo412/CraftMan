@@ -5,12 +5,13 @@ use serenity::builder::*;
 use serenity::model::application::CommandInteraction;
 use serenity::model::application::*;
 use serenity::prelude::Context;
+use std::error::Error;
 
 pub async fn start_mc_server(
     ctx: &Context,
     interaction: &CommandInteraction,
-    appstate: AppState,
-) -> Result<(), serenity::Error> {
+    appstate: &AppState,
+) -> Result<(), Box<dyn Error>> {
     let id = interaction
         .data
         .options

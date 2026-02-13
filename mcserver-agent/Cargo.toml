@@ -12,4 +12,6 @@ serde.workspace = true
 protocol.workspace = true
 serde_json.workspace = true
 java-properties = {version = "2"}
+uuid.workspace = true
+anyhow.workspace = true
 

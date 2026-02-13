@@ -1,0 +1,45 @@
+use crate::mods::agents::Agent;
+use axum::Error;
+use axum::extract::ws::Message;
+use futures_util::Stream;
+use futures_util::{
+    sink::SinkExt,
+    stream::{SplitSink, SplitStream, StreamExt},
+};
+use protocol::serveractions::ServerActions;
+use std::sync::Arc;
+use tokio::{
+    io::{AsyncReadExt, AsyncWriteExt},
+    sync::RwLock,
+};
+use tokio_tungstenite::connect_async;
+use uuid::Uuid;
+
+pub async fn listen<R>(mut receiver: R, agent: Arc<Agent>)
+where
+    R: Stream<Item = Result<Message, Error>> + Unpin,
+{
+    while let Some(msg) = receiver.next().await {
+        if let Message::Text(text) = msg.unwrap() {
+            if let Ok(message) = serde_json::from_str::<ServerActions>(text.as_str()) {
+                match message {
+                    ServerActions::response_props(id, props) => {
+                        let something = agent.pending_requests.remove(&id);
+                        if let Some((_id, sender)) = something {
+                            if let Err(e) = sender.send(props) {
+                                println!("Error sending properties to pending request: {}", id);
+                            } else {
+                                println!("Properties sent to pending request successfully");
+                            }
+                        } else {
+                            println!("No pending request found for ID: {}", id);
+                        }
+                    }
+                    _ => {
+                        println!("Received unhandled action:");
+                    }
+                }
+            }
+        }
+    }
+}

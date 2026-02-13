@@ -5,6 +5,7 @@ use serenity::builder::*;
 use serenity::model::application::CommandInteraction;
 use serenity::model::application::*;
 use serenity::prelude::Context;
+use std::error::Error;
 
 use crate::mods::*;
 
@@ -12,7 +13,7 @@ pub async fn run(
     ctx: &Context,
     interaction: &CommandInteraction,
     appstate: AppState,
-) -> Result<(), serenity::Error> {
+) -> Result<(), Box<dyn Error>> {
     let message = interaction
         .data
         .options
