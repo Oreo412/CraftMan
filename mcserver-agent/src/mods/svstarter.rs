@@ -1,7 +1,11 @@
 use crate::mods::propreader::ServerProperties;
+use anyhow::{Result, bail};
+use futures_util::SinkExt;
 use std::path::Path;
 use std::process::*;
 use std::{io::*, path};
+use tokio_tungstenite::tungstenite::protocol::Message;
+use uuid::Uuid;
 
 pub fn stop_server(mut stdin: ChildStdin) {
     let _result = writeln!(stdin, "stop");
@@ -99,5 +103,36 @@ impl ServerProcess {
         }
 
         self
+    }
+    pub fn get_property(&mut self, property: &str) -> Result<&str> {
+        Ok(self
+            .properties
+            .as_mut()
+            .ok_or_else(|| anyhow::anyhow!("Properties not found"))?
+            .get(property)
+            .ok_or_else(|| anyhow::anyhow!("{} not found in properties", property))?)
+    }
+
+    pub fn set(&mut self, property: &str, value: &str) -> Result<()> {
+        Ok(self
+            .properties
+            .as_mut()
+            .ok_or_else(|| anyhow::anyhow!("Properties not found"))?
+            .set(property, value)?)
+    }
+    pub async fn send_response<S>(&mut self, sender: &mut S, uuid: Uuid) -> Result<()>
+    where
+        S: SinkExt<Message> + Unpin,
+    {
+        if let Err(e) = self
+            .properties
+            .as_mut()
+            .ok_or_else(|| anyhow::anyhow!("Properties not found"))?
+            .send_response(sender, uuid)
+            .await
+        {
+            bail!("Error sending response");
+        }
+        Ok(())
     }
 }
