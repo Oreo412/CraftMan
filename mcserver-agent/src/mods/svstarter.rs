@@ -1,5 +1,5 @@
 use crate::mods::propreader::ServerProperties;
-use anyhow::{Result, bail};
+use anyhow::{Result, anyhow, bail};
 use futures_util::SinkExt;
 use std::path::Path;
 use std::process::*;
@@ -54,14 +54,14 @@ impl ServerProcess {
     }
 
     pub fn stop_server(&mut self) -> Result<()> {
-        if let Some(child) = &mut self.child {
-            if let Some(stdin) = &mut child.stdin {
-                writeln!(stdin, "stop")?;
-            }
-            let _ = child.wait();
-        } else {
-            println!("No server process to stop");
+        let child = &mut self
+            .child
+            .as_mut()
+            .ok_or_else(|| anyhow!("No child process found"))?;
+        if let Some(stdin) = &mut child.stdin {
+            writeln!(stdin, "stop")?;
         }
+        let _ = child.wait();
         self.child = None;
         self.update_properties();
         Ok(())
