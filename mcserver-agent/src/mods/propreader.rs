@@ -1,6 +1,6 @@
-use anyhow::{Result, anyhow, bail};
+use anyhow::{Ok, Result, anyhow, bail};
 use futures_util::{
-    sink::SinkExt,
+    sink::{Sink, SinkExt},
     stream::{SplitSink, SplitStream, StreamExt},
 };
 use protocol::serveractions::ServerActions;
@@ -18,7 +18,7 @@ pub struct ServerProperties {
 }
 
 impl ServerProperties {
-    pub fn new(dir: &str) -> Result<Self, Box<dyn Error>> {
+    pub fn new(dir: &str) -> Result<Self> {
         let reader = BufReader::new(File::open(format!("{}/server.properties", dir))?);
         let mut properties = default_properties();
         properties.extend(java_properties::read(reader)?);
@@ -52,7 +52,7 @@ impl ServerProperties {
         self.properties = java_properties::read(reader)?;
         Ok(())
     }
-    pub fn update(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn update(&mut self) -> Result<()> {
         let reader = BufReader::new(File::open(format!("{}/server.properties", self.dir))?);
         self.properties = java_properties::read(reader)?;
         Ok(())
@@ -72,24 +72,21 @@ impl ServerProperties {
             ))
             .await
     }
-    pub async fn send_response<S>(
-        &self,
-        sender: &mut S,
-        uuid: Uuid,
-    ) -> Result<(), <S as futures_util::Sink<Message>>::Error>
+    pub async fn send_response<S>(&self, sender: &mut S, uuid: Uuid) -> Result<()>
     where
-        S: SinkExt<Message> + Unpin,
+        S: Sink<Message> + Unpin,
+        S::Error: std::error::Error + Send + Sync + 'static,
     {
         sender
             .send(Message::Text(
                 serde_json::to_string(&ServerActions::response_props(
                     uuid,
                     self.properties.clone(),
-                ))
-                .unwrap()
+                ))?
                 .into(),
             ))
-            .await
+            .await?;
+        Ok(())
     }
 }
 

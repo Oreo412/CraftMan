@@ -123,16 +123,13 @@ impl ServerProcess {
     pub async fn send_response<S>(&mut self, sender: &mut S, uuid: Uuid) -> Result<()>
     where
         S: SinkExt<Message> + Unpin,
+        S::Error: std::error::Error + Send + Sync + 'static,
     {
-        if let Err(e) = self
-            .properties
+        self.properties
             .as_mut()
             .ok_or_else(|| anyhow::anyhow!("Properties not found"))?
             .send_response(sender, uuid)
-            .await
-        {
-            bail!("Error sending response");
-        }
+            .await?;
         Ok(())
     }
 }

@@ -21,21 +21,21 @@ pub async fn run(
     client: &twilight_http::Client,
     serenity_interaction: serenity::model::application::CommandInteraction,
     appstate: &AppState,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<()> {
     println!("received");
     let id = serenity_interaction
         .data
         .options
         .iter()
         .find(|option| option.name == "name")
-        .ok_or_else(|| "No id".to_string())?
+        .ok_or_else(|| anyhow!("No Id"))?
         .value
         .as_str()
-        .ok_or_else(|| "No id".to_string())?;
+        .ok_or_else(|| anyhow!("No Id"))?;
     let agent = appstate
         .find_connection(id)
         .await
-        .ok_or_else(|| "Agent Not Found".to_string())?;
+        .ok_or_else(|| anyhow!("Agent Not Found"))?;
 
     let props = agent.request_props().await?;
     let mut responsetest = InteractionResponseData::default();
