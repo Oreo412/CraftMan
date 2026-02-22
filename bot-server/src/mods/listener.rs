@@ -6,7 +6,8 @@ use futures_util::{
     sink::SinkExt,
     stream::{SplitSink, SplitStream, StreamExt},
 };
-use protocol::serveractions::ServerActions;
+use protocol::query_options::QuerySend;
+use protocol::serveractions::{OneshotResponses, ServerActions};
 use std::sync::Arc;
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
@@ -23,13 +24,29 @@ where
         if let Message::Text(text) = msg.unwrap() {
             if let Ok(message) = serde_json::from_str::<ServerActions>(text.as_str()) {
                 match message {
-                    ServerActions::response_props(id, props) => {
+                    ServerActions::PropsResponse(id, props) => {
                         let something = agent.pending_requests.remove(&id);
                         if let Some((_id, sender)) = something {
-                            if let Err(e) = sender.send(props) {
+                            if let Err(e) = sender.send(OneshotResponses::PropsResponse(props)) {
                                 println!("Error sending properties to pending request: {}", id);
                             } else {
                                 println!("Properties sent to pending request successfully");
+                            }
+                        } else {
+                            println!("No pending request found for ID: {}", id);
+                        }
+                    }
+                    ServerActions::QueryResponse(id, description, image, query) => {
+                        let something = agent.pending_requests.remove(&id);
+                        if let Some((_id, sender)) = something {
+                            if let Err(e) = sender.send(OneshotResponses::QueryResponse(
+                                description,
+                                image,
+                                query,
+                            )) {
+                                println!("Error sending queryresponse to pending request: {}", id);
+                            } else {
+                                println!("response sent to pending request successfully");
                             }
                         } else {
                             println!("No pending request found for ID: {}", id);

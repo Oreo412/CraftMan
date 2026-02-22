@@ -1,4 +1,5 @@
 use crate::appstate::AppState;
+use anyhow::Result;
 use axum::extract::ws::Message;
 use protocol::agentactions::AgentActions;
 use serenity::builder::*;
@@ -11,7 +12,7 @@ pub async fn start_mc_server(
     ctx: &Context,
     interaction: &CommandInteraction,
     appstate: &AppState,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<()> {
     let id = interaction
         .data
         .options

@@ -15,4 +15,4 @@ java-properties = {version = "2"}
 uuid.workspace = true
 anyhow.workspace = true
 rust-mc-status = "2"
-
+base64 = "0.22"

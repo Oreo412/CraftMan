@@ -1,3 +1,4 @@
+use anyhow::Result;
 use appstate::AppState;
 use axum::extract::ws::Message;
 use protocol::agentactions::AgentActions;
@@ -13,7 +14,7 @@ pub async fn run(
     ctx: &Context,
     interaction: &CommandInteraction,
     appstate: AppState,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<()> {
     let message = interaction
         .data
         .options

@@ -1,5 +1,6 @@
 use crate::appstate::AppState;
 use crate::mods::bot::settingscreen::SettingScreen;
+use crate::mods::bot::si2tr::si2tr;
 use anyhow::Result;
 use anyhow::anyhow;
 use serenity::all::ActionRowComponent;
@@ -245,24 +246,6 @@ pub async fn update_settings_view(
         .components(Some(&components?))
         .await?;
     Ok(())
-}
-
-pub async fn si2tr<'a>(
-    client: &'a twilight_http::Client,
-    interaction: &'a serenity::model::application::CommandInteraction,
-    response: &'a InteractionResponse,
-) {
-    println!("Sending response via twilight");
-    let application_id = Id::new(interaction.application_id.get());
-    let interaction_id = Id::new(interaction.id.get());
-    if let Err(e) = client
-        .interaction(application_id)
-        .create_response(interaction_id, &interaction.token, response)
-        .into_future()
-        .await
-    {
-        eprintln!("Failed to send twilight response: {}", e);
-    }
 }
 
 pub fn difficulty(difficulty: &String, id: &str) -> Section {

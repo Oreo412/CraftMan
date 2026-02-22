@@ -1,8 +1,10 @@
 pub mod bot_handler;
 pub mod bot_start;
+pub mod create_monitor;
 pub mod props_modals;
 pub mod send_ws;
 pub mod settingscreen;
 pub mod settingsview;
+pub mod si2tr;
 pub mod startserver;
 pub mod stopserver;

@@ -8,15 +8,16 @@ axum = {version = "0.8.8", features = ["ws"]}
 tokio.workspace = true
 tower = "0.5.3"
 futures-util = "0.3"
-serenity = { version = "0.12", features = ["client", "gateway", "rustls_backend", "model", "collector"]}
+serenity = { path = "../../serenity", features = ["client", "gateway", "rustls_backend", "model", "collector"]}
 dotenvy = "0.15"
-anyhow = "1"
+anyhow.workspace =  true
 serde.workspace = true
 protocol.workspace = true
 serde_json.workspace = true
-twilight-http = "0.17"
-twilight-model = "0.17"
-twilight-util = {version = "0.17", features = ["builder"]}
+twilight-http = {path = "../../twilight/twilight-http"}
+twilight-model = {path = "../../twilight/twilight-model"}
+twilight-util = {path = "../../twilight/twilight-util", features = ["builder"]}
 dashmap = "6"
 uuid.workspace = true
 tokio-tungstenite = "0.28"
+base64 = "0.22"

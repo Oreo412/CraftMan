@@ -1,9 +1,11 @@
 use crate::bot::*;
 use crate::mods::bot::props_modals::props_modal;
 use crate::mods::*;
-use anyhow::{Result, anyhow};
+use anyhow::Context as cont;
+use anyhow::{Result, anyhow, bail};
 use axum::handler;
 use protocol::properties::property;
+use serde_json::Value;
 use serenity::all::{ActionRowComponent, CreateModal};
 use serenity::async_trait;
 use serenity::builder::{
@@ -18,6 +20,9 @@ use serenity::prelude::*;
 use settingscreen::SettingScreen;
 use std::env;
 use std::str::FromStr;
+use twilight_model::application::interaction::Interaction as TwilightInteraction;
+use twilight_model::application::interaction::InteractionData;
+use twilight_model::application::interaction::modal::ModalInteractionComponent;
 use twilight_model::channel::Message;
 use twilight_model::channel::message::Component;
 use twilight_model::channel::message::component::ActionRow as TwilightRow;
@@ -53,6 +58,7 @@ impl EventHandler for Handler {
                     startserver::register(),
                     stopserver::register(),
                     settingsview::register(),
+                    create_monitor::register(),
                 ],
             )
             .await;
@@ -162,10 +168,22 @@ impl Handler {
                         .await?;
                         Ok(())
                     }
+                    "thumbnail" => {
+                        if let Err(e) = crate::bot::create_monitor::builder_modal(
+                            &self.twilight_client,
+                            command,
+                            &self.app_state,
+                        )
+                        .await
+                        {
+                            println!("issue: {}", e);
+                        }
+                        Ok(())
+                    }
                     _ => command
                         .create_response(ctx.http, CreateInteractionResponse::Acknowledge)
                         .await
-                        .map_err(|e| Box::new(e) as Box<dyn std::error::Error>),
+                        .context("stink"),
                 };
             }
             Interaction::Component(component) => {
@@ -221,151 +239,211 @@ impl Handler {
                     }
                 }
             }
-            Interaction::Modal(modal) => {
-                let (title, id) = modal
-                    .data
-                    .custom_id
-                    .split_once(":")
-                    .ok_or_else(|| anyhow!("custom id not split"))?;
-                println!("title: {}, id: {}", title, id);
-                let ActionRowComponent::InputText(data) = &modal.data.components[0].components[0]
-                else {
-                    return Ok(());
-                };
-                let input = &data
-                    .value
-                    .as_ref()
-                    .ok_or_else(|| anyhow!("No input text received"))?;
-                let prop = match title {
-                    "Message Of The Day" => property::motd(input.to_string()),
-                    "Max Players" => {
-                        if let Ok(value) = input.parse::<u32>() {
-                            print!("value: {}", value);
-                            property::max_players(value)
-                        } else {
-                            println!("Invalid number input");
-                            let _result = modal
-                                .create_response(
-                                    ctx.http,
-                                    CreateInteractionResponse::Message(
-                                        CreateInteractionResponseMessage::new()
-                                            .content("Please input a valid number")
-                                            .ephemeral(true),
-                                    ),
-                                )
-                                .await;
+            Interaction::Modal(modal, raw_json) => {
+                let (action, title, id) = parse_modal_custom_id(&modal.data.custom_id)
+                    .ok_or_else(|| anyhow!("Custom_id not good"))?;
+                println!("Title: {}  id: {}", title, id);
+                match action {
+                    ModalAction::EditProp => {
+                        println!("title: {}, id: {}", title, id);
+                        let ActionRowComponent::InputText(data) =
+                            &modal.data.components[0].components[0]
+                        else {
                             return Ok(());
-                        }
-                    }
-                    "Max World Size" => {
-                        if let Ok(value) = input.parse::<u32>() {
-                            print!("value: {}", value);
-                            property::max_world_size(value)
-                        } else {
-                            println!("Invalid number input");
-                            let _result = modal
-                                .create_response(
-                                    ctx.http,
-                                    CreateInteractionResponse::Message(
-                                        CreateInteractionResponseMessage::new()
-                                            .content("Please input a valid number")
-                                            .ephemeral(true),
-                                    ),
-                                )
-                                .await;
-                            return Ok(());
-                        }
-                    }
-                    "View Distance" => {
-                        if let Ok(value) = input.parse::<u32>() {
-                            print!("value: {}", value);
-                            property::view_distance(value)
-                        } else {
-                            println!("Invalid number input");
-                            let _result = modal
-                                .create_response(
-                                    ctx.http,
-                                    CreateInteractionResponse::Message(
-                                        CreateInteractionResponseMessage::new()
-                                            .content("Please input a valid number")
-                                            .ephemeral(true),
-                                    ),
-                                )
-                                .await;
-                            return Ok(());
-                        }
-                    }
-                    "Simulation Distance" => {
-                        if let Ok(value) = input.parse::<u32>() {
-                            print!("value: {}", value);
-                            property::simulation_distance(value)
-                        } else {
-                            println!("Invalid number input");
-                            let _result = modal
-                                .create_response(
-                                    ctx.http,
-                                    CreateInteractionResponse::Message(
-                                        CreateInteractionResponseMessage::new()
-                                            .content("Please input a valid number")
-                                            .ephemeral(true),
-                                    ),
-                                )
-                                .await;
-                            return Ok(());
-                        }
-                    }
-                    "Spawn Protection" => {
-                        if let Ok(value) = input.parse::<u32>() {
-                            print!("value: {}", value);
-                            property::spawn_protection(value)
-                        } else {
-                            println!("Invalid number input");
-                            let _result = modal
-                                .create_response(
-                                    ctx.http,
-                                    CreateInteractionResponse::Message(
-                                        CreateInteractionResponseMessage::new()
-                                            .content("Please input a valid number")
-                                            .ephemeral(true),
-                                    ),
-                                )
-                                .await;
-                            return Ok(());
-                        }
-                    }
-                    _ => {
-                        println!("{} Modal Not found", title);
-                        return Ok(());
-                    }
-                };
-                let message = modal
-                    .message
-                    .as_ref()
-                    .ok_or_else(|| anyhow!("Message not attatched to any modal"))?;
-                let agent = self
-                    .app_state
-                    .find_connection(id)
-                    .await
-                    .ok_or_else(|| anyhow!("Agent not found for id: {}", id))?;
-                let props = agent.edit_props(prop).await?;
-                crate::bot::settingsview::update_settings_view(
-                    &self.twilight_client,
-                    modal.channel_id.get(),
-                    message.id.get(),
-                    &props,
-                    id,
-                    None,
-                    &message,
-                )
-                .await?;
+                        };
+                        let input = &data
+                            .value
+                            .as_ref()
+                            .ok_or_else(|| anyhow!("No input text received"))?;
+                        let prop = match title {
+                            "Message Of The Day" => property::motd(input.to_string()),
+                            "Max Players" => {
+                                if let Ok(value) = input.parse::<u32>() {
+                                    print!("value: {}", value);
+                                    property::max_players(value)
+                                } else {
+                                    println!("Invalid number input");
+                                    let _result = modal
+                                        .create_response(
+                                            ctx.http,
+                                            CreateInteractionResponse::Message(
+                                                CreateInteractionResponseMessage::new()
+                                                    .content("Please input a valid number")
+                                                    .ephemeral(true),
+                                            ),
+                                        )
+                                        .await;
+                                    return Ok(());
+                                }
+                            }
+                            "Max World Size" => {
+                                if let Ok(value) = input.parse::<u32>() {
+                                    print!("value: {}", value);
+                                    property::max_world_size(value)
+                                } else {
+                                    println!("Invalid number input");
+                                    let _result = modal
+                                        .create_response(
+                                            ctx.http,
+                                            CreateInteractionResponse::Message(
+                                                CreateInteractionResponseMessage::new()
+                                                    .content("Please input a valid number")
+                                                    .ephemeral(true),
+                                            ),
+                                        )
+                                        .await;
+                                    return Ok(());
+                                }
+                            }
+                            "View Distance" => {
+                                if let Ok(value) = input.parse::<u32>() {
+                                    print!("value: {}", value);
+                                    property::view_distance(value)
+                                } else {
+                                    println!("Invalid number input");
+                                    let _result = modal
+                                        .create_response(
+                                            ctx.http,
+                                            CreateInteractionResponse::Message(
+                                                CreateInteractionResponseMessage::new()
+                                                    .content("Please input a valid number")
+                                                    .ephemeral(true),
+                                            ),
+                                        )
+                                        .await;
+                                    return Ok(());
+                                }
+                            }
+                            "Simulation Distance" => {
+                                if let Ok(value) = input.parse::<u32>() {
+                                    print!("value: {}", value);
+                                    property::simulation_distance(value)
+                                } else {
+                                    println!("Invalid number input");
+                                    let _result = modal
+                                        .create_response(
+                                            ctx.http,
+                                            CreateInteractionResponse::Message(
+                                                CreateInteractionResponseMessage::new()
+                                                    .content("Please input a valid number")
+                                                    .ephemeral(true),
+                                            ),
+                                        )
+                                        .await;
+                                    return Ok(());
+                                }
+                            }
+                            "Spawn Protection" => {
+                                if let Ok(value) = input.parse::<u32>() {
+                                    print!("value: {}", value);
+                                    property::spawn_protection(value)
+                                } else {
+                                    println!("Invalid number input");
+                                    let _result = modal
+                                        .create_response(
+                                            ctx.http,
+                                            CreateInteractionResponse::Message(
+                                                CreateInteractionResponseMessage::new()
+                                                    .content("Please input a valid number")
+                                                    .ephemeral(true),
+                                            ),
+                                        )
+                                        .await;
+                                    return Ok(());
+                                }
+                            }
+                            _ => {
+                                println!("{} Modal Not found", title);
+                                return Ok(());
+                            }
+                        };
+                        let message = modal
+                            .message
+                            .as_ref()
+                            .ok_or_else(|| anyhow!("Message not attatched to any modal"))?;
+                        let agent = self
+                            .app_state
+                            .find_connection(id)
+                            .await
+                            .ok_or_else(|| anyhow!("Agent not found for id: {}", id))?;
+                        let props = agent.edit_props(prop).await?;
+                        crate::bot::settingsview::update_settings_view(
+                            &self.twilight_client,
+                            modal.channel_id.get(),
+                            message.id.get(),
+                            &props,
+                            id,
+                            None,
+                            &message,
+                        )
+                        .await?;
 
-                let _result = modal
-                    .create_response(ctx.http, CreateInteractionResponse::Acknowledge)
-                    .await;
-                println!("Updated settings view");
+                        let _result = modal
+                            .create_response(ctx.http, CreateInteractionResponse::Acknowledge)
+                            .await;
+                        println!("Updated settings view");
+                    }
+                    ModalAction::BuildQuery => {
+                        let twilight_interaction: TwilightInteraction =
+                            serde_json::from_value(raw_json)?;
+                        println!("Got twilight interaction");
+                        let InteractionData::ModalSubmit(interaction_data) = twilight_interaction
+                            .data
+                            .ok_or_else(|| anyhow!("Conversion to inderaction data failed"))?
+                        else {
+                            return bail!("Not modalsubmit I guess");
+                        };
+                        println!("Got the interaction data");
+                        let ModalInteractionComponent::Label(label) =
+                            &interaction_data.components[1]
+                        else {
+                            return bail!("Not label I guess");
+                        };
+                        let ModalInteractionComponent::CheckboxGroup(checkbox_group) =
+                            &*label.component
+                        else {
+                            return bail!("Not a checkbox group I gess");
+                        };
+                        create_monitor::build_view(
+                            checkbox_group.values.clone().into_iter().collect(),
+                            &self.twilight_client,
+                            &modal,
+                            &self.app_state,
+                            id,
+                        )
+                        .await?;
+                    }
+                }
             }
             _ => println!("uh oh..."),
         }
         Ok(())
     }
+}
+
+enum ModalAction {
+    EditProp,
+    BuildQuery,
+}
+
+fn parse_modal_custom_id(id: &str) -> Option<(ModalAction, &str, &str)> {
+    println!("parsing, received: {}", id);
+    let mut parts = id.split(':');
+
+    let kind = parts.next()?;
+    let value = parts.next()?;
+    let server_id = parts.next()?;
+
+    let action = match kind {
+        "edit_props" => {
+            println!("Selected prop");
+            ModalAction::EditProp
+        }
+        "build_query" => {
+            println!("Build query");
+            ModalAction::BuildQuery
+        }
+        _ => return None,
+    };
+    Some((action, value, server_id))
 }

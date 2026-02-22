@@ -5,7 +5,6 @@ use futures_util::{
 };
 use protocol::serveractions::ServerActions;
 use std::collections::HashMap;
-use std::error::Error;
 use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::{BufReader, BufWriter, Seek, SeekFrom};
@@ -79,7 +78,7 @@ impl ServerProperties {
     {
         sender
             .send(Message::Text(
-                serde_json::to_string(&ServerActions::response_props(
+                serde_json::to_string(&ServerActions::PropsResponse(
                     uuid,
                     self.properties.clone(),
                 ))?

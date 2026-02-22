@@ -4,6 +4,7 @@ use futures_util::{
     stream::{SplitSink, SplitStream, StreamExt},
 };
 use protocol::agentactions::AgentActions;
+use protocol::query_options::QueryOptions;
 use protocol::serveractions::ServerActions;
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
@@ -15,7 +16,7 @@ use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 use anyhow::{Result, anyhow};
 use protocol::properties::property;
 
-use crate::mods::svstarter;
+use crate::mods::{query_handler::QueryHandler, svstarter};
 
 pub async fn listen<R, S>(receiver: &mut R, sender: &mut S) -> Result<()>
 where
@@ -38,6 +39,15 @@ where
             }
             AgentActions::sv_stop => {
                 process.stop_server()?;
+            }
+            AgentActions::StartQuery(request_id, options, message_id, channel_id) => {
+                println!("Received query");
+                if let Err(e) = QueryHandler::new(25565, message_id, channel_id, options)
+                    .respond(sender, request_id)
+                    .await
+                {
+                    println!("Error starting query handling: {}", e);
+                }
             }
             AgentActions::request_props(request_id) => {
                 println!("Received request_props action with ID: {}", request_id);
