@@ -91,7 +91,7 @@ impl QueryHandler {
 
         if self.options.map() {
             println!("set map");
-            query_response.set_map(status.map);
+            query_response.set_map(Some(status.map.unwrap_or("No map found".to_string())));
         }
 
         if self.options.gamemode() {
@@ -102,12 +102,16 @@ impl QueryHandler {
                     .as_ref()
                     .unwrap_or(&"No gamemode found".to_string())
             );
-            query_response.set_gamemode(status.gamemode);
+            query_response.set_gamemode(Some(
+                status.gamemode.unwrap_or("No gamemode found".to_string()),
+            ));
         }
 
         if self.options.software() {
             println!("set software");
-            query_response.set_software(status.software);
+            query_response.set_software(Some(
+                status.software.unwrap_or("No software found".to_string()),
+            ));
         }
 
         if self.options.plugins() {
@@ -116,6 +120,8 @@ impl QueryHandler {
                 query_response.set_plugins(Some(
                     plugins.into_iter().map(|plugin| plugin.name).collect(),
                 ));
+            } else {
+                query_response.set_plugins(Some(vec!["No plugins found".to_string()]))
             }
         }
 
@@ -123,6 +129,8 @@ impl QueryHandler {
             println!("set mods");
             if let Some(mods) = status.mods {
                 query_response.set_mods(Some(mods.into_iter().map(|mcmod| mcmod.modid).collect()));
+            } else {
+                query_response.set_mods(Some(vec!["No mods found".to_string()]))
             }
         }
 

@@ -116,7 +116,7 @@ pub async fn build_view(
     };
     let displaytext = TextDisplay {
         id: None,
-        content: description,
+        content: format!("# Message Of The Day:\n{}", description),
     };
     let thumbnail = ThumbnailBuilder::new(mediaitem).build();
     let header = SectionBuilder::new(thumbnail)
@@ -134,27 +134,29 @@ pub async fn build_view(
     if let Some(version) = query.version() {
         println!("found version");
         components.push(Component::TextDisplay(
-            TextDisplayBuilder::new(version).build(),
+            TextDisplayBuilder::new(format!("# Version:\n{}", version)).build(),
         ));
     }
 
     if let Some(player_count) = query.player_count() {
         println!("found player count");
         components.push(Component::TextDisplay(
-            TextDisplayBuilder::new(player_count).build(),
+            TextDisplayBuilder::new(format!("# Player Count:\n{}", player_count)).build(),
         ));
     }
 
     if let Some(player_list) = query.player_list() {
         println!("found player list");
         components.push(Component::TextDisplay(
-            TextDisplayBuilder::new(player_list.join("\n")).build(),
+            TextDisplayBuilder::new(format!("# Player List:\n{}", player_list.join("\n"))).build(),
         ));
     }
 
     if let Some(map) = query.map() {
         println!("found map");
-        components.push(Component::TextDisplay(TextDisplayBuilder::new(map).build()));
+        components.push(Component::TextDisplay(
+            TextDisplayBuilder::new(format!("# Map:\n{}", map)).build(),
+        ));
     }
 
     println!(
@@ -164,28 +166,28 @@ pub async fn build_view(
     if let Some(gamemode) = query.gamemode() {
         println!("found gamemode");
         components.push(Component::TextDisplay(
-            TextDisplayBuilder::new(gamemode).build(),
+            TextDisplayBuilder::new(format!("# Gamemode:\n{}", gamemode)).build(),
         ));
     }
 
     if let Some(software) = query.software() {
         println!("found software");
         components.push(Component::TextDisplay(
-            TextDisplayBuilder::new(software).build(),
+            TextDisplayBuilder::new(format!("# Software:\n{}", software)).build(),
         ));
     }
 
     if let Some(plugins) = query.plugins() {
         println!("found plugins");
         components.push(Component::TextDisplay(
-            TextDisplayBuilder::new(plugins.join("\n")).build(),
+            TextDisplayBuilder::new(format!("# Plugins:\n{}", plugins.join("\n"))).build(),
         ))
     }
 
     if let Some(mods) = query.mods() {
         println!("found mods");
         components.push(Component::TextDisplay(
-            TextDisplayBuilder::new(mods.join("\n")).build(),
+            TextDisplayBuilder::new(format!("# Mods:\n{}", mods.join("\n"))).build(),
         ))
     }
 
