@@ -1,4 +1,5 @@
 use crate::mods::agents::Agent;
+use crate::mods::bot::create_monitor::update_monitor;
 use axum::Error;
 use axum::extract::ws::Message;
 use futures_util::Stream;
@@ -16,8 +17,11 @@ use tokio::{
 use tokio_tungstenite::connect_async;
 use uuid::Uuid;
 
-pub async fn listen<R>(mut receiver: R, agent: Arc<Agent>)
-where
+pub async fn listen<R>(
+    mut receiver: R,
+    agent: Arc<Agent>,
+    twilight_client: Arc<twilight_http::Client>,
+) where
     R: Stream<Item = Result<Message, Error>> + Unpin,
 {
     while let Some(msg) = receiver.next().await {
@@ -52,7 +56,13 @@ where
                             println!("No pending request found for ID: {}", id);
                         }
                     }
-                    ServerActions::UpdateQuery(message_id, channel_id, status)
+                    ServerActions::UpdateQuery(message_id, channel_id, status) => {
+                        if let Err(e) =
+                            update_monitor(message_id, channel_id, status, &twilight_client).await
+                        {
+                            println!("Error updating monitor: {}", e);
+                        }
+                    }
                     _ => {
                         println!("Received unhandled action:");
                     }

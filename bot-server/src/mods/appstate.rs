@@ -1,20 +1,28 @@
 use crate::mods::agents::Agent;
 use anyhow::Result;
 use axum::extract::ws::Message;
+use dotenvy;
 use protocol::agentactions::AgentActions;
+use std::env;
 use std::error::Error;
 use std::{collections::HashMap, sync::Arc};
 use tokio::sync::{RwLock, mpsc};
+use twilight_http::Client;
 
 #[derive(Clone)]
 pub struct AppState {
     pub connections: Arc<RwLock<HashMap<String, Arc<Agent>>>>,
+    pub twilight_client: Arc<Client>,
 }
 
 impl AppState {
     pub fn new() -> Self {
+        dotenvy::dotenv().ok();
         AppState {
             connections: Arc::new(RwLock::new(HashMap::new())),
+            twilight_client: Arc::new(Client::new(
+                env::var("DISCORD_TOKEN").expect("Expected a token in the environment"),
+            )),
         }
     }
 

@@ -8,6 +8,7 @@ use serenity::model::application::{Command, Interaction, ResolvedOption};
 use serenity::model::gateway::Ready;
 use serenity::model::id::GuildId;
 use serenity::prelude::*;
+use tokio::sync::mpsc::UnboundedReceiver;
 use twilight_http::Client as TwilightClient;
 
 use crate::bot_handler;
@@ -22,8 +23,8 @@ pub async fn start_bot(appstate: appstate::AppState) {
 
     let mut client = Client::builder(token.clone(), GatewayIntents::empty())
         .event_handler(bot_handler::Handler {
+            twilight_client: appstate.twilight_client.clone(), //Creates a Twilight HTTP client. Serenity Client is made first so Token needs to be cloned. Then Token is moved into Twilight Client, consuming it.
             app_state: appstate,
-            twilight_client: TwilightClient::new(token), //Creates a Twilight HTTP client. Serenity Client is made first so Token needs to be cloned. Then Token is moved into Twilight Client, consuming it.
         })
         .await
         .expect("Error creating client");

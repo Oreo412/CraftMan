@@ -20,6 +20,7 @@ use serenity::prelude::*;
 use settingscreen::SettingScreen;
 use std::env;
 use std::str::FromStr;
+use std::sync::Arc;
 use twilight_model::application::interaction::Interaction as TwilightInteraction;
 use twilight_model::application::interaction::InteractionData;
 use twilight_model::application::interaction::modal::ModalInteractionComponent;
@@ -29,7 +30,7 @@ use twilight_model::channel::message::component::ActionRow as TwilightRow;
 
 pub struct Handler {
     pub app_state: crate::appstate::AppState,
-    pub twilight_client: twilight_http::Client,
+    pub twilight_client: Arc<twilight_http::Client>,
 }
 
 #[async_trait]

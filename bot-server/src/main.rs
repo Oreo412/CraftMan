@@ -59,6 +59,7 @@ async fn handle_socket(mut socket: WebSocket, app_state: appstate::AppState) {
                 tokio::spawn(listener::listen(
                     receiver,
                     app_state.find_connection(&text).await.unwrap(),
+                    app_state.twilight_client.clone(),
                 ));
                 break;
             }
