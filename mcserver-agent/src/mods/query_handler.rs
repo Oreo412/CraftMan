@@ -5,13 +5,14 @@ use futures_util::{
     sink::{Sink, SinkExt},
     stream::{SplitSink, SplitStream, StreamExt},
 };
-use protocol::query_options::QueryOptions;
-use protocol::query_options::QuerySend;
+use protocol::query_options::{QueryOptions, QueryStatus, ServerStatus};
 use protocol::serveractions::ServerActions;
 use rust_mc_status::JavaStatus;
 use rust_mc_status::McClient;
 use rust_mc_status::ServerData;
 use rust_mc_status::error::McError;
+use tokio::sync::mpsc::UnboundedSender;
+use tokio::time::{self, Duration};
 use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 use uuid::Uuid;
 
@@ -21,6 +22,7 @@ pub struct QueryHandler {
     channel_id: u64,
     port: u32,
     options: QueryOptions,
+    last_status: Option<ServerStatus>,
 }
 
 impl QueryHandler {
@@ -31,6 +33,7 @@ impl QueryHandler {
             channel_id,
             port,
             options,
+            last_status: None,
         }
     }
 
@@ -49,17 +52,18 @@ impl QueryHandler {
         }
     }
 
-    pub async fn respond<S>(&mut self, sender: &mut S, request_id: Uuid) -> Result<()>
-    where
-        S: Sink<Message> + Unpin,
-        S::Error: std::error::Error + Send + Sync + 'static,
-    {
+    pub async fn respond(
+        // TODO: Handle if server is offline
+        &mut self,
+        sender: UnboundedSender<Message>,
+        request_id: Uuid,
+    ) -> Result<()> {
         let status = self.ping().await?;
-        let Some(image_base64) = status.favicon else {
+        let Some(image_base64) = &status.favicon else {
             bail!("No image found");
         };
 
-        let description = status.description;
+        let description = &status.description;
 
         println!("Boutta try to decode the image");
         let image = STANDARD.decode(
@@ -69,7 +73,46 @@ impl QueryHandler {
         )?;
         println!("decoded image");
 
-        let mut query_response = QuerySend::default();
+        let query_response = self.query_builder(status.clone());
+
+        self.last_status = Some(ServerStatus::ServerOnline(query_response.clone()));
+
+        sender.send(Message::Text(
+            serde_json::to_string(&ServerActions::QueryResponse(
+                request_id,
+                description.to_string(),
+                image,
+                ServerStatus::ServerOnline(query_response),
+            ))?
+            .into(),
+        ))?;
+        Ok(())
+    }
+
+    pub async fn update(&mut self, sender: UnboundedSender<Message>) -> Result<()> {
+        let mut server_status = ServerStatus::ServerOffline;
+
+        if let Ok(status) = self.ping().await {
+            server_status = ServerStatus::ServerOnline(self.query_builder(status));
+        }
+
+        if self.last_status.is_none() || (&server_status != self.last_status.as_ref().unwrap()) {
+            sender.send(Message::Text(
+                serde_json::to_string(&ServerActions::UpdateQuery(
+                    self.message_id,
+                    self.channel_id,
+                    server_status.clone(),
+                ))?
+                .into(),
+            ))?;
+            self.last_status = Some(server_status);
+        }
+
+        Ok(())
+    }
+
+    fn query_builder(&mut self, status: JavaStatus) -> QueryStatus {
+        let mut query_response = QueryStatus::default();
         if self.options.version() {
             println!("set version");
             query_response.set_version(status.version.name);
@@ -134,17 +177,6 @@ impl QueryHandler {
             }
         }
 
-        sender
-            .send(Message::Text(
-                serde_json::to_string(&ServerActions::QueryResponse(
-                    request_id,
-                    description,
-                    image,
-                    query_response,
-                ))?
-                .into(),
-            ))
-            .await?;
-        Ok(())
+        query_response
     }
 }

@@ -11,7 +11,7 @@ use protocol::properties::property;
 use protocol::serveractions::OneshotResponses;
 use protocol::{
     agentactions::AgentActions,
-    query_options::{QueryOptions, QuerySend},
+    query_options::{QueryOptions, QueryStatus, ServerStatus},
 };
 use tokio::sync::{mpsc, oneshot};
 use uuid::Uuid;
@@ -72,7 +72,7 @@ impl Agent {
         options: HashSet<String>,
         message_id: u64,
         channel_id: u64,
-    ) -> Result<(String, Vec<u8>, QuerySend)> {
+    ) -> Result<(String, Vec<u8>, ServerStatus)> {
         let (sender, receiver) = oneshot::channel::<OneshotResponses>();
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);

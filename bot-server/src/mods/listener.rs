@@ -6,7 +6,7 @@ use futures_util::{
     sink::SinkExt,
     stream::{SplitSink, SplitStream, StreamExt},
 };
-use protocol::query_options::QuerySend;
+use protocol::query_options::QueryStatus;
 use protocol::serveractions::{OneshotResponses, ServerActions};
 use std::sync::Arc;
 use tokio::{
@@ -52,6 +52,7 @@ where
                             println!("No pending request found for ID: {}", id);
                         }
                     }
+                    ServerActions::UpdateQuery(message_id, channel_id, status)
                     _ => {
                         println!("Received unhandled action:");
                     }

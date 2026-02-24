@@ -82,8 +82,8 @@ impl QueryOptions {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct QuerySend {
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+pub struct QueryStatus {
     version: Option<String>,
     player_count: Option<String>,
     player_list: Option<Vec<String>>,
@@ -95,9 +95,9 @@ pub struct QuerySend {
     mods: Option<Vec<String>>,
 }
 
-impl Default for QuerySend {
+impl Default for QueryStatus {
     fn default() -> Self {
-        QuerySend {
+        QueryStatus {
             version: None,
             player_count: None,
             player_list: None,
@@ -111,7 +111,7 @@ impl Default for QuerySend {
     }
 }
 
-impl QuerySend {
+impl QueryStatus {
     pub fn set_version(&mut self, version: String) {
         self.version = Some(version);
     }
@@ -183,4 +183,11 @@ impl QuerySend {
     pub fn mods(&self) -> Option<&Vec<String>> {
         self.mods.as_ref()
     }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+pub enum ServerStatus {
+    // When the query handler pings the server, it can say the server is online and send the status, or it can say the server is offline
+    ServerOnline(QueryStatus),
+    ServerOffline,
 }

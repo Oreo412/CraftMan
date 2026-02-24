@@ -8,6 +8,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::{BufReader, BufWriter, Seek, SeekFrom};
+use tokio::sync::mpsc::UnboundedSender;
 use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 use uuid::Uuid;
 
@@ -56,35 +57,19 @@ impl ServerProperties {
         self.properties = java_properties::read(reader)?;
         Ok(())
     }
-    pub async fn send_update<S>(
-        &mut self,
-        sender: &mut S,
-    ) -> Result<(), <S as futures_util::Sink<Message>>::Error>
-    where
-        S: SinkExt<Message> + Unpin,
-    {
-        sender
-            .send(Message::Text(
-                serde_json::to_string(&ServerActions::props_update(self.properties.clone()))
-                    .unwrap()
-                    .into(),
-            ))
-            .await
-    }
-    pub async fn send_response<S>(&self, sender: &mut S, uuid: Uuid) -> Result<()>
-    where
-        S: Sink<Message> + Unpin,
-        S::Error: std::error::Error + Send + Sync + 'static,
-    {
-        sender
-            .send(Message::Text(
-                serde_json::to_string(&ServerActions::PropsResponse(
-                    uuid,
-                    self.properties.clone(),
-                ))?
+    pub async fn send_update(&mut self, sender: UnboundedSender<Message>) -> Result<()> {
+        sender.send(Message::Text(
+            serde_json::to_string(&ServerActions::props_update(self.properties.clone()))
+                .unwrap()
                 .into(),
-            ))
-            .await?;
+        ))?;
+        Ok(())
+    }
+    pub async fn send_response(&self, sender: UnboundedSender<Message>, uuid: Uuid) -> Result<()> {
+        sender.send(Message::Text(
+            serde_json::to_string(&ServerActions::PropsResponse(uuid, self.properties.clone()))?
+                .into(),
+        ))?;
         Ok(())
     }
 }

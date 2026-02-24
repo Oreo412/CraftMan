@@ -135,12 +135,12 @@ pub fn build_settings_view(
                 .ok_or_else(|| anyhow!("spawn monsters not found"))?
                 .parse::<bool>()?;
             vec![
-                Component::Section(generate_structures(generate_value, id)),
-                Component::Section(max_world_size(max_world_value, id)),
-                Component::Section(allow_nether(allow_nether_value, id)),
-                Component::Section(spawn_npcs(spawn_npc_value, id)),
-                Component::Section(spawn_animals(spawn_animals_value, id)),
-                Component::Section(spawn_monsters(spawn_monsters_value, id)),
+                generate_structures(generate_value, id).into(),
+                max_world_size(max_world_value, id).into(),
+                allow_nether(allow_nether_value, id).into(),
+                spawn_npcs(spawn_npc_value, id).into(),
+                spawn_animals(spawn_animals_value, id).into(),
+                spawn_monsters(spawn_monsters_value, id).into(),
             ]
         }
         SettingScreen::Gameplay => {
@@ -167,12 +167,12 @@ pub fn build_settings_view(
                 .ok_or_else(|| anyhow!("pvp not found"))?
                 .parse::<bool>()?;
             vec![
-                Component::Section(allow_flight(allow_flight_value, id)),
-                Component::Section(difficulty(difficulty_value, id)),
-                Component::Section(gamemode(gamemode_value, id)),
-                Component::Section(hardcore(hardcore_value, id)),
-                Component::Section(spawn_protection(spawn_protection_value, id)),
-                Component::Section(pvp(pvp_value, id)),
+                allow_flight(allow_flight_value, id).into(),
+                difficulty(difficulty_value, id).into(),
+                gamemode(gamemode_value, id).into(),
+                hardcore(hardcore_value, id).into(),
+                spawn_protection(spawn_protection_value, id).into(),
+                pvp(pvp_value, id).into(),
             ]
         }
         SettingScreen::Admin => {
@@ -196,11 +196,11 @@ pub fn build_settings_view(
                 .ok_or_else(|| anyhow!("simulation distance not found"))?
                 .parse::<u32>()?;
             vec![
-                Component::Section(whitelist(whitelist_value, id)),
-                Component::Section(motd(motd_value, id)),
-                Component::Section(max_players(max_players_value, id)),
-                Component::Section(view_distance(view_distance_value, id)),
-                Component::Section(simulation_distance(simulation_distance_value, id)),
+                whitelist(whitelist_value, id).into(),
+                motd(motd_value, id).into(),
+                max_players(max_players_value, id).into(),
+                view_distance(view_distance_value, id).into(),
+                simulation_distance(simulation_distance_value, id).into(),
             ]
         }
     };
@@ -224,7 +224,7 @@ pub fn build_settings_view(
         .component(gameplay_button)
         .component(admin_button)
         .build();
-    properties.push(Component::ActionRow(last_row));
+    properties.push(last_row.into());
     Ok(properties)
 }
 
