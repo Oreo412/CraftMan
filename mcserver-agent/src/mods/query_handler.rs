@@ -59,18 +59,21 @@ impl QueryHandler {
         request_id: Uuid,
     ) -> Result<()> {
         let status = self.ping().await?;
-        let Some(image_base64) = &status.favicon else {
-            bail!("No image found");
-        };
+        let image_base64 = &status.favicon;
 
         let description = &status.description;
 
+        let mut image = None;
         println!("Boutta try to decode the image");
-        let image = STANDARD.decode(
-            image_base64
-                .strip_prefix("data:image/png;base64,")
-                .ok_or_else(|| anyhow!("Couldn't strip prefix :("))?,
-        )?;
+        if let Some(image_data) = image_base64 {
+            image = Some(
+                STANDARD.decode(
+                    image_data
+                        .strip_prefix("data:image/png;base64,")
+                        .ok_or_else(|| anyhow!("Couldn't strip prefix :("))?,
+                )?,
+            );
+        }
         println!("decoded image");
 
         let query_response = self.query_builder(status.clone());
@@ -90,11 +93,11 @@ impl QueryHandler {
     }
 
     pub async fn update(&mut self, sender: UnboundedSender<Message>) -> Result<()> {
-        let mut server_status = ServerStatus::ServerOffline;
-
-        if let Ok(status) = self.ping().await {
-            server_status = ServerStatus::ServerOnline(self.query_builder(status));
-        }
+        let server_status = if let Ok(status) = self.ping().await {
+            ServerStatus::ServerOnline(self.query_builder(status))
+        } else {
+            ServerStatus::ServerOffline
+        };
 
         if self.last_status.is_none() || (&server_status != self.last_status.as_ref().unwrap()) {
             sender.send(Message::Text(

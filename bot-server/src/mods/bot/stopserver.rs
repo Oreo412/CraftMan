@@ -25,10 +25,7 @@ pub async fn start_mc_server(
         &id.value.as_str().unwrap()
     );
     if let Err(e) = appstate
-        .send_message(
-            id.value.as_str().unwrap().to_string(),
-            AgentActions::sv_stop,
-        )
+        .send_message(id.value.as_str().unwrap().to_string(), AgentActions::SvStop)
         .await
     {
         println!("Error sending message via websocket: {}", e);

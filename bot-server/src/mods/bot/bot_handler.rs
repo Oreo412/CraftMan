@@ -79,17 +79,17 @@ fn parse_custom_id(id: &str) -> Option<(ComponentAction, &str)> {
     let action = match kind {
         "edit" => {
             let prop = match value {
-                "allow_flightbutton" => property::allow_flight,
-                "difficultybutton" => property::difficulty,
-                "gamemodebutton" => property::gamemode,
-                "hardcorebutton" => property::hardcore,
-                "whitelistbutton" => property::whitelist,
-                "pvpbutton" => property::pvp,
-                "generate_structuresbutton" => property::generate_structures,
-                "allownetherbutton" => property::allow_nether,
-                "spawn-npcbutton" => property::spawn_npcs,
-                "spawn-animalsbutton" => property::spawn_animals,
-                "spawn-monstersbutton" => property::spawn_monsters,
+                "allow_flightbutton" => property::AllowFlight,
+                "difficultybutton" => property::Difficulty,
+                "gamemodebutton" => property::Gamemode,
+                "hardcorebutton" => property::Hardcore,
+                "whitelistbutton" => property::Whitelist,
+                "pvpbutton" => property::PVP,
+                "generate_structuresbutton" => property::GenerateStructures,
+                "allownetherbutton" => property::AllowNether,
+                "spawn-npcbutton" => property::SpawnNPC,
+                "spawn-animalsbutton" => property::SpawnAnimals,
+                "spawn-monstersbutton" => property::SpawnMonsters,
                 _ => {
                     println!("parsing returned none");
                     return None;
@@ -257,11 +257,11 @@ impl Handler {
                             .as_ref()
                             .ok_or_else(|| anyhow!("No input text received"))?;
                         let prop = match title {
-                            "Message Of The Day" => property::motd(input.to_string()),
+                            "Message Of The Day" => property::MOTD(input.to_string()),
                             "Max Players" => {
                                 if let Ok(value) = input.parse::<u32>() {
                                     print!("value: {}", value);
-                                    property::max_players(value)
+                                    property::MaxPlayers(value)
                                 } else {
                                     println!("Invalid number input");
                                     let _result = modal
@@ -280,7 +280,7 @@ impl Handler {
                             "Max World Size" => {
                                 if let Ok(value) = input.parse::<u32>() {
                                     print!("value: {}", value);
-                                    property::max_world_size(value)
+                                    property::MaxWorldSize(value)
                                 } else {
                                     println!("Invalid number input");
                                     let _result = modal
@@ -299,7 +299,7 @@ impl Handler {
                             "View Distance" => {
                                 if let Ok(value) = input.parse::<u32>() {
                                     print!("value: {}", value);
-                                    property::view_distance(value)
+                                    property::ViewDistance(value)
                                 } else {
                                     println!("Invalid number input");
                                     let _result = modal
@@ -318,7 +318,7 @@ impl Handler {
                             "Simulation Distance" => {
                                 if let Ok(value) = input.parse::<u32>() {
                                     print!("value: {}", value);
-                                    property::simulation_distance(value)
+                                    property::SimulationDistance(value)
                                 } else {
                                     println!("Invalid number input");
                                     let _result = modal
@@ -337,7 +337,7 @@ impl Handler {
                             "Spawn Protection" => {
                                 if let Ok(value) = input.parse::<u32>() {
                                     print!("value: {}", value);
-                                    property::spawn_protection(value)
+                                    property::SpawnProtection(value)
                                 } else {
                                     println!("Invalid number input");
                                     let _result = modal
@@ -375,7 +375,7 @@ impl Handler {
                             &props,
                             id,
                             None,
-                            &message,
+                            message,
                         )
                         .await?;
 
@@ -392,18 +392,18 @@ impl Handler {
                             .data
                             .ok_or_else(|| anyhow!("Conversion to inderaction data failed"))?
                         else {
-                            return bail!("Not modalsubmit I guess");
+                            bail!("Not modalsubmit I guess");
                         };
                         println!("Got the interaction data");
                         let ModalInteractionComponent::Label(label) =
                             &interaction_data.components[1]
                         else {
-                            return bail!("Not label I guess");
+                            bail!("Not label I guess");
                         };
                         let ModalInteractionComponent::CheckboxGroup(checkbox_group) =
                             &*label.component
                         else {
-                            return bail!("Not a checkbox group I gess");
+                            bail!("Not a checkbox group I gess");
                         };
                         create_monitor::build_view(
                             checkbox_group.values.clone().into_iter().collect(),

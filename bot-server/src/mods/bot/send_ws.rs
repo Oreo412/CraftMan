@@ -36,7 +36,7 @@ pub async fn run(
     if let Err(e) = appstate
         .send_message(
             id.value.as_str().unwrap().to_string(),
-            AgentActions::message(message.value.as_str().unwrap().to_string()),
+            AgentActions::Message(message.value.as_str().unwrap().to_string()),
         )
         .await
     {

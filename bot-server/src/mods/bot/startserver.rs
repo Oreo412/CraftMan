@@ -27,7 +27,7 @@ pub async fn start_mc_server(
     if let Err(e) = appstate
         .send_message(
             id.value.as_str().unwrap().to_string(),
-            AgentActions::sv_start,
+            AgentActions::SvStart,
         )
         .await
     {

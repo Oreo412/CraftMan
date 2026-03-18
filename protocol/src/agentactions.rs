@@ -5,10 +5,10 @@ use uuid::Uuid;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum AgentActions {
-    sv_start,
-    sv_stop,
-    message(String),
-    request_props(Uuid),
-    edit_prop(Uuid, property),
+    SvStart,
+    SvStop,
+    Message(String),
+    RequestProps(Uuid),
+    EditProp(Uuid, property),
     StartQuery(Uuid, QueryOptions, u64, u64),
 }

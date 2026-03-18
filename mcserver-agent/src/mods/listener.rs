@@ -1,22 +1,14 @@
 use futures_util::Stream;
-use futures_util::{
-    sink::{Sink, SinkExt},
-    stream::{SplitSink, SplitStream, StreamExt},
-};
+use futures_util::stream::StreamExt;
 use protocol::agentactions::AgentActions;
-use protocol::query_options::QueryOptions;
-use protocol::serveractions::ServerActions;
-use tokio::{
-    io::{AsyncReadExt, AsyncWriteExt},
-    sync::mpsc::UnboundedSender,
-};
+use tokio::sync::mpsc::UnboundedSender;
 use tokio_tungstenite::tungstenite::Error;
-use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
+use tokio_tungstenite::tungstenite::protocol::Message;
 
 use anyhow::{Result, anyhow};
 use protocol::properties::property;
 
-use crate::mods::{query_handler::QueryHandler, svstarter};
+use crate::mods::svstarter;
 
 pub async fn listen<R>(receiver: &mut R, sender: UnboundedSender<Message>) -> Result<()>
 where
@@ -29,13 +21,13 @@ where
         };
         let message = serde_json::from_str::<AgentActions>(text.as_str())?;
         match message {
-            AgentActions::message(content) => {
+            AgentActions::Message(content) => {
                 println!("Received message action: {}", content);
             }
-            AgentActions::sv_start => {
+            AgentActions::SvStart => {
                 process.start_server()?;
             }
-            AgentActions::sv_stop => {
+            AgentActions::SvStop => {
                 process.stop_server()?;
             }
             AgentActions::StartQuery(request_id, options, message_id, channel_id) => {
@@ -47,7 +39,7 @@ where
                     println!("Error starting query handling: {}", e);
                 }
             }
-            AgentActions::request_props(request_id) => {
+            AgentActions::RequestProps(request_id) => {
                 println!("Received request_props action with ID: {}", request_id);
                 // Here you would gather the properties and send them back to the agent
                 let props = process
@@ -58,15 +50,15 @@ where
                 props.send_response(sender.clone(), request_id).await?;
                 println!("Properties response sent successfully");
             }
-            AgentActions::edit_prop(request_id, prop) => match prop {
-                property::allow_flight => {
+            AgentActions::EditProp(request_id, prop) => match prop {
+                property::AllowFlight => {
                     let current = process.get_property("allow-flight")?.parse::<bool>()?;
 
                     process.set("allow-flight", &(!current).to_string())?;
                     process.send_response(sender.clone(), request_id).await?;
                     println!("Properties response sent successfully");
                 }
-                property::difficulty => {
+                property::Difficulty => {
                     let current = process.get_property("difficulty")?;
                     let new_difficulty = match current {
                         "peaceful" => "easy",
@@ -78,28 +70,28 @@ where
                     process.set("difficulty", new_difficulty)?;
                     process.send_response(sender.clone(), request_id).await?;
                 }
-                property::hardcore => {
+                property::Hardcore => {
                     let current = process.get_property("hardcore")?.parse::<bool>()?;
 
                     process.set("hardcore", &(!current).to_string())?;
                     process.send_response(sender.clone(), request_id).await?;
                     println!("Properties response sent successfully");
                 }
-                property::whitelist => {
+                property::Whitelist => {
                     let current = process.get_property("white-list")?.parse::<bool>()?;
 
                     process.set("white-list", &(!current).to_string())?;
                     process.send_response(sender.clone(), request_id).await?;
                     println!("Properties response sent successfully");
                 }
-                property::pvp => {
+                property::PVP => {
                     let current = process.get_property("pvp")?.parse::<bool>()?;
 
                     process.set("pvp", &(!current).to_string())?;
                     process.send_response(sender.clone(), request_id).await?;
                     println!("Properties response sent successfully");
                 }
-                property::generate_structures => {
+                property::GenerateStructures => {
                     let current = process
                         .get_property("generate-structures")?
                         .parse::<bool>()?;
@@ -108,7 +100,7 @@ where
                     process.send_response(sender.clone(), request_id).await?;
                     println!("Properties response sent successfully");
                 }
-                property::gamemode => {
+                property::Gamemode => {
                     let current = process.get_property("gamemode")?;
                     let new_gamemode = match current {
                         "survival" => "creative",
@@ -120,62 +112,59 @@ where
                     process.set("gamemode", new_gamemode)?;
                     process.send_response(sender.clone(), request_id).await?;
                 }
-                property::motd(data) => {
+                property::MOTD(data) => {
                     process.set("motd", &data)?;
                     process.send_response(sender.clone(), request_id).await?;
                 }
-                property::max_players(data) => {
+                property::MaxPlayers(data) => {
                     process.set("max-players", &data.to_string())?;
                     process.send_response(sender.clone(), request_id).await?;
                 }
-                property::max_world_size(data) => {
+                property::MaxWorldSize(data) => {
                     process.set("max-world-size", &data.to_string())?;
                     process.send_response(sender.clone(), request_id).await?;
                 }
-                property::allow_nether => {
+                property::AllowNether => {
                     let current = process.get_property("allow-nether")?.parse::<bool>()?;
 
                     process.set("allow-nether", &(!current).to_string())?;
                     process.send_response(sender.clone(), request_id).await?;
                     println!("Properties response sent successfully");
                 }
-                property::spawn_npcs => {
+                property::SpawnNPC => {
                     let current = process.get_property("spawn-npcs")?.parse::<bool>()?;
 
                     process.set("spawn-npcs", &(!current).to_string())?;
                     process.send_response(sender.clone(), request_id).await?;
                     println!("Properties response sent successfully");
                 }
-                property::spawn_animals => {
+                property::SpawnAnimals => {
                     let current = process.get_property("spawn-animals")?.parse::<bool>()?;
 
                     process.set("spawn-animals", &(!current).to_string())?;
                     process.send_response(sender.clone(), request_id).await?;
                     println!("Properties response sent successfully");
                 }
-                property::spawn_monsters => {
+                property::SpawnMonsters => {
                     let current = process.get_property("spawn-monsters")?.parse::<bool>()?;
 
                     process.set("spawn-monsters", &(!current).to_string())?;
                     process.send_response(sender.clone(), request_id).await?;
                     println!("Properties response sent successfully");
                 }
-                property::view_distance(data) => {
+                property::ViewDistance(data) => {
                     process.set("view-distance", &data.to_string())?;
                     process.send_response(sender.clone(), request_id).await?;
                 }
-                property::simulation_distance(data) => {
+                property::SimulationDistance(data) => {
                     process.set("simulation-distance", &data.to_string())?;
                     process.send_response(sender.clone(), request_id).await?;
                 }
-                property::spawn_protection(data) => {
+                property::SpawnProtection(data) => {
                     process.set("spawn-protection", &data.to_string())?;
                     process.send_response(sender.clone(), request_id).await?;
                 }
             },
-            _ => {
-                println!("Received unhandled action:");
-            }
         }
     }
     Ok(())

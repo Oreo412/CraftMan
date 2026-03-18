@@ -38,7 +38,7 @@ impl Agent {
         let (sender, receiver) = oneshot::channel::<OneshotResponses>();
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);
-        let message = AgentActions::request_props(request_id);
+        let message = AgentActions::RequestProps(request_id);
         self.send_message(message).await?;
         if let Ok(OneshotResponses::PropsResponse(props)) = receiver.await {
             Ok(props)
@@ -58,7 +58,7 @@ impl Agent {
         let (sender, receiver) = oneshot::channel::<OneshotResponses>();
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);
-        self.send_message(AgentActions::edit_prop(request_id, prop))
+        self.send_message(AgentActions::EditProp(request_id, prop))
             .await?;
         if let Ok(OneshotResponses::PropsResponse(props)) = receiver.await {
             Ok(props)
@@ -72,7 +72,7 @@ impl Agent {
         options: HashSet<String>,
         message_id: u64,
         channel_id: u64,
-    ) -> Result<(String, Vec<u8>, ServerStatus)> {
+    ) -> Result<(String, Option<Vec<u8>>, ServerStatus)> {
         let (sender, receiver) = oneshot::channel::<OneshotResponses>();
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);

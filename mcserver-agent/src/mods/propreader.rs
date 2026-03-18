@@ -59,7 +59,7 @@ impl ServerProperties {
     }
     pub async fn send_update(&mut self, sender: UnboundedSender<Message>) -> Result<()> {
         sender.send(Message::Text(
-            serde_json::to_string(&ServerActions::props_update(self.properties.clone()))
+            serde_json::to_string(&ServerActions::PropsUpdate(self.properties.clone()))
                 .unwrap()
                 .into(),
         ))?;

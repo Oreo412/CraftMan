@@ -32,6 +32,8 @@ use twilight_util::builder::message::{
     ThumbnailBuilder,
 };
 
+static DEFAULT_ICON: &[u8] = include_bytes!("../../../assets/default_icon.png");
+
 pub async fn builder_modal(
     client: &twilight_http::Client,
     serenity_interaction: serenity::model::application::CommandInteraction,
@@ -112,7 +114,11 @@ pub async fn build_view(
     let (description, image, status) = agent
         .start_query(options, message_id.get(), channel_id.get())
         .await?;
-    let mut attachment = Attachment::from_bytes("server_icon.png".to_string(), image, 1);
+    let mut attachment = Attachment::from_bytes(
+        "server_icon.png".to_string(),
+        image.unwrap_or(DEFAULT_ICON.to_vec()),
+        1,
+    );
     attachment.description("Server Favicon".to_string());
     let mediaitem = UnfurledMediaItem {
         url: "attachment://server_icon.png".to_string(),
@@ -129,7 +135,12 @@ pub async fn build_view(
     let header = SectionBuilder::new(thumbnail)
         .component(displaytext)
         .build();
-    let mut components = vec![header.into()];
+    let statustext = if status == ServerStatus::ServerOffline {
+        TextDisplayBuilder::new("🔴 **Offline**").build()
+    } else {
+        TextDisplayBuilder::new("🟢 **Online**").build()
+    };
+    let mut components = vec![statustext.into(), header.into()];
 
     if let ServerStatus::ServerOnline(query) = status {
         components.append(&mut build_monitor_display(query)?);
@@ -137,10 +148,15 @@ pub async fn build_view(
             .update_response(&serenity_interaction.token)
             .components(Some(&components))
             .flags(MessageFlags::IS_COMPONENTS_V2)
-            .attachments(&vec![attachment])
+            .attachments(&[attachment])
             .await?;
     } else {
-        bail!("TODO: Handle if server is online.") // TODO
+        interaction_client
+            .update_response(&serenity_interaction.token)
+            .components(Some(&components))
+            .flags(MessageFlags::IS_COMPONENTS_V2)
+            .attachments(&[attachment])
+            .await?;
     }
     Ok(())
 }
