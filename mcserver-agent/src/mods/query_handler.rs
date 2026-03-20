@@ -58,7 +58,23 @@ impl QueryHandler {
         sender: UnboundedSender<Message>,
         request_id: Uuid,
     ) -> Result<()> {
-        let status = self.ping().await?;
+        let status: JavaStatus = match self.ping().await {
+            Ok(status) => status,
+            Err(_) => {
+                sender.send(Message::Text(
+                    serde_json::to_string(&ServerActions::QueryResponse(
+                        request_id,
+                        "A minecraft server".to_string(),
+                        None,
+                        ServerStatus::ServerOffline,
+                    ))?
+                    .into(),
+                ))?;
+                self.last_status = Some(ServerStatus::ServerOffline);
+
+                return Ok(());
+            }
+        };
         let image_base64 = &status.favicon;
 
         let description = &status.description;
@@ -94,6 +110,31 @@ impl QueryHandler {
 
     pub async fn update(&mut self, sender: UnboundedSender<Message>) -> Result<()> {
         let server_status = if let Ok(status) = self.ping().await {
+            if self.last_status == Some(ServerStatus::ServerOffline) {
+                let image_base64 = &status.favicon;
+
+                let mut image = None;
+                println!("Boutta try to decode the image");
+                if let Some(image_data) = image_base64 {
+                    image = Some(
+                        STANDARD.decode(
+                            image_data
+                                .strip_prefix("data:image/png;base64,")
+                                .ok_or_else(|| anyhow!("Couldn't strip prefix :("))?,
+                        )?,
+                    );
+                }
+                sender.send(Message::Text(
+                    serde_json::to_string(&ServerActions::UpdateQueryHeader(
+                        self.message_id,
+                        self.channel_id,
+                        status.description.clone(),
+                        image,
+                    ))?
+                    .into(),
+                ))?;
+            }
+
             ServerStatus::ServerOnline(self.query_builder(status))
         } else {
             ServerStatus::ServerOffline

@@ -1,5 +1,5 @@
 use crate::mods::agents::Agent;
-use crate::mods::bot::create_monitor::update_monitor;
+use crate::mods::bot::create_monitor::{update_header, update_monitor};
 use axum::Error;
 use axum::extract::ws::Message;
 use futures_util::Stream;
@@ -25,47 +25,53 @@ pub async fn listen<R>(
     R: Stream<Item = Result<Message, Error>> + Unpin,
 {
     while let Some(msg) = receiver.next().await {
-        if let Message::Text(text) = msg.unwrap() {
-            if let Ok(message) = serde_json::from_str::<ServerActions>(text.as_str()) {
-                match message {
-                    ServerActions::PropsResponse(id, props) => {
-                        let something = agent.pending_requests.remove(&id);
-                        if let Some((_id, sender)) = something {
-                            if let Err(e) = sender.send(OneshotResponses::PropsResponse(props)) {
-                                println!("Error sending properties to pending request: {}", id);
-                            } else {
-                                println!("Properties sent to pending request successfully");
-                            }
+        if let Message::Text(text) = msg.unwrap()
+            && let Ok(message) = serde_json::from_str::<ServerActions>(text.as_str())
+        {
+            match message {
+                ServerActions::PropsResponse(id, props) => {
+                    let something = agent.pending_requests.remove(&id);
+                    if let Some((_id, sender)) = something {
+                        if let Err(e) = sender.send(OneshotResponses::PropsResponse(props)) {
+                            println!("Error sending properties to pending request: {}", id);
                         } else {
-                            println!("No pending request found for ID: {}", id);
+                            println!("Properties sent to pending request successfully");
                         }
+                    } else {
+                        println!("No pending request found for ID: {}", id);
                     }
-                    ServerActions::QueryResponse(id, description, image, query) => {
-                        let something = agent.pending_requests.remove(&id);
-                        if let Some((_id, sender)) = something {
-                            if let Err(e) = sender.send(OneshotResponses::QueryResponse(
-                                description,
-                                image,
-                                query,
-                            )) {
-                                println!("Error sending queryresponse to pending request: {}", id);
-                            } else {
-                                println!("response sent to pending request successfully");
-                            }
-                        } else {
-                            println!("No pending request found for ID: {}", id);
-                        }
-                    }
-                    ServerActions::UpdateQuery(message_id, channel_id, status) => {
+                }
+                ServerActions::QueryResponse(id, description, image, query) => {
+                    let something = agent.pending_requests.remove(&id);
+                    if let Some((_id, sender)) = something {
                         if let Err(e) =
-                            update_monitor(message_id, channel_id, status, &twilight_client).await
+                            sender.send(OneshotResponses::QueryResponse(description, image, query))
                         {
-                            println!("Error updating monitor: {}", e);
+                            println!("Error sending queryresponse to pending request: {}", id);
+                        } else {
+                            println!("response sent to pending request successfully");
                         }
+                    } else {
+                        println!("No pending request found for ID: {}", id);
                     }
-                    _ => {
-                        println!("Received unhandled action:");
+                }
+                ServerActions::UpdateQuery(message_id, channel_id, status) => {
+                    if let Err(e) =
+                        update_monitor(message_id, channel_id, status, &twilight_client).await
+                    {
+                        println!("Error updating monitor: {}", e);
                     }
+                }
+                ServerActions::UpdateQueryHeader(message_id, channel_id, description, image) => {
+                    if let Err(e) =
+                        update_header(message_id, channel_id, description, image, &twilight_client)
+                            .await
+                    {
+                        println!("Error updating header: {}", e)
+                    }
+                }
+                _ => {
+                    println!("Received unhandled action:");
                 }
             }
         }

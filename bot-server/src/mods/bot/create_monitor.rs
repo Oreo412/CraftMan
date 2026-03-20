@@ -234,7 +234,7 @@ pub async fn update_monitor(
             .await?
             .model()
             .await?;
-        let mut components = vec![message.components[0].clone()];
+        let mut components = vec![message.components[0].clone(), message.components[1].clone()];
         components.append(&mut build_monitor_display(query)?);
 
         client
@@ -324,4 +324,48 @@ pub fn build_monitor_display(query: QueryStatus) -> Result<Vec<Component>> {
     }
 
     Ok(components)
+}
+
+pub async fn update_header(
+    message_id: u64,
+    channel_id: u64,
+    description: String,
+    image: Option<Vec<u8>>,
+    client: &twilight_http::Client,
+) -> Result<()> {
+    let message_id: Id<MessageMarker> = Id::new(message_id);
+    let channel_id: Id<ChannelMarker> = Id::new(channel_id);
+    let message = client
+        .message(channel_id, message_id)
+        .await?
+        .model()
+        .await?;
+    let mut attachment = Attachment::from_bytes(
+        "server_icon.png".to_string(),
+        image.unwrap_or(DEFAULT_ICON.to_vec()),
+        1,
+    );
+    attachment.description("Server Favicon".to_string());
+    let mediaitem = UnfurledMediaItem {
+        url: "attachment://server_icon.png".to_string(),
+        proxy_url: None,
+        height: None,
+        width: None,
+        content_type: None,
+    };
+    let displaytext = TextDisplay {
+        id: None,
+        content: format!("# Message Of The Day:\n{}", description),
+    };
+    let thumbnail = ThumbnailBuilder::new(mediaitem).build();
+    let header = SectionBuilder::new(thumbnail)
+        .component(displaytext)
+        .build();
+    let mut components = message.components;
+    components[1] = header.into();
+    client
+        .update_message(channel_id, message_id)
+        .components(Some(&components))
+        .await?;
+    Ok(())
 }

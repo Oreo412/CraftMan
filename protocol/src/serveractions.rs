@@ -7,8 +7,10 @@ use uuid::Uuid;
 pub enum ServerActions {
     PropsUpdate(HashMap<String, String>),
     PropsResponse(Uuid, HashMap<String, String>),
-    QueryResponse(Uuid, String, Option<Vec<u8>>, ServerStatus),
-    UpdateQuery(u64, u64, ServerStatus),
+    QueryResponse(Uuid, String, Option<Vec<u8>>, ServerStatus), //description, image
+    UpdateQuery(u64, u64, ServerStatus),                        //channel id, message id
+    UpdateQueryHeader(u64, u64, String, Option<Vec<u8>>), //channel_id, message_id, description,
+                                                          //image
 }
 
 pub enum OneshotResponses {
