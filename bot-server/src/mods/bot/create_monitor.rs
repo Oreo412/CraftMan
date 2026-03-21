@@ -114,14 +114,12 @@ pub async fn build_view(
     let (description, image, status) = agent
         .start_query(options, message_id.get(), channel_id.get())
         .await?;
-    let mut attachment = Attachment::from_bytes(
-        "server_icon.png".to_string(),
-        image.unwrap_or(DEFAULT_ICON.to_vec()),
-        1,
-    );
+    let filename = format!("{}.png", uuid::Uuid::new_v4());
+    let mut attachment =
+        Attachment::from_bytes(filename.clone(), image.unwrap_or(DEFAULT_ICON.to_vec()), 1);
     attachment.description("Server Favicon".to_string());
     let mediaitem = UnfurledMediaItem {
-        url: "attachment://server_icon.png".to_string(),
+        url: format!("attachment://{}", filename),
         proxy_url: None,
         height: None,
         width: None,
@@ -361,14 +359,18 @@ pub async fn update_header(
         .await?
         .model()
         .await?;
-    let mut attachment = Attachment::from_bytes(
-        "server_icon.png".to_string(),
-        image.unwrap_or(DEFAULT_ICON.to_vec()),
-        1,
-    );
+    let icon = if let Some(i) = image {
+        println!("Using server image");
+        i
+    } else {
+        println!("Using default image");
+        DEFAULT_ICON.to_vec()
+    };
+    let filename = format!("{}.png", uuid::Uuid::new_v4());
+    let mut attachment = Attachment::from_bytes(filename.clone(), icon, 1);
     attachment.description("Server Favicon".to_string());
     let mediaitem = UnfurledMediaItem {
-        url: "attachment://server_icon.png".to_string(),
+        url: format!("attachment://{}", filename),
         proxy_url: None,
         height: None,
         width: None,
@@ -387,6 +389,7 @@ pub async fn update_header(
     client
         .update_message(channel_id, message_id)
         .components(Some(&components))
+        .attachments(&[attachment])
         .await?;
     Ok(())
 }

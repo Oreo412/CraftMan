@@ -151,6 +151,7 @@ impl ServerProcess {
         sender: UnboundedSender<Message>,
         request_id: Uuid,
     ) -> Result<()> {
+        self.update_properties();
         let Some(props) = &self.properties else {
             bail!("No properties for this server");
         };
