@@ -140,6 +140,20 @@ impl QueryHandler {
             ServerStatus::ServerOffline
         };
 
+        println!(
+            "Current Status: {} \nLast Status: {}",
+            if server_status == ServerStatus::ServerOffline {
+                "Offline"
+            } else {
+                "Online"
+            },
+            if self.last_status.clone().unwrap() == ServerStatus::ServerOffline {
+                "Offline"
+            } else {
+                "Online"
+            }
+        );
+
         if self.last_status.is_none() || (&server_status != self.last_status.as_ref().unwrap()) {
             sender.send(Message::Text(
                 serde_json::to_string(&ServerActions::UpdateQuery(
@@ -168,12 +182,11 @@ impl QueryHandler {
                 .set_player_count(format!("{}/{}", status.players.online, status.players.max));
         }
 
-        if self.options.player_list() {
-            if let Some(players) = status.players.sample {
-                println!("set player list");
-                query_response
-                    .set_player_list(players.into_iter().map(|player| player.name).collect())
-            }
+        if self.options.player_list()
+            && let Some(players) = status.players.sample
+        {
+            println!("set player list");
+            query_response.set_player_list(players.into_iter().map(|player| player.name).collect())
         }
 
         if self.options.map() {

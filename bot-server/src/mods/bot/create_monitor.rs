@@ -136,6 +136,7 @@ pub async fn build_view(
         .component(displaytext)
         .build();
     let statustext = if status == ServerStatus::ServerOffline {
+        println!("Should be setting to offline");
         TextDisplayBuilder::new("🔴 **Offline**").build()
     } else {
         TextDisplayBuilder::new("🟢 **Online**").build()
@@ -234,8 +235,28 @@ pub async fn update_monitor(
             .await?
             .model()
             .await?;
-        let mut components = vec![message.components[0].clone(), message.components[1].clone()];
+        let mut components = vec![
+            TextDisplayBuilder::new("🟢 **Online**").build().into(),
+            message.components[1].clone(),
+        ];
         components.append(&mut build_monitor_display(query)?);
+
+        client
+            .update_message(channel_id, message_id)
+            .components(Some(&components))
+            .await?;
+    } else {
+        let message_id: Id<MessageMarker> = Id::new(message_id);
+        let channel_id: Id<ChannelMarker> = Id::new(channel_id);
+        let message = client
+            .message(channel_id, message_id)
+            .await?
+            .model()
+            .await?;
+        let components = vec![
+            TextDisplayBuilder::new("🔴 **Offline**").build().into(),
+            message.components[1].clone(),
+        ];
 
         client
             .update_message(channel_id, message_id)

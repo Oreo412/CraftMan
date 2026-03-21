@@ -56,6 +56,7 @@ pub async fn listen<R>(
                     }
                 }
                 ServerActions::UpdateQuery(message_id, channel_id, status) => {
+                    println!("Updating query");
                     if let Err(e) =
                         update_monitor(message_id, channel_id, status, &twilight_client).await
                     {
@@ -63,6 +64,7 @@ pub async fn listen<R>(
                     }
                 }
                 ServerActions::UpdateQueryHeader(message_id, channel_id, description, image) => {
+                    println!("Updating query header");
                     if let Err(e) =
                         update_header(message_id, channel_id, description, image, &twilight_client)
                             .await

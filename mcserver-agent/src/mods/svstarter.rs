@@ -119,17 +119,16 @@ impl ServerProcess {
         Ok(self
             .properties
             .as_mut()
-            .ok_or_else(|| anyhow::anyhow!("Properties not found"))?
+            .ok_or_else(|| anyhow!("Properties not found"))?
             .get(property)
-            .ok_or_else(|| anyhow::anyhow!("{} not found in properties", property))?)
+            .ok_or_else(|| anyhow!("{} not found in properties", property))?)
     }
 
     pub fn set(&mut self, property: &str, value: &str) -> Result<()> {
-        Ok(self
-            .properties
+        self.properties
             .as_mut()
-            .ok_or_else(|| anyhow::anyhow!("Properties not found"))?
-            .set(property, value)?)
+            .ok_or_else(|| anyhow!("Properties not found"))?
+            .set(property, value)
     }
     pub async fn send_response(
         &mut self,
@@ -138,7 +137,7 @@ impl ServerProcess {
     ) -> Result<()> {
         self.properties
             .as_mut()
-            .ok_or_else(|| anyhow::anyhow!("Properties not found"))?
+            .ok_or_else(|| anyhow!("Properties not found"))?
             .send_response(sender, uuid)
             .await?;
         Ok(())
@@ -186,10 +185,10 @@ async fn query_loop(
     mut receiver: oneshot::Receiver<()>,
     sender: UnboundedSender<Message>,
 ) -> Result<()> {
-    println!("Updating???");
-    let mut interval = time::interval(Duration::from_secs(60));
+    let mut interval = time::interval(Duration::from_secs(10));
 
     loop {
+        println!("Updating???");
         tokio::select! {
             _ = interval.tick() => {
                 if let Err(e) = query_handler.update(sender.clone()).await {
@@ -203,6 +202,7 @@ async fn query_loop(
             }
         }
     }
+    println!("Exiting update loop");
 
     Ok(())
 }
