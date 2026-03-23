@@ -60,6 +60,7 @@ impl EventHandler for Handler {
                     stopserver::register(),
                     settingsview::register(),
                     create_monitor::register(),
+                    chat_channel::register(),
                 ],
             )
             .await;
@@ -178,6 +179,18 @@ impl Handler {
                         .await
                         {
                             println!("issue: {}", e);
+                        }
+                        Ok(())
+                    }
+                    "set_chat" => {
+                        if let Err(e) = crate::bot::chat_channel::set_chat_channel(
+                            &ctx,
+                            &command,
+                            &self.app_state,
+                        )
+                        .await
+                        {
+                            println!("Error setting chat: {}", e);
                         }
                         Ok(())
                     }

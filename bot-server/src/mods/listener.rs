@@ -15,6 +15,7 @@ use tokio::{
     sync::RwLock,
 };
 use tokio_tungstenite::connect_async;
+use twilight_model::id::Id;
 use uuid::Uuid;
 
 pub async fn listen<R>(
@@ -84,6 +85,15 @@ pub async fn listen<R>(
                             .await
                     {
                         println!("Error updating header: {}", e)
+                    }
+                }
+                ServerActions::NewMessage(channel_id, message) => {
+                    if let Err(e) = twilight_client
+                        .create_message(Id::new(channel_id))
+                        .content(&message)
+                        .await
+                    {
+                        println!("Error sending chat message: {}", e);
                     }
                 }
                 _ => {

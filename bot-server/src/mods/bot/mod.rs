@@ -1,5 +1,6 @@
 pub mod bot_handler;
 pub mod bot_start;
+pub mod chat_channel;
 pub mod create_monitor;
 pub mod props_modals;
 pub mod send_ws;
