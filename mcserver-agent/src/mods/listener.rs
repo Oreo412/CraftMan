@@ -26,9 +26,10 @@ where
             }
             AgentActions::SvStart => {
                 process.start_server()?;
+                process.stdio_reader(sender.clone()).await?;
             }
             AgentActions::SvStop => {
-                process.stop_server()?;
+                process.stop_server().await?;
             }
             AgentActions::StartQuery(request_id, options, message_id, channel_id) => {
                 println!("Received query");
@@ -50,121 +51,114 @@ where
                 props.send_response(sender.clone(), request_id).await?;
                 println!("Properties response sent successfully");
             }
-            AgentActions::EditProp(request_id, prop) => match prop {
-                property::AllowFlight => {
-                    let current = process.get_property("allow-flight")?.parse::<bool>()?;
+            AgentActions::EditProp(request_id, prop) => {
+                match prop {
+                    property::AllowFlight => {
+                        let current = process.get_property("allow-flight")?.parse::<bool>()?;
 
-                    process.set("allow-flight", &(!current).to_string())?;
-                    process.send_response(sender.clone(), request_id).await?;
-                    println!("Properties response sent successfully");
-                }
-                property::Difficulty => {
-                    let current = process.get_property("difficulty")?;
-                    let new_difficulty = match current {
-                        "peaceful" => "easy",
-                        "easy" => "normal",
-                        "normal" => "hard",
-                        "hard" => "peaceful",
-                        _ => "easy",
-                    };
-                    process.set("difficulty", new_difficulty)?;
-                    process.send_response(sender.clone(), request_id).await?;
-                }
-                property::Hardcore => {
-                    let current = process.get_property("hardcore")?.parse::<bool>()?;
+                        process.set("allow-flight", &(!current).to_string())?;
+                        println!("Properties response sent successfully");
+                    }
+                    property::Difficulty => {
+                        let current = process.get_property("difficulty")?;
+                        let new_difficulty = match current {
+                            "peaceful" => "easy",
+                            "easy" => "normal",
+                            "normal" => "hard",
+                            "hard" => "peaceful",
+                            _ => "easy",
+                        };
+                        process.set("difficulty", new_difficulty)?;
+                    }
+                    property::Hardcore => {
+                        let current = process.get_property("hardcore")?.parse::<bool>()?;
 
-                    process.set("hardcore", &(!current).to_string())?;
-                    process.send_response(sender.clone(), request_id).await?;
-                    println!("Properties response sent successfully");
-                }
-                property::Whitelist => {
-                    let current = process.get_property("white-list")?.parse::<bool>()?;
+                        process.set("hardcore", &(!current).to_string())?;
+                        println!("Properties response sent successfully");
+                    }
+                    property::Whitelist => {
+                        let current = process.get_property("white-list")?.parse::<bool>()?;
 
-                    process.set("white-list", &(!current).to_string())?;
-                    process.send_response(sender.clone(), request_id).await?;
-                    println!("Properties response sent successfully");
-                }
-                property::PVP => {
-                    let current = process.get_property("pvp")?.parse::<bool>()?;
+                        process.set("white-list", &(!current).to_string())?;
+                        println!("Properties response sent successfully");
+                    }
+                    property::PVP => {
+                        let current = process.get_property("pvp")?.parse::<bool>()?;
 
-                    process.set("pvp", &(!current).to_string())?;
-                    process.send_response(sender.clone(), request_id).await?;
-                    println!("Properties response sent successfully");
-                }
-                property::GenerateStructures => {
-                    let current = process
-                        .get_property("generate-structures")?
-                        .parse::<bool>()?;
+                        process.set("pvp", &(!current).to_string())?;
+                        println!("Properties response sent successfully");
+                    }
+                    property::GenerateStructures => {
+                        let current = process
+                            .get_property("generate-structures")?
+                            .parse::<bool>()?;
 
-                    process.set("generate-structures", &(!current).to_string())?;
-                    process.send_response(sender.clone(), request_id).await?;
-                    println!("Properties response sent successfully");
-                }
-                property::Gamemode => {
-                    let current = process.get_property("gamemode")?;
-                    let new_gamemode = match current {
-                        "survival" => "creative",
-                        "creative" => "adventure",
-                        "adventure" => "spectator",
-                        "spectator" => "survival",
-                        _ => "survival",
-                    };
-                    process.set("gamemode", new_gamemode)?;
-                    process.send_response(sender.clone(), request_id).await?;
-                }
-                property::MOTD(data) => {
-                    process.set("motd", &data)?;
-                    process.send_response(sender.clone(), request_id).await?;
-                }
-                property::MaxPlayers(data) => {
-                    process.set("max-players", &data.to_string())?;
-                    process.send_response(sender.clone(), request_id).await?;
-                }
-                property::MaxWorldSize(data) => {
-                    process.set("max-world-size", &data.to_string())?;
-                    process.send_response(sender.clone(), request_id).await?;
-                }
-                property::AllowNether => {
-                    let current = process.get_property("allow-nether")?.parse::<bool>()?;
+                        process.set("generate-structures", &(!current).to_string())?;
+                        println!("Properties response sent successfully");
+                    }
+                    property::Gamemode => {
+                        let current = process.get_property("gamemode")?;
+                        let new_gamemode = match current {
+                            "survival" => "creative",
+                            "creative" => "adventure",
+                            "adventure" => "spectator",
+                            "spectator" => "survival",
+                            _ => "survival",
+                        };
+                        process.set("gamemode", new_gamemode)?;
+                    }
+                    property::MOTD(data) => {
+                        process.set("motd", &data)?;
+                    }
+                    property::MaxPlayers(data) => {
+                        process.set("max-players", &data.to_string())?;
+                    }
+                    property::MaxWorldSize(data) => {
+                        process.set("max-world-size", &data.to_string())?;
+                    }
+                    property::AllowNether => {
+                        let current = process.get_property("allow-nether")?.parse::<bool>()?;
 
-                    process.set("allow-nether", &(!current).to_string())?;
-                    process.send_response(sender.clone(), request_id).await?;
-                    println!("Properties response sent successfully");
-                }
-                property::SpawnNPC => {
-                    let current = process.get_property("spawn-npcs")?.parse::<bool>()?;
+                        process.set("allow-nether", &(!current).to_string())?;
+                        println!("Properties response sent successfully");
+                    }
+                    property::SpawnNPC => {
+                        let current = process.get_property("spawn-npcs")?.parse::<bool>()?;
 
-                    process.set("spawn-npcs", &(!current).to_string())?;
-                    process.send_response(sender.clone(), request_id).await?;
-                    println!("Properties response sent successfully");
-                }
-                property::SpawnAnimals => {
-                    let current = process.get_property("spawn-animals")?.parse::<bool>()?;
+                        process.set("spawn-npcs", &(!current).to_string())?;
+                        println!("Properties response sent successfully");
+                    }
+                    property::SpawnAnimals => {
+                        let current = process.get_property("spawn-animals")?.parse::<bool>()?;
 
-                    process.set("spawn-animals", &(!current).to_string())?;
-                    process.send_response(sender.clone(), request_id).await?;
-                    println!("Properties response sent successfully");
-                }
-                property::SpawnMonsters => {
-                    let current = process.get_property("spawn-monsters")?.parse::<bool>()?;
+                        process.set("spawn-animals", &(!current).to_string())?;
+                        println!("Properties response sent successfully");
+                    }
+                    property::SpawnMonsters => {
+                        let current = process.get_property("spawn-monsters")?.parse::<bool>()?;
 
-                    process.set("spawn-monsters", &(!current).to_string())?;
-                    process.send_response(sender.clone(), request_id).await?;
-                    println!("Properties response sent successfully");
+                        process.set("spawn-monsters", &(!current).to_string())?;
+                        println!("Properties response sent successfully");
+                    }
+                    property::ViewDistance(data) => {
+                        process.set("view-distance", &data.to_string())?;
+                    }
+                    property::SimulationDistance(data) => {
+                        process.set("simulation-distance", &data.to_string())?;
+                    }
+                    property::SpawnProtection(data) => {
+                        process.set("spawn-protection", &data.to_string())?;
+                    }
                 }
-                property::ViewDistance(data) => {
-                    process.set("view-distance", &data.to_string())?;
-                    process.send_response(sender.clone(), request_id).await?;
-                }
-                property::SimulationDistance(data) => {
-                    process.set("simulation-distance", &data.to_string())?;
-                    process.send_response(sender.clone(), request_id).await?;
-                }
-                property::SpawnProtection(data) => {
-                    process.set("spawn-protection", &data.to_string())?;
-                    process.send_response(sender.clone(), request_id).await?;
-                }
-            },
+
+                process
+                    .send_properties_response(sender.clone(), request_id)
+                    .await?;
+            }
+            AgentActions::SetChatChannel(channel_id) => {
+                process.channel(Some(channel_id)).await;
+                process.stdio_reader(sender.clone()).await?;
+            }
         }
     }
     Ok(())

@@ -62,12 +62,12 @@ impl QueryHandler {
             Ok(status) => status,
             Err(_) => {
                 sender.send(Message::Text(
-                    serde_json::to_string(&ServerActions::QueryResponse(
-                        request_id,
-                        "A minecraft server".to_string(),
-                        None,
-                        ServerStatus::ServerOffline,
-                    ))?
+                    serde_json::to_string(&ServerActions::QueryResponse {
+                        uuid: request_id,
+                        description: "A minecraft server".to_string(),
+                        image: None,
+                        status: ServerStatus::ServerOffline,
+                    })?
                     .into(),
                 ))?;
                 self.last_status = Some(ServerStatus::ServerOffline);
@@ -97,12 +97,12 @@ impl QueryHandler {
         self.last_status = Some(ServerStatus::ServerOnline(query_response.clone()));
 
         sender.send(Message::Text(
-            serde_json::to_string(&ServerActions::QueryResponse(
-                request_id,
-                description.to_string(),
+            serde_json::to_string(&ServerActions::QueryResponse {
+                uuid: request_id,
+                description: description.to_string(),
                 image,
-                ServerStatus::ServerOnline(query_response),
-            ))?
+                status: ServerStatus::ServerOnline(query_response),
+            })?
             .into(),
         ))?;
         Ok(())
@@ -125,16 +125,15 @@ impl QueryHandler {
                     );
                 }
                 sender.send(Message::Text(
-                    serde_json::to_string(&ServerActions::UpdateQueryHeader(
-                        self.message_id,
-                        self.channel_id,
-                        status.description.clone(),
+                    serde_json::to_string(&ServerActions::UpdateQueryHeader {
+                        message_id: self.message_id,
+                        channel_id: self.channel_id,
+                        description: status.description.clone(),
                         image,
-                    ))?
+                    })?
                     .into(),
                 ))?;
             }
-
             ServerStatus::ServerOnline(self.query_builder(status))
         } else {
             ServerStatus::ServerOffline
@@ -156,11 +155,11 @@ impl QueryHandler {
 
         if self.last_status.is_none() || (&server_status != self.last_status.as_ref().unwrap()) {
             sender.send(Message::Text(
-                serde_json::to_string(&ServerActions::UpdateQuery(
-                    self.message_id,
-                    self.channel_id,
-                    server_status.clone(),
-                ))?
+                serde_json::to_string(&ServerActions::UpdateQuery {
+                    message_id: self.message_id,
+                    channel_id: self.channel_id,
+                    status: server_status.clone(),
+                })?
                 .into(),
             ))?;
             self.last_status = Some(server_status);

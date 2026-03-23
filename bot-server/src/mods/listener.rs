@@ -41,7 +41,12 @@ pub async fn listen<R>(
                         println!("No pending request found for ID: {}", id);
                     }
                 }
-                ServerActions::QueryResponse(id, description, image, query) => {
+                ServerActions::QueryResponse {
+                    uuid: id,
+                    description,
+                    image,
+                    status: query,
+                } => {
                     let something = agent.pending_requests.remove(&id);
                     if let Some((_id, sender)) = something {
                         if let Err(e) =
@@ -55,7 +60,11 @@ pub async fn listen<R>(
                         println!("No pending request found for ID: {}", id);
                     }
                 }
-                ServerActions::UpdateQuery(message_id, channel_id, status) => {
+                ServerActions::UpdateQuery {
+                    message_id,
+                    channel_id,
+                    status,
+                } => {
                     println!("Updating query");
                     if let Err(e) =
                         update_monitor(message_id, channel_id, status, &twilight_client).await
@@ -63,7 +72,12 @@ pub async fn listen<R>(
                         println!("Error updating monitor: {}", e);
                     }
                 }
-                ServerActions::UpdateQueryHeader(message_id, channel_id, description, image) => {
+                ServerActions::UpdateQueryHeader {
+                    message_id,
+                    channel_id,
+                    description,
+                    image,
+                } => {
                     println!("Updating query header");
                     if let Err(e) =
                         update_header(message_id, channel_id, description, image, &twilight_client)

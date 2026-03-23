@@ -1,4 +1,5 @@
 pub mod agentactions;
+pub mod chat;
 pub mod properties;
 pub mod query_options;
 pub mod serveractions;

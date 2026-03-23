@@ -61,15 +61,15 @@ fn screen_from_message(message: &serenity::model::channel::Message) -> Option<&S
     let components = &last_row.components;
 
     for component in components {
-        if let ActionRowComponent::Button(button) = component {
-            if button.disabled {
-                return match button.label.as_deref()? {
-                    "World Generation" => Some(&SettingScreen::WorldGeneration),
-                    "Gameplay" => Some(&SettingScreen::Gameplay),
-                    "Admin" => Some(&SettingScreen::Admin),
-                    _ => None,
-                };
-            }
+        if let ActionRowComponent::Button(button) = component
+            && button.disabled
+        {
+            return match button.label.as_deref()? {
+                "World Generation" => Some(&SettingScreen::WorldGeneration),
+                "Gameplay" => Some(&SettingScreen::Gameplay),
+                "Admin" => Some(&SettingScreen::Admin),
+                _ => None,
+            };
         }
     }
 

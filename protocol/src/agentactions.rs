@@ -11,4 +11,5 @@ pub enum AgentActions {
     RequestProps(Uuid),
     EditProp(Uuid, property),
     StartQuery(Uuid, QueryOptions, u64, u64),
+    SetChatChannel(u64),
 }
