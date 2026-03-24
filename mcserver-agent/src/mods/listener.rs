@@ -24,14 +24,19 @@ where
             AgentActions::Message(content) => {
                 println!("Received message action: {}", content);
             }
-            AgentActions::SvStart => {
+            AgentActions::SvStart(id) => {
                 process.start_server()?;
                 process.stdio_reader(sender.clone()).await?;
             }
-            AgentActions::SvStop => {
+            AgentActions::SvStop(id) => {
                 process.stop_server().await?;
             }
-            AgentActions::StartQuery(request_id, options, message_id, channel_id) => {
+            AgentActions::StartQuery {
+                id: request_id,
+                options,
+                message_id,
+                channel_id,
+            } => {
                 println!("Received query");
                 if let Err(e) = process
                     .start_query(message_id, channel_id, options, sender.clone(), request_id)

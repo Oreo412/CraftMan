@@ -9,6 +9,7 @@ use futures_util::{
 };
 use protocol::query_options::QueryStatus;
 use protocol::serveractions::{OneshotResponses, ServerActions};
+use sqlx::PgPool;
 use std::sync::Arc;
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
@@ -22,6 +23,7 @@ pub async fn listen<R>(
     mut receiver: R,
     agent: Arc<Agent>,
     twilight_client: Arc<twilight_http::Client>,
+    dbpool: PgPool,
 ) where
     R: Stream<Item = Result<Message, Error>> + Unpin,
 {

@@ -7,6 +7,14 @@ use serenity::model::application::CommandInteraction;
 use serenity::model::application::*;
 use serenity::prelude::Context;
 use std::error::Error;
+use std::time::Duration;
+use tokio::sync::mpsc::UnboundedReceiver;
+use tokio::time::interval;
+use tokio_tungstenite::tungstenite::buffer;
+use twilight_http::Client;
+use twilight_model::channel::ChannelType;
+use twilight_model::id::Id;
+use twilight_model::id::marker::ChannelMarker;
 
 pub async fn set_chat_channel(
     ctx: &Context,
@@ -42,4 +50,33 @@ pub fn register() -> CreateCommand {
     CreateCommand::new("set_chat")
         .description("Set this channel as your minecraft server chat")
         .add_option(id)
+}
+
+pub async fn chat_loop(
+    channel_id: u64,
+    mut receiver: UnboundedReceiver<String>,
+    client: Client,
+) -> Result<()> {
+    let mut interval = interval(Duration::from_secs(2));
+    let mut buffer: Vec<String> = Vec::new();
+    let channel: Id<ChannelMarker> = Id::new(channel_id);
+    loop {
+        tokio::select! {
+            message = receiver.recv() => {
+                match message {
+                    Some(text) => {
+                        buffer.push(text);
+                    }
+                    None => break
+                }
+            }
+            _ = interval.tick() => {
+                if !buffer.is_empty() {
+                    client.create_message(channel).content(&buffer.join("\n")).await?;
+                    buffer.clear();
+                }
+            }
+        }
+    }
+    Ok(())
 }

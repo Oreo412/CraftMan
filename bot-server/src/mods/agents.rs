@@ -4,6 +4,10 @@ use std::{
     error::Error,
     sync::Arc,
 };
+use twilight_model::id::{
+    Id,
+    marker::{ChannelMarker, MessageMarker},
+};
 
 use anyhow::{Result, bail};
 use dashmap::DashMap;
@@ -13,12 +17,14 @@ use protocol::{
     agentactions::AgentActions,
     query_options::{QueryOptions, QueryStatus, ServerStatus},
 };
-use tokio::sync::{mpsc, oneshot};
+use tokio::sync::{RwLock, mpsc, oneshot};
 use uuid::Uuid;
 pub struct Agent {
     pub id: String,
     pub sender: mpsc::UnboundedSender<Message>,
     pub pending_requests: Arc<DashMap<Uuid, oneshot::Sender<OneshotResponses>>>,
+    chat_channel_cache: RwLock<Cached<Option<Id<ChannelMarker>>>>,
+    query_monitor_cache: RwLock<Cached<Option<(Id<MessageMarker>, Id<ChannelMarker>)>>>,
 }
 
 impl Agent {
@@ -31,6 +37,8 @@ impl Agent {
             id,
             sender,
             pending_requests: Arc::new(DashMap::new()),
+            chat_channel_cache: RwLock::new(Cached::NotCached),
+            query_monitor_cache: RwLock::new(Cached::NotCached),
         }
     }
 
@@ -76,12 +84,12 @@ impl Agent {
         let (sender, receiver) = oneshot::channel::<OneshotResponses>();
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);
-        self.send_message(AgentActions::StartQuery(
-            request_id,
-            QueryOptions::new(options),
+        self.send_message(AgentActions::StartQuery {
+            id: request_id,
+            options: QueryOptions::new(options),
             message_id,
             channel_id,
-        ))
+        })
         .await?;
         if let Ok(OneshotResponses::QueryResponse(description, image_bytes, query)) = receiver.await
         {
@@ -90,4 +98,9 @@ impl Agent {
             bail!("Received incorrect start_query response format!");
         }
     }
+}
+
+enum Cached<T> {
+    NotCached,
+    Cached(T),
 }

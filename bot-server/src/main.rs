@@ -1,25 +1,30 @@
 mod mods;
-use axum::{
-    Router,
-    extract::State,
-    extract::ws::*,
-    response::{IntoResponse, Response},
-    routing::{any, get},
-};
+use axum::{Router, extract::State, extract::ws::*, response::IntoResponse, routing::get};
 use futures_util::{
     sink::SinkExt,
-    stream::{SplitSink, SplitStream, StreamExt},
+    stream::{SplitSink, StreamExt},
 };
-use std::fmt::Display;
-use std::time::Duration;
-use tokio::{sync::mpsc, time::*};
+use sqlx::postgres::PgPoolOptions;
+use std::env;
+use tokio::sync::mpsc;
 
 use crate::mods::*;
 
 #[tokio::main]
 async fn main() {
     // build our application with a single route
-    let app_state = appstate::AppState::new();
+
+    dotenvy::dotenv().ok();
+    let url = env::var("DATABASE_URL").expect("No database url found");
+    let token = env::var("DISCORD_TOKEN").expect("No discord token found");
+    let app_state = appstate::AppState::new(
+        token,
+        PgPoolOptions::new()
+            .max_connections(10)
+            .connect(&url)
+            .await
+            .expect("Could not connect to database"),
+    );
     let app = Router::new()
         .route("/", get(|| async { "Axum all over you!" }))
         .route("/ws", get(handler))
@@ -41,10 +46,10 @@ async fn handler(
     ws.on_upgrade(move |socket| handle_socket(socket, app_state))
 }
 
-async fn handle_socket(mut socket: WebSocket, app_state: appstate::AppState) {
-    let (mut sender, mut receiver) = socket.split();
+async fn handle_socket(socket: WebSocket, app_state: appstate::AppState) {
+    let (sender, mut receiver) = socket.split();
 
-    let (mut c_sender, mut c_receiver) = mpsc::unbounded_channel::<Message>();
+    let (c_sender, c_receiver) = mpsc::unbounded_channel::<Message>();
 
     while let Some(Ok(msg)) = receiver.next().await {
         match msg {
@@ -60,6 +65,7 @@ async fn handle_socket(mut socket: WebSocket, app_state: appstate::AppState) {
                     receiver,
                     app_state.find_connection(&text).await.unwrap(),
                     app_state.twilight_client.clone(),
+                    app_state.dbpool.clone(),
                 ));
                 break;
             }
@@ -72,21 +78,6 @@ async fn handle_socket(mut socket: WebSocket, app_state: appstate::AppState) {
     }
 
     tokio::spawn(write(sender, c_receiver));
-}
-
-async fn read(mut receiver: SplitStream<WebSocket>) {
-    while let Some(Ok(msg)) = receiver.next().await {
-        match msg {
-            Message::Text(text) => {
-                println!("Client says: {}", text);
-            }
-            Message::Close(_) => {
-                println!("Client disconnected");
-                break;
-            }
-            _ => {}
-        }
-    }
 }
 
 async fn write(

@@ -7,6 +7,7 @@ use serenity::model::application::CommandInteraction;
 use serenity::model::application::*;
 use serenity::prelude::Context;
 use std::error::Error;
+use uuid::Uuid;
 
 pub async fn start_mc_server(
     ctx: &Context,
@@ -25,7 +26,10 @@ pub async fn start_mc_server(
         &id.value.as_str().unwrap()
     );
     if let Err(e) = appstate
-        .send_message(id.value.as_str().unwrap().to_string(), AgentActions::SvStop)
+        .send_message(
+            id.value.as_str().unwrap().to_string(),
+            AgentActions::SvStop(Uuid::new_v4()),
+        )
         .await
     {
         println!("Error sending message via websocket: {}", e);

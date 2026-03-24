@@ -7,6 +7,8 @@ use uuid::Uuid;
 pub enum ServerActions {
     PropsUpdate(HashMap<String, String>),
     PropsResponse(Uuid, HashMap<String, String>),
+    StartResponse,
+    StopResponse,
     QueryResponse {
         uuid: Uuid,
         description: String,

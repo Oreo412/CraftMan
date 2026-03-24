@@ -3,6 +3,8 @@ use anyhow::Result;
 use axum::extract::ws::Message;
 use dotenvy;
 use protocol::agentactions::AgentActions;
+use sqlx::PgPool;
+use sqlx::postgres::PgPoolOptions;
 use std::env;
 use std::error::Error;
 use std::{collections::HashMap, sync::Arc};
@@ -13,16 +15,15 @@ use twilight_http::Client;
 pub struct AppState {
     pub connections: Arc<RwLock<HashMap<String, Arc<Agent>>>>,
     pub twilight_client: Arc<Client>,
+    pub dbpool: PgPool,
 }
 
 impl AppState {
-    pub fn new() -> Self {
-        dotenvy::dotenv().ok();
+    pub fn new(token: String, dbpool: PgPool) -> Self {
         AppState {
             connections: Arc::new(RwLock::new(HashMap::new())),
-            twilight_client: Arc::new(Client::new(
-                env::var("DISCORD_TOKEN").expect("Expected a token in the environment"),
-            )),
+            twilight_client: Arc::new(Client::new(token)),
+            dbpool,
         }
     }
 
@@ -36,11 +37,7 @@ impl AppState {
         connections.get(id).cloned()
     }
 
-    pub async fn send_message(
-        &self,
-        id: String,
-        message: AgentActions,
-    ) -> Result<(), Box<dyn Error>> {
+    pub async fn send_message(&self, id: String, message: AgentActions) -> Result<()> {
         print!("Sending message to id: {}", id);
         let agent = self
             .find_connection(&id)

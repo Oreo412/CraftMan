@@ -5,11 +5,16 @@ use uuid::Uuid;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum AgentActions {
-    SvStart,
-    SvStop,
+    SvStart(Uuid),
+    SvStop(Uuid),
     Message(String),
     RequestProps(Uuid),
     EditProp(Uuid, property),
-    StartQuery(Uuid, QueryOptions, u64, u64),
+    StartQuery {
+        id: Uuid,
+        options: QueryOptions,
+        message_id: u64,
+        channel_id: u64,
+    },
     SetChatChannel(u64),
 }
