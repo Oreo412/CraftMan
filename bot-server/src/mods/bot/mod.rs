@@ -1,11 +1,15 @@
 pub mod bot_handler;
 pub mod bot_start;
 pub mod chat_channel;
+pub mod configure_guild;
+pub mod connect_to_server;
 pub mod create_monitor;
 pub mod props_modals;
 pub mod send_ws;
 pub mod settingscreen;
 pub mod settingsview;
 pub mod si2tr;
+pub mod start_chat;
 pub mod startserver;
+pub mod stop_chat;
 pub mod stopserver;

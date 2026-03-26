@@ -12,21 +12,20 @@ use twilight_http::Client;
 use twilight_model::id::Id;
 use twilight_model::id::marker::ChannelMarker;
 
-pub async fn set_chat_channel(interaction: &CommandInteraction, appstate: &AppState) -> Result<()> {
+pub async fn start_chat(
+    interaction: &CommandInteraction,
+    appstate: &AppState,
+    client: Arc<Client>,
+) -> Result<()> {
     let id = interaction
         .guild_id
-        .ok_or_else(|| anyhow!("Interaction outside of guild"))?
+        .ok_or_else(|| anyhow!("Interaction happened outside of guild"))?
         .get();
-
     let agent = appstate.find_connection_by_guild(id)?;
-    agent.set_chat_channel(interaction.channel_id.get()).await?;
-
+    agent.start_chat_loop(client.clone()).await?;
     Ok(())
 }
 
 pub fn register() -> CreateCommand {
-    let id = CreateCommandOption::new(CommandOptionType::String, "name", "Name of socket");
-    CreateCommand::new("set_chat")
-        .description("Set this channel as your minecraft server chat")
-        .add_option(id)
+    CreateCommand::new("startchat").description("Start your minecraft server")
 }

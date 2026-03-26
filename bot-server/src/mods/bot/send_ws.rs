@@ -1,20 +1,13 @@
-use anyhow::Result;
+use anyhow::{Result, anyhow};
 use appstate::AppState;
-use axum::extract::ws::Message;
 use protocol::agentactions::AgentActions;
 use serenity::builder::*;
 use serenity::model::application::CommandInteraction;
 use serenity::model::application::*;
-use serenity::prelude::Context;
-use std::error::Error;
 
 use crate::mods::*;
 
-pub async fn run(
-    ctx: &Context,
-    interaction: &CommandInteraction,
-    appstate: AppState,
-) -> Result<()> {
+pub async fn run(interaction: &CommandInteraction, appstate: AppState) -> Result<()> {
     let message = interaction
         .data
         .options
@@ -22,20 +15,17 @@ pub async fn run(
         .find(|option| option.name == "message")
         .unwrap();
     let id = interaction
-        .data
-        .options
-        .iter()
-        .find(|option| option.name == "name")
-        .unwrap();
-
+        .guild_id
+        .ok_or_else(|| anyhow!("Interaction took place outside of guild"))?
+        .get();
     println!(
         "Sending message '{}' to socket '{}'",
         &message.value.as_str().unwrap(),
-        &id.value.as_str().unwrap()
+        id
     );
     if let Err(e) = appstate
-        .send_message(
-            id.value.as_str().unwrap().to_string(),
+        .send_by_guild(
+            id,
             AgentActions::Message(message.value.as_str().unwrap().to_string()),
         )
         .await

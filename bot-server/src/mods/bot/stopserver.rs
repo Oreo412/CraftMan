@@ -1,35 +1,15 @@
 use crate::appstate::AppState;
 use anyhow::Result;
-use axum::extract::ws::Message;
 use protocol::agentactions::AgentActions;
 use serenity::builder::*;
 use serenity::model::application::CommandInteraction;
 use serenity::model::application::*;
-use serenity::prelude::Context;
-use std::error::Error;
 use uuid::Uuid;
 
-pub async fn start_mc_server(
-    ctx: &Context,
-    interaction: &CommandInteraction,
-    appstate: &AppState,
-) -> Result<()> {
-    let id = interaction
-        .data
-        .options
-        .iter()
-        .find(|option| option.name == "name")
-        .unwrap();
-
-    println!(
-        "Sending stop signal to socket '{}'",
-        &id.value.as_str().unwrap()
-    );
+pub async fn start_mc_server(interaction: &CommandInteraction, appstate: &AppState) -> Result<()> {
+    println!("Sending stop signal to socket '{}'", &interaction.id.get());
     if let Err(e) = appstate
-        .send_message(
-            id.value.as_str().unwrap().to_string(),
-            AgentActions::SvStop(Uuid::new_v4()),
-        )
+        .send_by_guild(interaction.id.get(), AgentActions::SvStop(Uuid::new_v4()))
         .await
     {
         println!("Error sending message via websocket: {}", e);

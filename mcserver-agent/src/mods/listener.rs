@@ -1,6 +1,7 @@
 use futures_util::Stream;
 use futures_util::stream::StreamExt;
 use protocol::agentactions::AgentActions;
+use protocol::serveractions::ServerActions;
 use tokio::sync::mpsc::UnboundedSender;
 use tokio_tungstenite::tungstenite::Error;
 use tokio_tungstenite::tungstenite::protocol::Message;
@@ -8,13 +9,14 @@ use tokio_tungstenite::tungstenite::protocol::Message;
 use anyhow::{Result, anyhow};
 use protocol::properties::property;
 
-use crate::mods::svstarter;
+use crate::mods::server_handler;
 
-pub async fn listen<R>(receiver: &mut R, sender: UnboundedSender<Message>) -> Result<()>
+pub async fn listen<R>(receiver: &mut R, sender: UnboundedSender<ServerActions>) -> Result<()>
 where
     R: Stream<Item = Result<Message, Error>> + Unpin,
 {
-    let mut process = svstarter::ServerProcess::default().dir(String::from("/home/oreo/mcserver/"));
+    let mut handler =
+        server_handler::ServerHandler::default().dir(String::from("/home/oreo/mcserver/"));
     while let Some(msg) = receiver.next().await {
         let Message::Text(text) = msg? else {
             return Ok(());
@@ -25,11 +27,11 @@ where
                 println!("Received message action: {}", content);
             }
             AgentActions::SvStart(id) => {
-                process.start_server()?;
-                process.stdio_reader(sender.clone()).await?;
+                println!("Starting server");
+                handler.start_server(sender.clone())?;
             }
             AgentActions::SvStop(id) => {
-                process.stop_server().await?;
+                handler.stop_server().await?;
             }
             AgentActions::StartQuery {
                 id: request_id,
@@ -38,7 +40,7 @@ where
                 channel_id,
             } => {
                 println!("Received query");
-                if let Err(e) = process
+                if let Err(e) = handler
                     .start_query(message_id, channel_id, options, sender.clone(), request_id)
                     .await
                 {
@@ -48,7 +50,7 @@ where
             AgentActions::RequestProps(request_id) => {
                 println!("Received request_props action with ID: {}", request_id);
                 // Here you would gather the properties and send them back to the agent
-                let props = process
+                let props = handler
                     .update_properties()
                     .properties
                     .as_ref()
@@ -59,13 +61,13 @@ where
             AgentActions::EditProp(request_id, prop) => {
                 match prop {
                     property::AllowFlight => {
-                        let current = process.get_property("allow-flight")?.parse::<bool>()?;
+                        let current = handler.get_property("allow-flight")?.parse::<bool>()?;
 
-                        process.set("allow-flight", &(!current).to_string())?;
+                        handler.set("allow-flight", &(!current).to_string())?;
                         println!("Properties response sent successfully");
                     }
                     property::Difficulty => {
-                        let current = process.get_property("difficulty")?;
+                        let current = handler.get_property("difficulty")?;
                         let new_difficulty = match current {
                             "peaceful" => "easy",
                             "easy" => "normal",
@@ -73,36 +75,36 @@ where
                             "hard" => "peaceful",
                             _ => "easy",
                         };
-                        process.set("difficulty", new_difficulty)?;
+                        handler.set("difficulty", new_difficulty)?;
                     }
                     property::Hardcore => {
-                        let current = process.get_property("hardcore")?.parse::<bool>()?;
+                        let current = handler.get_property("hardcore")?.parse::<bool>()?;
 
-                        process.set("hardcore", &(!current).to_string())?;
+                        handler.set("hardcore", &(!current).to_string())?;
                         println!("Properties response sent successfully");
                     }
                     property::Whitelist => {
-                        let current = process.get_property("white-list")?.parse::<bool>()?;
+                        let current = handler.get_property("white-list")?.parse::<bool>()?;
 
-                        process.set("white-list", &(!current).to_string())?;
+                        handler.set("white-list", &(!current).to_string())?;
                         println!("Properties response sent successfully");
                     }
                     property::PVP => {
-                        let current = process.get_property("pvp")?.parse::<bool>()?;
+                        let current = handler.get_property("pvp")?.parse::<bool>()?;
 
-                        process.set("pvp", &(!current).to_string())?;
+                        handler.set("pvp", &(!current).to_string())?;
                         println!("Properties response sent successfully");
                     }
                     property::GenerateStructures => {
-                        let current = process
+                        let current = handler
                             .get_property("generate-structures")?
                             .parse::<bool>()?;
 
-                        process.set("generate-structures", &(!current).to_string())?;
+                        handler.set("generate-structures", &(!current).to_string())?;
                         println!("Properties response sent successfully");
                     }
                     property::Gamemode => {
-                        let current = process.get_property("gamemode")?;
+                        let current = handler.get_property("gamemode")?;
                         let new_gamemode = match current {
                             "survival" => "creative",
                             "creative" => "adventure",
@@ -110,59 +112,63 @@ where
                             "spectator" => "survival",
                             _ => "survival",
                         };
-                        process.set("gamemode", new_gamemode)?;
+                        handler.set("gamemode", new_gamemode)?;
                     }
                     property::MOTD(data) => {
-                        process.set("motd", &data)?;
+                        handler.set("motd", &data)?;
                     }
                     property::MaxPlayers(data) => {
-                        process.set("max-players", &data.to_string())?;
+                        handler.set("max-players", &data.to_string())?;
                     }
                     property::MaxWorldSize(data) => {
-                        process.set("max-world-size", &data.to_string())?;
+                        handler.set("max-world-size", &data.to_string())?;
                     }
                     property::AllowNether => {
-                        let current = process.get_property("allow-nether")?.parse::<bool>()?;
+                        let current = handler.get_property("allow-nether")?.parse::<bool>()?;
 
-                        process.set("allow-nether", &(!current).to_string())?;
+                        handler.set("allow-nether", &(!current).to_string())?;
                         println!("Properties response sent successfully");
                     }
                     property::SpawnNPC => {
-                        let current = process.get_property("spawn-npcs")?.parse::<bool>()?;
+                        let current = handler.get_property("spawn-npcs")?.parse::<bool>()?;
 
-                        process.set("spawn-npcs", &(!current).to_string())?;
+                        handler.set("spawn-npcs", &(!current).to_string())?;
                         println!("Properties response sent successfully");
                     }
                     property::SpawnAnimals => {
-                        let current = process.get_property("spawn-animals")?.parse::<bool>()?;
+                        let current = handler.get_property("spawn-animals")?.parse::<bool>()?;
 
-                        process.set("spawn-animals", &(!current).to_string())?;
+                        handler.set("spawn-animals", &(!current).to_string())?;
                         println!("Properties response sent successfully");
                     }
                     property::SpawnMonsters => {
-                        let current = process.get_property("spawn-monsters")?.parse::<bool>()?;
+                        let current = handler.get_property("spawn-monsters")?.parse::<bool>()?;
 
-                        process.set("spawn-monsters", &(!current).to_string())?;
+                        handler.set("spawn-monsters", &(!current).to_string())?;
                         println!("Properties response sent successfully");
                     }
                     property::ViewDistance(data) => {
-                        process.set("view-distance", &data.to_string())?;
+                        handler.set("view-distance", &data.to_string())?;
                     }
                     property::SimulationDistance(data) => {
-                        process.set("simulation-distance", &data.to_string())?;
+                        handler.set("simulation-distance", &data.to_string())?;
                     }
                     property::SpawnProtection(data) => {
-                        process.set("spawn-protection", &data.to_string())?;
+                        handler.set("spawn-protection", &data.to_string())?;
                     }
                 }
-
-                process
+                handler
                     .send_properties_response(sender.clone(), request_id)
                     .await?;
             }
-            AgentActions::SetChatChannel(channel_id) => {
-                process.channel(Some(channel_id)).await;
-                process.stdio_reader(sender.clone()).await?;
+            AgentActions::StartChatStream => {
+                handler.start_chat()?;
+            }
+            AgentActions::StopChatStream => {
+                handler.stop_chat()?;
+            }
+            AgentActions::ConnectionKey(key) => {
+                println!("Enter key into discord: {}", key);
             }
         }
     }

@@ -1,21 +1,19 @@
 mod mods;
-
+use crate::mods::*;
 use anyhow::Result;
-use std::{collections::HashMap, env, sync::Arc};
-
 use futures_util::{
     sink::{Sink, SinkExt},
     stream::{SplitSink, SplitStream, StreamExt},
 };
+use protocol::serveractions::ServerActions;
+use std::{collections::HashMap, env, sync::Arc};
+use tokio::sync::mpsc;
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     sync::{RwLock, mpsc::UnboundedReceiver},
 };
 use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
-
-use tokio::sync::mpsc;
-
-use crate::mods::*;
+use uuid::Uuid;
 
 #[tokio::main]
 async fn main() {
@@ -28,11 +26,10 @@ async fn main() {
 
     let (mut write, mut read) = ws_stream.split();
 
-    let (mut sender, receiver) = mpsc::unbounded_channel::<Message>();
+    let (mut sender, receiver) = mpsc::unbounded_channel::<ServerActions>();
 
     tokio::spawn(send_task(receiver, write));
-    // Send hello message
-    if let Err(e) = sender.send(Message::Text("stinky".into())) {
+    if let Err(e) = sender.send(ServerActions::ConnectAgent(Uuid::new_v4())) {
         println!("Error sending initialization: {}", e);
     }
 
@@ -42,13 +39,19 @@ async fn main() {
     }
 }
 
-async fn send_task<S>(mut receiver: UnboundedReceiver<Message>, mut sender: S) -> Result<()>
+async fn send_task<S>(mut receiver: UnboundedReceiver<ServerActions>, mut sender: S) -> Result<()>
 where
     S: Sink<Message> + Unpin,
     S::Error: std::error::Error + Send + Sync + 'static,
 {
     while let Some(message) = receiver.recv().await {
-        sender.send(message).await?;
+        sender
+            .send(Message::Text(
+                serde_json::to_string(&message)
+                    .expect("send_task serialization failed. This should not be possible. Major programming bug")
+                    .into(),
+            ))
+            .await?;
     }
     Ok(())
 }

@@ -1,15 +1,11 @@
-use anyhow::{Ok, Result, anyhow, bail};
-use futures_util::{
-    sink::{Sink, SinkExt},
-    stream::{SplitSink, SplitStream, StreamExt},
-};
+use anyhow::{Ok, Result, bail};
 use protocol::serveractions::ServerActions;
 use std::collections::HashMap;
 use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::{BufReader, BufWriter, Seek, SeekFrom};
 use tokio::sync::mpsc::UnboundedSender;
-use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
+use tokio_tungstenite::tungstenite::protocol::Message;
 use uuid::Uuid;
 
 pub struct ServerProperties {
@@ -31,7 +27,7 @@ impl ServerProperties {
         self.properties.get(key)
     }
     pub fn set(&mut self, key: &str, value: &str) -> Result<()> {
-        if let None = self.properties.get(key) {
+        if self.properties.get(key).is_none() {
             bail!("Key {} not found", key);
         }
         let mut file = OpenOptions::new()
@@ -65,11 +61,12 @@ impl ServerProperties {
         ))?;
         Ok(())
     }
-    pub async fn send_response(&self, sender: UnboundedSender<Message>, uuid: Uuid) -> Result<()> {
-        sender.send(Message::Text(
-            serde_json::to_string(&ServerActions::PropsResponse(uuid, self.properties.clone()))?
-                .into(),
-        ))?;
+    pub async fn send_response(
+        &self,
+        sender: UnboundedSender<ServerActions>,
+        uuid: Uuid,
+    ) -> Result<()> {
+        sender.send(ServerActions::PropsResponse(uuid, self.properties.clone()))?;
         Ok(())
     }
 }

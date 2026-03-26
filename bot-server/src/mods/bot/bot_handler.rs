@@ -1,19 +1,14 @@
 use crate::bot::*;
 use crate::mods::bot::props_modals::props_modal;
-use crate::mods::*;
+use crate::mods::bot::start_chat::start_chat;
+use crate::mods::bot::stop_chat::stop_chat;
 use anyhow::Context as cont;
 use anyhow::{Result, anyhow, bail};
-use axum::handler;
 use protocol::properties::property;
-use serde_json::Value;
 use serenity::all::{ActionRowComponent, CreateModal};
 use serenity::async_trait;
-use serenity::builder::{
-    CreateActionRow, CreateCommand, CreateInteractionResponse, CreateInteractionResponseMessage,
-};
-use serenity::model::application::{
-    ActionRow, Command, InputTextStyle, Interaction, ResolvedOption,
-};
+use serenity::builder::{CreateInteractionResponse, CreateInteractionResponseMessage};
+use serenity::model::application::{InputTextStyle, Interaction};
 use serenity::model::gateway::Ready;
 use serenity::model::id::GuildId;
 use serenity::prelude::*;
@@ -24,9 +19,7 @@ use std::sync::Arc;
 use twilight_model::application::interaction::Interaction as TwilightInteraction;
 use twilight_model::application::interaction::InteractionData;
 use twilight_model::application::interaction::modal::ModalInteractionComponent;
-use twilight_model::channel::Message;
-use twilight_model::channel::message::Component;
-use twilight_model::channel::message::component::ActionRow as TwilightRow;
+use uuid::Uuid;
 
 pub struct Handler {
     pub app_state: crate::appstate::AppState,
@@ -61,10 +54,12 @@ impl EventHandler for Handler {
                     settingsview::register(),
                     create_monitor::register(),
                     chat_channel::register(),
+                    start_chat::register(),
+                    stop_chat::register(),
+                    connect_to_server::register(),
                 ],
             )
             .await;
-
         println!("I now have the following guild slash commands: {commands:#?}");
     }
 }
@@ -126,7 +121,7 @@ fn parse_custom_id(id: &str) -> Option<(ComponentAction, &str)> {
             let result = SettingScreen::from_str(value);
             match result {
                 Ok(screen) => ComponentAction::ChangeScreen(screen),
-                Err(e) => {
+                Err(_e) => {
                     println!("Failed get Setting Screen value from string:");
                     return None;
                 }
@@ -150,16 +145,18 @@ impl Handler {
             Interaction::Command(command) => {
                 println!("Received command interaction: {command:#?}");
                 let _result = match command.data.name.as_str() {
-                    "send_ws" => {
-                        crate::bot::send_ws::run(&ctx, &command, self.app_state.clone()).await
-                    }
+                    "send_ws" => crate::bot::send_ws::run(&command, self.app_state.clone()).await,
                     "startserver" => {
-                        crate::bot::startserver::start_mc_server(&ctx, &command, &self.app_state)
-                            .await
+                        crate::bot::startserver::start_mc_server(&command, &self.app_state).await
                     }
                     "stopserver" => {
-                        crate::bot::stopserver::start_mc_server(&ctx, &command, &self.app_state)
-                            .await
+                        crate::bot::stopserver::start_mc_server(&command, &self.app_state).await
+                    }
+                    "startchat" => {
+                        start_chat(&command, &self.app_state, self.twilight_client.clone()).await
+                    }
+                    "stopchat" => {
+                        stop_chat(&command, &self.app_state, self.twilight_client.clone()).await
                     }
                     "serverproperties" => {
                         crate::bot::settingsview::run(
@@ -183,14 +180,19 @@ impl Handler {
                         Ok(())
                     }
                     "set_chat" => {
-                        if let Err(e) = crate::bot::chat_channel::set_chat_channel(
-                            &ctx,
-                            &command,
-                            &self.app_state,
-                        )
-                        .await
+                        if let Err(e) =
+                            crate::bot::chat_channel::set_chat_channel(&command, &self.app_state)
+                                .await
                         {
                             println!("Error setting chat: {}", e);
+                        }
+                        Ok(())
+                    }
+                    "verify" => {
+                        if let Err(e) =
+                            connect_to_server::connect_server(&ctx, &command, &self.app_state).await
+                        {
+                            println!("Error verifying connection: {}", e);
                         }
                         Ok(())
                     }
@@ -201,13 +203,10 @@ impl Handler {
                 };
             }
             Interaction::Component(component) => {
-                let (action, id) = parse_custom_id(&component.data.custom_id)
+                let (action, id_str) = parse_custom_id(&component.data.custom_id)
                     .ok_or_else(|| anyhow!("No custom id found"))?;
-                let agent = self
-                    .app_state
-                    .find_connection(id)
-                    .await
-                    .ok_or_else(|| anyhow!("Agent not found"))?;
+                let id = Uuid::from_str(id_str)?;
+                let agent = self.app_state.find_connection(&id)?;
                 match action {
                     ComponentAction::Edit(property) => {
                         let props = agent.edit_props(property).await?;
@@ -254,9 +253,10 @@ impl Handler {
                 }
             }
             Interaction::Modal(modal, raw_json) => {
-                let (action, title, id) = parse_modal_custom_id(&modal.data.custom_id)
+                let (action, title, id_str) = parse_modal_custom_id(&modal.data.custom_id)
                     .ok_or_else(|| anyhow!("Custom_id not good"))?;
-                println!("Title: {}  id: {}", title, id);
+                let id = Uuid::from_str(id_str)?;
+                println!("Title: {}  id: {}", title, id.to_string());
                 match action {
                     ModalAction::EditProp => {
                         println!("title: {}, id: {}", title, id);
@@ -375,11 +375,7 @@ impl Handler {
                             .message
                             .as_ref()
                             .ok_or_else(|| anyhow!("Message not attatched to any modal"))?;
-                        let agent = self
-                            .app_state
-                            .find_connection(id)
-                            .await
-                            .ok_or_else(|| anyhow!("Agent not found for id: {}", id))?;
+                        let agent = self.app_state.find_connection(&id)?;
                         let props = agent.edit_props(prop).await?;
                         crate::bot::settingsview::update_settings_view(
                             &self.twilight_client,

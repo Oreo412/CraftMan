@@ -1,20 +1,12 @@
 use crate::appstate::AppState;
 use crate::mods::bot::si2tr::si2tr;
-use anyhow::{Result, anyhow, bail};
-use axum::serve::Serve;
-use base64::Engine as _;
-use base64::engine::general_purpose::STANDARD;
+use anyhow::Result;
 use protocol::query_options::{QueryStatus, ServerStatus};
 use serenity::builder::{CreateCommand, CreateCommandOption};
-use serenity::futures::channel;
 use serenity::model::application::CommandOptionType;
 use std::collections::HashSet;
 use twilight_model::channel::message::Component;
 use twilight_model::channel::message::MessageFlags;
-use twilight_model::channel::message::component::ButtonStyle;
-use twilight_model::channel::message::component::{
-    Checkbox, CheckboxGroup, CheckboxGroupOption, SelectMenu, SelectMenuOption, SelectMenuType,
-};
 use twilight_model::channel::message::component::{TextDisplay, UnfurledMediaItem};
 use twilight_model::http::attachment::Attachment;
 use twilight_model::http::interaction::InteractionResponseType;
@@ -25,12 +17,10 @@ use twilight_model::id::{
 };
 use twilight_util::builder::InteractionResponseDataBuilder;
 use twilight_util::builder::message::{
-    ActionRowBuilder, CheckboxGroupBuilder, CheckboxGroupOptionBuilder, TextDisplayBuilder,
+    CheckboxGroupBuilder, CheckboxGroupOptionBuilder, TextDisplayBuilder,
 };
-use twilight_util::builder::message::{
-    ButtonBuilder, LabelBuilder, SectionBuilder, SelectMenuBuilder, SelectMenuOptionBuilder,
-    ThumbnailBuilder,
-};
+use twilight_util::builder::message::{LabelBuilder, SectionBuilder, ThumbnailBuilder};
+use uuid::Uuid;
 
 static DEFAULT_ICON: &[u8] = include_bytes!("../../../assets/default_icon.png");
 
@@ -41,21 +31,10 @@ pub async fn builder_modal(
 ) -> Result<()> {
     println!("received");
 
-    let id = serenity_interaction
-        .data
-        .options
-        .iter()
-        .find(|option| option.name == "name")
-        .ok_or_else(|| anyhow!("No Id"))?
-        .value
-        .as_str()
-        .ok_or_else(|| anyhow!("No Id"))?;
-    let agent = appstate
-        .find_connection(id)
-        .await
-        .ok_or_else(|| anyhow!("Agent Not Found"))?;
+    let id = appstate.find_id_by_guild(serenity_interaction.channel_id.get())?;
+    //let agent = appstate.find_connection(&id);
 
-    let response = build_monitor(id);
+    let response = build_monitor(&id.to_string());
 
     si2tr(client, &serenity_interaction, &response).await;
 
@@ -74,9 +53,10 @@ pub async fn build_view(
     client: &twilight_http::Client,
     serenity_interaction: &serenity::model::application::ModalInteraction,
     appstate: &AppState,
-    id: &str,
+    uuid: Uuid,
 ) -> Result<()> {
     //let png_bytes = STANDARD.decode(dog_base64_string())?;
+    //let id = uuid.to_string();
 
     let application_id = Id::new(serenity_interaction.application_id.get());
     let interaction_id = Id::new(serenity_interaction.id.get());
@@ -106,10 +86,7 @@ pub async fn build_view(
     let message_id = message.id;
     let channel_id = message.channel_id;
 
-    let agent = appstate
-        .find_connection(id)
-        .await
-        .ok_or_else(|| anyhow!("Agent Not Found"))?;
+    let agent = appstate.find_connection(&uuid)?;
 
     let (description, image, status) = agent
         .start_query(options, message_id.get(), channel_id.get())

@@ -4,6 +4,7 @@ use futures_util::{
     sink::SinkExt,
     stream::{SplitSink, StreamExt},
 };
+use protocol::{agentactions::AgentActions, serveractions::ServerActions};
 use sqlx::postgres::PgPoolOptions;
 use std::env;
 use tokio::sync::mpsc;
@@ -49,25 +50,19 @@ async fn handler(
 async fn handle_socket(socket: WebSocket, app_state: appstate::AppState) {
     let (sender, mut receiver) = socket.split();
 
-    let (c_sender, c_receiver) = mpsc::unbounded_channel::<Message>();
+    let (c_sender, c_receiver) = mpsc::unbounded_channel::<AgentActions>();
 
     while let Some(Ok(msg)) = receiver.next().await {
         match msg {
             Message::Text(text) => {
-                app_state
-                    .add_connection(
-                        text.to_string(),
-                        agents::Agent::new(text.to_string(), c_sender),
-                    )
-                    .await;
-                println!("Registered new connection with id: {}", text);
-                tokio::spawn(listener::listen(
-                    receiver,
-                    app_state.find_connection(&text).await.unwrap(),
-                    app_state.twilight_client.clone(),
-                    app_state.dbpool.clone(),
-                ));
-                break;
+                if let ServerActions::ConnectAgent(id) =
+                    serde_json::from_str::<ServerActions>(text.as_str()).expect("Uh oh")
+                {
+                    if let Err(e) = app_state.create_agent(id, receiver, c_sender).await {
+                        println!("Error connecting and creating agent");
+                    }
+                    break;
+                }
             }
             Message::Close(_) => {
                 println!("Client disconnected");
@@ -82,12 +77,12 @@ async fn handle_socket(socket: WebSocket, app_state: appstate::AppState) {
 
 async fn write(
     mut sender: SplitSink<WebSocket, Message>,
-    mut receiver: mpsc::UnboundedReceiver<Message>,
+    mut receiver: mpsc::UnboundedReceiver<AgentActions>,
 ) {
     println!("Starting send loop");
-    while let Some(msg) = receiver.recv().await {
+    while let Some(action) = receiver.recv().await {
         println!("message received in channel");
-        if sender.send(msg).await.is_err() {
+        if sender.send(Message::Text(serde_json::to_string(&action).expect("Serialization of agent action has failed in the write function. This is a major programming error").into())).await.is_err() {
             println!("Client disconnected, stopping send loop");
             break;
         }

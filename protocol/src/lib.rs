@@ -2,6 +2,7 @@ pub mod agentactions;
 pub mod chat;
 pub mod properties;
 pub mod query_options;
+pub mod server_commands;
 pub mod serveractions;
 
 pub fn add(left: u64, right: u64) -> u64 {

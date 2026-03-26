@@ -1,49 +1,28 @@
 use crate::mods::propreader::ServerProperties;
 use crate::mods::query_handler::QueryHandler;
+use crate::mods::server_process::ServerProcess;
 use anyhow::{Result, anyhow, bail};
-use futures_util::Sink;
-use futures_util::SinkExt;
-use protocol::chat::SendChat;
 use protocol::query_options::QueryOptions;
 use protocol::serveractions::ServerActions;
 use std::path::Path;
-use std::process::*;
-use std::sync::mpsc;
 use std::time::Duration;
-use std::{io::*, path};
-use tokio::io::AsyncBufReadExt;
-use tokio::io::AsyncWriteExt;
-use tokio::io::BufReader;
-use tokio::io::Lines;
-use tokio::process::Child;
-use tokio::process::ChildStdout;
-use tokio::process::Command;
-use tokio::sync::Mutex;
-use tokio::sync::mpsc::Sender;
 use tokio::sync::mpsc::UnboundedSender;
 use tokio::sync::oneshot;
 use tokio::time;
 use tokio_tungstenite::tungstenite::protocol::Message;
 use uuid::Uuid;
 
-pub fn stop_server(mut stdin: ChildStdin) {
-    let _result = writeln!(stdin, "stop");
-}
-
-pub struct ServerProcess {
+pub struct ServerHandler {
     xms: u32,
     xmx: u32,
     dir: String,
     jar: String,
     pub properties: Option<ServerProperties>,
-    child: Option<Child>,
+    process: Option<ServerProcess>,
     query_channel: Option<oneshot::Sender<()>>,
-    chat_channel_id: Mutex<Option<u64>>, //As stdioreader will be run in a separate spawned task
-                                         //from the listener, listener could try to change it at the
-                                         //same time as it's read by stdioreader
 }
 
-impl Default for ServerProcess {
+impl Default for ServerHandler {
     fn default() -> Self {
         let props = if Path::new("./server.properties").exists() {
             ServerProperties::new("./").ok()
@@ -56,60 +35,24 @@ impl Default for ServerProcess {
             dir: String::from("./"),
             jar: String::from("server.jar"),
             properties: props,
-            child: None,
+            process: None,
             query_channel: None,
-            chat_channel_id: Mutex::new(None),
         }
     }
 }
-impl ServerProcess {
-    pub fn start_server(&mut self) -> Result<()> {
-        let child = Command::new("java")
-            .current_dir(&self.dir)
-            .arg(format!("-Xmx{}M", self.xmx))
-            .arg(format!("-Xms{}M", self.xms))
-            .arg("-jar")
-            .arg(&self.jar)
-            .arg("nogui")
-            .stdin(Stdio::piped())
-            .stdout(Stdio::piped())
-            .spawn()?;
-        self.child = Some(child);
-        self.update_properties();
+impl ServerHandler {
+    pub fn start_server(&mut self, ws_sender: UnboundedSender<ServerActions>) -> Result<()> {
+        self.process = Some(ServerProcess::new(
+            self.xms, self.xmx, &self.jar, &self.dir, ws_sender,
+        )?);
+        println!("Started server");
         Ok(())
     }
 
     pub async fn stop_server(&mut self) -> Result<()> {
-        let child = &mut self
-            .child
-            .as_mut()
-            .ok_or_else(|| anyhow!("No child process found"))?;
-        if let Some(stdin) = &mut child.stdin {
-            stdin.write_all(b"stop\n").await?;
+        if let Some(process) = self.process.take() {
+            process.shutdown()?;
         }
-        let _ = child.wait();
-        self.child = None;
-        self.update_properties();
-        Ok(())
-    }
-
-    pub async fn stdio_reader(&mut self, sender: UnboundedSender<Message>) -> Result<()> {
-        let channel_id = if let Some(id) = *self.chat_channel_id.lock().await {
-            id
-        } else {
-            return Ok(());
-        };
-        let stdout = self
-            .child
-            .as_mut()
-            .ok_or_else(|| anyhow!("no child process found"))?
-            .stdout
-            .take()
-            .ok_or_else(|| anyhow!("No stdout found"))?;
-
-        let lines = BufReader::new(stdout).lines();
-        tokio::spawn(chat_listener(lines, channel_id, sender));
-
         Ok(())
     }
 
@@ -128,9 +71,6 @@ impl ServerProcess {
     pub fn jar(mut self, jar: String) -> Self {
         self.jar = jar;
         self
-    }
-    pub async fn channel(&mut self, channel_id: Option<u64>) {
-        *self.chat_channel_id.lock().await = channel_id
     }
     pub fn update_properties(&mut self) -> &Self {
         let path_str = format!("{}/server.properties", self.dir);
@@ -171,7 +111,7 @@ impl ServerProcess {
     }
     pub async fn send_properties_response(
         &mut self,
-        sender: UnboundedSender<Message>,
+        sender: UnboundedSender<ServerActions>,
         uuid: Uuid,
     ) -> Result<()> {
         self.properties
@@ -187,7 +127,7 @@ impl ServerProcess {
         message_id: u64,
         channel_id: u64,
         options: QueryOptions,
-        sender: UnboundedSender<Message>,
+        sender: UnboundedSender<ServerActions>,
         request_id: Uuid,
     ) -> Result<()> {
         self.update_properties();
@@ -218,12 +158,27 @@ impl ServerProcess {
             let _ = sender.send(());
         }
     }
+    pub fn start_chat(&self) -> Result<()> {
+        if let Some(process) = &self.process {
+            process.set_chat(true)
+        } else {
+            bail!("No running process")
+        }
+    }
+
+    pub fn stop_chat(&self) -> Result<()> {
+        if let Some(process) = &self.process {
+            process.set_chat(false)
+        } else {
+            bail!("No running process")
+        }
+    }
 }
 
 async fn query_loop(
     mut query_handler: QueryHandler,
     mut receiver: oneshot::Receiver<()>,
-    sender: UnboundedSender<Message>,
+    sender: UnboundedSender<ServerActions>,
 ) -> Result<()> {
     let mut interval = time::interval(Duration::from_secs(10));
 
@@ -244,18 +199,5 @@ async fn query_loop(
     }
     println!("Exiting update loop");
 
-    Ok(())
-}
-
-async fn chat_listener(
-    mut lines: Lines<BufReader<ChildStdout>>,
-    channel_id: u64,
-    sender: UnboundedSender<Message>,
-) -> Result<()> {
-    while let Some(new_message) = lines.next_line().await? {
-        sender.send(Message::Text(
-            serde_json::to_string(&ServerActions::NewMessage(channel_id, new_message))?.into(),
-        ))?
-    }
     Ok(())
 }

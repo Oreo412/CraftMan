@@ -1,36 +1,29 @@
 use crate::appstate::AppState;
 use anyhow::Result;
-use axum::extract::ws::Message;
+use anyhow::anyhow;
 use protocol::agentactions::AgentActions;
 use serenity::builder::*;
 use serenity::model::application::CommandInteraction;
 use serenity::model::application::*;
-use serenity::prelude::Context;
-use std::error::Error;
 use uuid::Uuid;
 
-pub async fn start_mc_server(
-    ctx: &Context,
-    interaction: &CommandInteraction,
-    appstate: &AppState,
-) -> Result<()> {
-    let id = interaction
-        .data
-        .options
-        .iter()
-        .find(|option| option.name == "name")
-        .unwrap();
-
+pub async fn start_mc_server(interaction: &CommandInteraction, appstate: &AppState) -> Result<()> {
     println!(
         "Sending start signal to socket '{}'",
-        &id.value.as_str().unwrap()
+        &interaction.channel_id.get()
     );
-    appstate
-        .send_message(
-            id.value.as_str().unwrap().to_string(),
+    if let Err(e) = appstate
+        .send_by_guild(
+            interaction
+                .guild_id
+                .ok_or_else(|| anyhow!("Interaction took place outside a guild"))?
+                .get(),
             AgentActions::SvStart(Uuid::new_v4()),
         )
-        .await?;
+        .await
+    {
+        println!("Error sending to agent: {}", e);
+    }
 
     Ok(())
 }

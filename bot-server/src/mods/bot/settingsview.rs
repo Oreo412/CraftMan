@@ -7,16 +7,12 @@ use serenity::all::ActionRowComponent;
 use serenity::builder::*;
 use serenity::model::application::CommandOptionType;
 use std::collections::HashMap;
-use std::error::Error;
-use twilight_http::Client;
-use twilight_http::client::InteractionClient;
 use twilight_model::channel::message::MessageFlags;
-use twilight_model::channel::message::component::*;
 use twilight_model::channel::message::component::*;
 use twilight_model::http::interaction::*;
 use twilight_model::id::Id;
-use twilight_model::id::marker::{ChannelMarker, MessageMarker};
 use twilight_util::builder::message::*;
+use uuid::Uuid;
 
 pub async fn run(
     client: &twilight_http::Client,
@@ -24,20 +20,13 @@ pub async fn run(
     appstate: &AppState,
 ) -> Result<()> {
     println!("received");
-    let id = serenity_interaction
-        .data
-        .options
-        .iter()
-        .find(|option| option.name == "name")
-        .ok_or_else(|| anyhow!("No Id"))?
-        .value
-        .as_str()
-        .ok_or_else(|| anyhow!("No Id"))?;
-    let agent = appstate
-        .find_connection(id)
-        .await
-        .ok_or_else(|| anyhow!("Agent Not Found"))?;
-
+    let id = appstate.find_id_by_guild(
+        serenity_interaction
+            .guild_id
+            .ok_or_else(|| anyhow!("interaction not in guild"))?
+            .get(),
+    )?;
+    let agent = appstate.find_connection(&id)?;
     let props = agent.request_props().await?;
     let mut responsetest = InteractionResponseData::default();
     responsetest.components = Some(build_settings_view(&props, id, &SettingScreen::Gameplay)?);
@@ -105,9 +94,10 @@ pub fn allow_flight(allow: bool, id: &str) -> Section {
 
 pub fn build_settings_view(
     props: &HashMap<String, String>,
-    id: &str,
+    uuid: Uuid,
     screen: &SettingScreen,
 ) -> Result<Vec<Component>> {
+    let id = &uuid.to_string();
     let mut properties = match screen {
         SettingScreen::WorldGeneration => {
             let generate_value = props
@@ -233,7 +223,7 @@ pub async fn update_settings_view(
     channel_id: u64,
     message_id: u64,
     props: &HashMap<String, String>,
-    id: &str,
+    id: Uuid,
     screen: Option<&SettingScreen>,
     message: &serenity::model::channel::Message,
 ) -> Result<()> {

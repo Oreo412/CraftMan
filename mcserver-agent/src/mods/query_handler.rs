@@ -1,10 +1,6 @@
-use anyhow::{Result, anyhow, bail};
+use anyhow::{Result, anyhow};
 use base64::Engine as _;
 use base64::engine::general_purpose::STANDARD;
-use futures_util::{
-    sink::{Sink, SinkExt},
-    stream::{SplitSink, SplitStream, StreamExt},
-};
 use protocol::query_options::{QueryOptions, QueryStatus, ServerStatus};
 use protocol::serveractions::ServerActions;
 use rust_mc_status::JavaStatus;
@@ -12,8 +8,6 @@ use rust_mc_status::McClient;
 use rust_mc_status::ServerData;
 use rust_mc_status::error::McError;
 use tokio::sync::mpsc::UnboundedSender;
-use tokio::time::{self, Duration};
-use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 use uuid::Uuid;
 
 pub struct QueryHandler {
@@ -55,21 +49,18 @@ impl QueryHandler {
     pub async fn respond(
         // TODO: Handle if server is offline
         &mut self,
-        sender: UnboundedSender<Message>,
+        sender: UnboundedSender<ServerActions>,
         request_id: Uuid,
     ) -> Result<()> {
         let status: JavaStatus = match self.ping().await {
             Ok(status) => status,
             Err(_) => {
-                sender.send(Message::Text(
-                    serde_json::to_string(&ServerActions::QueryResponse {
-                        uuid: request_id,
-                        description: "A minecraft server".to_string(),
-                        image: None,
-                        status: ServerStatus::ServerOffline,
-                    })?
-                    .into(),
-                ))?;
+                sender.send(ServerActions::QueryResponse {
+                    uuid: request_id,
+                    description: "A minecraft server".to_string(),
+                    image: None,
+                    status: ServerStatus::ServerOffline,
+                })?;
                 self.last_status = Some(ServerStatus::ServerOffline);
 
                 return Ok(());
@@ -96,19 +87,16 @@ impl QueryHandler {
 
         self.last_status = Some(ServerStatus::ServerOnline(query_response.clone()));
 
-        sender.send(Message::Text(
-            serde_json::to_string(&ServerActions::QueryResponse {
-                uuid: request_id,
-                description: description.to_string(),
-                image,
-                status: ServerStatus::ServerOnline(query_response),
-            })?
-            .into(),
-        ))?;
+        sender.send(ServerActions::QueryResponse {
+            uuid: request_id,
+            description: description.to_string(),
+            image,
+            status: ServerStatus::ServerOnline(query_response),
+        })?;
         Ok(())
     }
 
-    pub async fn update(&mut self, sender: UnboundedSender<Message>) -> Result<()> {
+    pub async fn update(&mut self, sender: UnboundedSender<ServerActions>) -> Result<()> {
         let server_status = if let Ok(status) = self.ping().await {
             if self.last_status == Some(ServerStatus::ServerOffline) {
                 let image_base64 = &status.favicon;
@@ -124,15 +112,12 @@ impl QueryHandler {
                         )?,
                     );
                 }
-                sender.send(Message::Text(
-                    serde_json::to_string(&ServerActions::UpdateQueryHeader {
-                        message_id: self.message_id,
-                        channel_id: self.channel_id,
-                        description: status.description.clone(),
-                        image,
-                    })?
-                    .into(),
-                ))?;
+                sender.send(ServerActions::UpdateQueryHeader {
+                    message_id: self.message_id,
+                    channel_id: self.channel_id,
+                    description: status.description.clone(),
+                    image,
+                })?;
             }
             ServerStatus::ServerOnline(self.query_builder(status))
         } else {
@@ -154,14 +139,11 @@ impl QueryHandler {
         );
 
         if self.last_status.is_none() || (&server_status != self.last_status.as_ref().unwrap()) {
-            sender.send(Message::Text(
-                serde_json::to_string(&ServerActions::UpdateQuery {
-                    message_id: self.message_id,
-                    channel_id: self.channel_id,
-                    status: server_status.clone(),
-                })?
-                .into(),
-            ))?;
+            sender.send(ServerActions::UpdateQuery {
+                message_id: self.message_id,
+                channel_id: self.channel_id,
+                status: server_status.clone(),
+            })?;
             self.last_status = Some(server_status);
         }
 

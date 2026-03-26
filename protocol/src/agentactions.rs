@@ -16,5 +16,7 @@ pub enum AgentActions {
         message_id: u64,
         channel_id: u64,
     },
-    SetChatChannel(u64),
+    StartChatStream,
+    StopChatStream,
+    ConnectionKey(String),
 }
