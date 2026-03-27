@@ -2,6 +2,7 @@ use crate::mods::agents::Agent;
 use crate::mods::bot::chat_channel;
 use crate::mods::bot::create_monitor::{update_header, update_monitor};
 use anyhow::Result;
+use anyhow::bail;
 use axum::Error;
 use axum::extract::ws::Message;
 use futures_util::Stream;
@@ -39,7 +40,9 @@ async fn handle_message(
 ) -> Result<()> {
     match message {
         ServerActions::PropsResponse(id, props) => {
-            agent.complete_request(&id, OneshotResponses::PropsResponse(props))?;
+            agent
+                .complete_request(&id, OneshotResponses::PropsResponse(props))
+                .await?;
             // if let Some((_id, sender)) = something {
             //     if sender.send(OneshotResponses::PropsResponse(props)).is_err() {
             //         println!("Error sending properties to pending request: {}", id);
@@ -56,10 +59,13 @@ async fn handle_message(
             image,
             status,
         } => {
-            agent.complete_request(
-                &id,
-                OneshotResponses::QueryResponse(description, image, status),
-            )?;
+            println!("Handling query response");
+            agent
+                .complete_request(
+                    &id,
+                    OneshotResponses::QueryResponse(description, image, status),
+                )
+                .await?;
         }
         ServerActions::UpdateQuery {
             message_id,
@@ -80,9 +86,19 @@ async fn handle_message(
         ServerActions::NewMessage(message) => {
             agent.send_chat(message).await?;
         }
-
-        _ => {
-            println!("Received unhandled action:");
+        ServerActions::StartResponse(id) => {
+            println!("Received start response. Trying to complete request");
+            agent
+                .complete_request(&id, OneshotResponses::StartServerResponse)
+                .await?;
+        }
+        ServerActions::StopResponse(id) => {
+            agent
+                .complete_request(&id, OneshotResponses::StopServerResponse)
+                .await?;
+        }
+        ServerActions::ConnectAgent(_) => {
+            bail!("Agent already connected")
         }
     }
     Ok(())

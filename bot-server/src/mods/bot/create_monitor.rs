@@ -1,6 +1,6 @@
 use crate::appstate::AppState;
 use crate::mods::bot::si2tr::si2tr;
-use anyhow::Result;
+use anyhow::{Result, anyhow};
 use protocol::query_options::{QueryStatus, ServerStatus};
 use serenity::builder::{CreateCommand, CreateCommandOption};
 use serenity::model::application::CommandOptionType;
@@ -31,10 +31,14 @@ pub async fn builder_modal(
 ) -> Result<()> {
     println!("received");
 
-    let id = appstate.find_id_by_guild(serenity_interaction.channel_id.get())?;
-    //let agent = appstate.find_connection(&id);
+    let id = appstate.find_id_by_guild(
+        serenity_interaction
+            .guild_id
+            .ok_or_else(|| anyhow!("Interaction happened outside of guild"))?
+            .get(),
+    )?;
 
-    let response = build_monitor(&id.to_string());
+    let response = build_monitor(id);
 
     si2tr(client, &serenity_interaction, &response).await;
 
@@ -56,7 +60,6 @@ pub async fn build_view(
     uuid: Uuid,
 ) -> Result<()> {
     //let png_bytes = STANDARD.decode(dog_base64_string())?;
-    //let id = uuid.to_string();
 
     let application_id = Id::new(serenity_interaction.application_id.get());
     let interaction_id = Id::new(serenity_interaction.id.get());
@@ -137,7 +140,8 @@ pub async fn build_view(
     Ok(())
 }
 
-pub fn build_monitor(id: &str) -> InteractionResponse {
+pub fn build_monitor(uuid: Uuid) -> InteractionResponse {
+    let id = &uuid.to_string();
     let version = CheckboxGroupOptionBuilder::new("version", "Version")
         .description("What Minecraft version is this server")
         .build();

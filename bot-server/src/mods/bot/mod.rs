@@ -1,7 +1,6 @@
 pub mod bot_handler;
 pub mod bot_start;
 pub mod chat_channel;
-pub mod configure_guild;
 pub mod connect_to_server;
 pub mod create_monitor;
 pub mod props_modals;

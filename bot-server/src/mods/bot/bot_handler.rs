@@ -71,17 +71,18 @@ fn parse_custom_id(id: &str) -> Option<(ComponentAction, &str)> {
     let kind = parts.next()?;
     let value = parts.next()?;
     let server_id = parts.next()?;
+    println!("Kind: {}", kind);
 
     let action = match kind {
         "edit" => {
             let prop = match value {
-                "allow_flightbutton" => property::AllowFlight,
+                "allowflightbutton" => property::AllowFlight,
                 "difficultybutton" => property::Difficulty,
                 "gamemodebutton" => property::Gamemode,
                 "hardcorebutton" => property::Hardcore,
                 "whitelistbutton" => property::Whitelist,
                 "pvpbutton" => property::PVP,
-                "generate_structuresbutton" => property::GenerateStructures,
+                "generatestructuresbutton" => property::GenerateStructures,
                 "allownetherbutton" => property::AllowNether,
                 "spawn-npcbutton" => property::SpawnNPC,
                 "spawn-animalsbutton" => property::SpawnAnimals,
@@ -147,10 +148,16 @@ impl Handler {
                 let _result = match command.data.name.as_str() {
                     "send_ws" => crate::bot::send_ws::run(&command, self.app_state.clone()).await,
                     "startserver" => {
-                        crate::bot::startserver::start_mc_server(&command, &self.app_state).await
+                        crate::bot::startserver::start_mc_server(&ctx, &command, &self.app_state)
+                            .await
                     }
                     "stopserver" => {
-                        crate::bot::stopserver::start_mc_server(&command, &self.app_state).await
+                        crate::bot::stopserver::stop_minecraft_server(
+                            &ctx,
+                            &command,
+                            &self.app_state,
+                        )
+                        .await
                     }
                     "startchat" => {
                         start_chat(&command, &self.app_state, self.twilight_client.clone()).await
@@ -256,7 +263,7 @@ impl Handler {
                 let (action, title, id_str) = parse_modal_custom_id(&modal.data.custom_id)
                     .ok_or_else(|| anyhow!("Custom_id not good"))?;
                 let id = Uuid::from_str(id_str)?;
-                println!("Title: {}  id: {}", title, id.to_string());
+                println!("Title: {}  id: {}", title, id);
                 match action {
                     ModalAction::EditProp => {
                         println!("title: {}, id: {}", title, id);

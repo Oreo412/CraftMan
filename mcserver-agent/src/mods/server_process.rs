@@ -84,6 +84,7 @@ async fn chat_listener(
             line = lines.next_line() => {
                 match line? {
                     Some(new_message) => {
+                        println!("{}", new_message);
                         if *watcher.borrow()
                         {sender.send(ServerActions::NewMessage(new_message))?;
                     }}

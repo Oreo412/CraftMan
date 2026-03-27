@@ -28,10 +28,14 @@ where
             }
             AgentActions::SvStart(id) => {
                 println!("Starting server");
-                handler.start_server(sender.clone())?;
+                if handler.start_server(sender.clone()).is_ok() {
+                    sender.send(ServerActions::StartResponse(id))?;
+                }
             }
             AgentActions::SvStop(id) => {
-                handler.stop_server().await?;
+                if handler.stop_server().await.is_ok() {
+                    sender.send(ServerActions::StopResponse(id))?;
+                }
             }
             AgentActions::StartQuery {
                 id: request_id,

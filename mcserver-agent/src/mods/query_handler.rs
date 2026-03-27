@@ -47,7 +47,6 @@ impl QueryHandler {
     }
 
     pub async fn respond(
-        // TODO: Handle if server is offline
         &mut self,
         sender: UnboundedSender<ServerActions>,
         request_id: Uuid,

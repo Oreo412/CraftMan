@@ -53,14 +53,6 @@ impl ServerProperties {
         self.properties = java_properties::read(reader)?;
         Ok(())
     }
-    pub async fn send_update(&mut self, sender: UnboundedSender<Message>) -> Result<()> {
-        sender.send(Message::Text(
-            serde_json::to_string(&ServerActions::PropsUpdate(self.properties.clone()))
-                .unwrap()
-                .into(),
-        ))?;
-        Ok(())
-    }
     pub async fn send_response(
         &self,
         sender: UnboundedSender<ServerActions>,

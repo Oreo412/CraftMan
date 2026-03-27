@@ -11,6 +11,7 @@ use twilight_model::channel::message::MessageFlags;
 use twilight_model::channel::message::component::*;
 use twilight_model::http::interaction::*;
 use twilight_model::id::Id;
+use twilight_util::builder::InteractionResponseDataBuilder;
 use twilight_util::builder::message::*;
 use uuid::Uuid;
 
@@ -28,13 +29,14 @@ pub async fn run(
     )?;
     let agent = appstate.find_connection(&id)?;
     let props = agent.request_props().await?;
-    let mut responsetest = InteractionResponseData::default();
-    responsetest.components = Some(build_settings_view(&props, id, &SettingScreen::Gameplay)?);
+    let mut response = InteractionResponseDataBuilder::new()
+        .components(build_settings_view(&props, id, &SettingScreen::Gameplay)?)
+        .build();
     println!("Added components to response");
-    responsetest.flags = Some(MessageFlags::IS_COMPONENTS_V2);
+    response.flags = Some(MessageFlags::IS_COMPONENTS_V2);
     let response = InteractionResponse {
         kind: InteractionResponseType::ChannelMessageWithSource,
-        data: Some(responsetest),
+        data: Some(response),
     };
     println!("Constructed interaction response");
 
@@ -85,7 +87,7 @@ pub fn allow_flight(allow: bool, id: &str) -> Section {
     };
 
     let button = ButtonBuilder::new(style)
-        .custom_id(format!("allowflightbutton:{}", id))
+        .custom_id(format!("edit:allowflightbutton:{}", id))
         .label(label)
         .build();
 
@@ -367,7 +369,7 @@ pub fn generate_structures(generate: bool, id: &str) -> Section {
     };
 
     let button = ButtonBuilder::new(style)
-        .custom_id(format!("edit:generate-structuresbutton:{}", id))
+        .custom_id(format!("edit:generatestructuresbutton:{}", id))
         .label(label)
         .build();
 

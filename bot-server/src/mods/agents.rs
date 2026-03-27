@@ -1,5 +1,6 @@
 use anyhow::anyhow;
 use axum::extract::ws::Message;
+use moka::future::Cache;
 use sqlx::PgPool;
 use std::{
     collections::{HashMap, HashSet},
@@ -35,7 +36,7 @@ use crate::mods::bot::chat_channel;
 pub struct Agent {
     id: Uuid,
     sender: mpsc::UnboundedSender<AgentActions>,
-    pending_requests: Arc<DashMap<Uuid, oneshot::Sender<OneshotResponses>>>,
+    pending_requests: Arc<Cache<Uuid, mpsc::Sender<OneshotResponses>>>,
     chat_channel_cache: RwLock<Cached<Option<Id<ChannelMarker>>>>,
     query_monitor_cache: RwLock<Cached<Option<(Id<MessageMarker>, Id<ChannelMarker>)>>>,
     dbpool: PgPool,
@@ -54,7 +55,10 @@ impl Agent {
         Agent {
             id,
             sender,
-            pending_requests: Arc::new(DashMap::new()),
+            pending_requests: Cache::builder()
+                .time_to_live(Duration::from_secs(5))
+                .build()
+                .into(),
             chat_channel_cache: RwLock::new(Cached::NotCached),
             query_monitor_cache: RwLock::new(Cached::NotCached),
             dbpool,
@@ -62,27 +66,27 @@ impl Agent {
         }
     }
 
-    pub fn complete_request(&self, id: &Uuid, response: OneshotResponses) -> Result<()> {
-        if let Some((_id, sender)) = self.pending_requests.remove(id) {
-            sender
-                .send(response)
-                .map_err(|_| anyhow::anyhow!("receiver dropped"))?;
+    pub async fn complete_request(&self, id: &Uuid, response: OneshotResponses) -> Result<()> {
+        if let Some(sender) = self.pending_requests.remove(id).await {
+            println!("Request sender found. Sending response");
+            sender.send(response).await?;
         } else {
+            println!("No request found");
             bail!("No request found");
         }
         Ok(())
     }
 
     pub async fn request_props(&self) -> Result<HashMap<String, String>> {
-        let (sender, receiver) = oneshot::channel::<OneshotResponses>();
+        let (sender, mut receiver) = mpsc::channel::<OneshotResponses>(1);
         let request_id = Uuid::new_v4();
-        self.pending_requests.insert(request_id, sender);
+        self.pending_requests.insert(request_id, sender).await;
         let message = AgentActions::RequestProps(request_id);
         self.send(message)?;
-        if let Ok(OneshotResponses::PropsResponse(props)) = receiver.await {
+        if let Some(OneshotResponses::PropsResponse(props)) = receiver.recv().await {
             Ok(props)
         } else {
-            bail!("Received incorrect response format!");
+            bail!("Received incorrect response format, or sender was dropped");
         }
     }
 
@@ -134,11 +138,11 @@ impl Agent {
     }
 
     pub async fn edit_props(&self, prop: property) -> Result<HashMap<String, String>> {
-        let (sender, receiver) = oneshot::channel::<OneshotResponses>();
+        let (sender, mut receiver) = mpsc::channel::<OneshotResponses>(1);
         let request_id = Uuid::new_v4();
-        self.pending_requests.insert(request_id, sender);
-        self.send(AgentActions::EditProp(request_id, prop));
-        if let Ok(OneshotResponses::PropsResponse(props)) = receiver.await {
+        self.pending_requests.insert(request_id, sender).await;
+        self.send(AgentActions::EditProp(request_id, prop))?;
+        if let Some(OneshotResponses::PropsResponse(props)) = receiver.recv().await {
             Ok(props)
         } else {
             bail!("Received incorrect response format!");
@@ -151,16 +155,17 @@ impl Agent {
         message_id: u64,
         channel_id: u64,
     ) -> Result<(String, Option<Vec<u8>>, ServerStatus)> {
-        let (sender, receiver) = oneshot::channel::<OneshotResponses>();
+        let (sender, mut receiver) = mpsc::channel::<OneshotResponses>(1);
         let request_id = Uuid::new_v4();
-        self.pending_requests.insert(request_id, sender);
+        self.pending_requests.insert(request_id, sender).await;
         self.send(AgentActions::StartQuery {
             id: request_id,
             options: QueryOptions::new(options),
             message_id,
             channel_id,
-        });
-        if let Ok(OneshotResponses::QueryResponse(description, image_bytes, query)) = receiver.await
+        })?;
+        if let Some(OneshotResponses::QueryResponse(description, image_bytes, query)) =
+            receiver.recv().await
         {
             Ok((description, image_bytes, query))
         } else {
@@ -180,6 +185,34 @@ impl Agent {
         *self.chat_sender.write().await = Some(chat_sender);
 
         Ok(())
+    }
+
+    pub async fn start_server(&self) -> Result<()> {
+        println!("Attempting to start server");
+        let (sender, mut receiver) = mpsc::channel::<OneshotResponses>(1);
+        let request_id = Uuid::new_v4();
+        self.pending_requests.insert(request_id, sender).await;
+        self.sender.send(AgentActions::SvStart(request_id))?;
+        if let Some(OneshotResponses::StartServerResponse) = receiver.recv().await {
+            println!("Successfully received server response");
+            Ok(())
+        } else {
+            println!("Unable to properly receive server response");
+            bail!("Could not start minecraft server");
+        }
+    }
+
+    pub async fn stop_server(&self) -> Result<()> {
+        let (sender, mut receiver) = mpsc::channel::<OneshotResponses>(1);
+        let request_id = Uuid::new_v4();
+        self.pending_requests.insert(request_id, sender).await;
+        self.sender.send(AgentActions::SvStop(request_id))?;
+        if let Some(OneshotResponses::StopServerResponse) = receiver.recv().await {
+            Ok(())
+        } else {
+            println!("Unable to properly receive server response");
+            bail!("Could not stop minecraft server");
+        }
     }
 }
 

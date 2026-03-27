@@ -6,10 +6,9 @@ use uuid::Uuid;
 #[derive(Debug, Serialize, Deserialize)]
 pub enum ServerActions {
     ConnectAgent(Uuid),
-    PropsUpdate(HashMap<String, String>),
     PropsResponse(Uuid, HashMap<String, String>),
-    StartResponse(Uuid, bool),
-    StopResponse(Uuid, bool),
+    StartResponse(Uuid),
+    StopResponse(Uuid),
     QueryResponse {
         uuid: Uuid,
         description: String,
@@ -33,4 +32,6 @@ pub enum ServerActions {
 pub enum OneshotResponses {
     PropsResponse(HashMap<String, String>),
     QueryResponse(String, Option<Vec<u8>>, ServerStatus),
+    StartServerResponse,
+    StopServerResponse,
 }
