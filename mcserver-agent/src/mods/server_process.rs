@@ -107,14 +107,16 @@ async fn commander(
     while let Some(server_command) = receiver.recv().await {
         match server_command {
             ServerCommands::Say(message) => {
-                stdin.write_all(format!("say {}\n", message).as_bytes());
+                stdin
+                    .write_all(format!("say {}\n", message).as_bytes())
+                    .await?;
             }
             ServerCommands::Command(command) => {
-                stdin.write_all(format!("{}\n", command).as_bytes());
+                stdin.write_all(format!("{}\n", command).as_bytes()).await?;
             }
             ServerCommands::Stop => {
                 println!("Stopping");
-                stdin.write_all(b"stop");
+                stdin.write_all(b"stop").await?;
             }
         }
     }
