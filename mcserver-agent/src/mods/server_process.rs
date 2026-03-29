@@ -72,6 +72,11 @@ impl ServerProcess {
         self.command_sender.send(ServerCommands::Stop)?;
         Ok(())
     }
+
+    pub fn send_command(&self, command: ServerCommands) -> Result<()> {
+        self.command_sender.send(command)?;
+        Ok(())
+    }
 }
 
 async fn chat_listener(

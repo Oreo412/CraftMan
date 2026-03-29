@@ -4,6 +4,7 @@ use crate::mods::server_process::ServerProcess;
 use crate::mods::server_properties::ServerProperties;
 use anyhow::{Result, anyhow, bail};
 use protocol::query_options::QueryOptions;
+use protocol::server_commands::ServerCommands;
 use protocol::serveractions::ServerActions;
 use std::path::Path;
 use std::time::Duration;
@@ -160,6 +161,14 @@ impl ServerHandler {
     pub fn stop_chat(&self) -> Result<()> {
         if let Some(process) = &self.process {
             process.set_chat(false)
+        } else {
+            bail!("No running process")
+        }
+    }
+
+    pub fn send_command(&self, command: ServerCommands) -> Result<()> {
+        if let Some(process) = &self.process {
+            process.send_command(command)
         } else {
             bail!("No running process")
         }

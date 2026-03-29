@@ -178,6 +178,10 @@ where
             AgentActions::ConnectionKey(key) => {
                 println!("Enter key into discord: {}", key);
             }
+            AgentActions::ServerCommand(id, command) => {
+                handler.send_command(command)?;
+                sender.send(ServerActions::SendCommandResponse(id))?;
+            }
         }
     }
     Ok(())

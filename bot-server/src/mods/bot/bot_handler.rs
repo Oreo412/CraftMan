@@ -57,6 +57,8 @@ impl EventHandler for Handler {
                     start_chat::register(),
                     stop_chat::register(),
                     connect_to_server::register(),
+                    message_chat::register_say(),
+                    message_chat::register_command(),
                 ],
             )
             .await;
@@ -145,7 +147,8 @@ impl Handler {
         match interaction {
             Interaction::Command(command) => {
                 println!("Received command interaction: {command:#?}");
-                let _result = match command.data.name.as_str() {
+                let command_name = command.data.name.as_str();
+                let _result = match command_name {
                     "send_ws" => crate::bot::send_ws::run(&command, self.app_state.clone()).await,
                     "startserver" => {
                         crate::bot::startserver::start_mc_server(&ctx, &command, &self.app_state)
@@ -218,8 +221,23 @@ impl Handler {
                         }
                         Ok(())
                     }
+                    "say" | "command" => {
+                        message_chat::send_to_minecraft(
+                            &ctx,
+                            &command,
+                            &self.app_state,
+                            command_name,
+                        )
+                        .await
+                    }
                     _ => command
-                        .create_response(ctx.http, CreateInteractionResponse::Acknowledge)
+                        .create_response(
+                            ctx.http,
+                            CreateInteractionResponse::Message(
+                                CreateInteractionResponseMessage::new()
+                                    .content(format!("Could not find command: {}", command_name)),
+                            ),
+                        )
                         .await
                         .context("stink"),
                 };

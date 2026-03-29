@@ -110,6 +110,11 @@ async fn handle_message(
                 .complete_request(&id, RequestResponses::StopChatResponses)
                 .await?;
         }
+        ServerActions::SendCommandResponse(id) => {
+            agent
+                .complete_request(&id, RequestResponses::CommandResponse)
+                .await?;
+        }
     }
     Ok(())
 }

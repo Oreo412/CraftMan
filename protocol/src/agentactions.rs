@@ -1,5 +1,5 @@
-use crate::properties::property;
 use crate::query_options::QueryOptions;
+use crate::{properties::property, server_commands::ServerCommands};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -15,4 +15,5 @@ pub enum AgentActions {
     StartChatStream(Uuid),
     StopChatStream(Uuid),
     ConnectionKey(String),
+    ServerCommand(Uuid, ServerCommands),
 }

@@ -2,6 +2,7 @@ pub mod bot_handler;
 pub mod bot_start;
 pub mod chat_channel;
 pub mod connect_to_server;
+pub mod message_chat;
 pub mod props_modals;
 pub mod query_monitor;
 pub mod send_ws;

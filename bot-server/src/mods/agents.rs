@@ -13,12 +13,12 @@ use twilight_model::id::{
 };
 
 use anyhow::{Result, bail};
-use protocol::properties::property;
 use protocol::serveractions::RequestResponses;
 use protocol::{
     agentactions::AgentActions,
     query_options::{QueryOptions, ServerStatus},
 };
+use protocol::{properties::property, server_commands::ServerCommands};
 use tokio::{
     sync::{
         RwLock,
@@ -256,6 +256,18 @@ impl Agent {
             };
             *self.query_monitor_cache.write().await = Cached::Cached(ids);
             Ok(ids)
+        }
+    }
+
+    pub async fn message_chat(&self, command: ServerCommands) -> Result<()> {
+        let (request_sender, mut request_receiver) = mpsc::channel::<RequestResponses>(1);
+        let uuid = Uuid::new_v4();
+        self.pending_requests.insert(uuid, request_sender).await;
+        self.send(AgentActions::ServerCommand(uuid, command))?;
+        if let Some(RequestResponses::CommandResponse) = request_receiver.recv().await {
+            Ok(())
+        } else {
+            bail!("Could not send command to server")
         }
     }
 }

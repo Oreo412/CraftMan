@@ -25,6 +25,7 @@ pub enum ServerActions {
         image: Option<Vec<u8>>,
     },
     NewMessage(String),
+    SendCommandResponse(Uuid),
 }
 
 pub enum RequestResponses {
@@ -34,4 +35,5 @@ pub enum RequestResponses {
     StopChatResponses,
     StartServerResponse,
     StopServerResponse,
+    CommandResponse,
 }
