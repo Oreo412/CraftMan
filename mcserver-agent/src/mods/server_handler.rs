@@ -1,6 +1,7 @@
-use crate::mods::propreader::ServerProperties;
+use crate::mods::configs::Configs;
 use crate::mods::query_handler::QueryHandler;
 use crate::mods::server_process::ServerProcess;
+use crate::mods::server_properties::ServerProperties;
 use anyhow::{Result, anyhow, bail};
 use protocol::query_options::QueryOptions;
 use protocol::serveractions::ServerActions;
@@ -9,41 +10,35 @@ use std::time::Duration;
 use tokio::sync::mpsc::UnboundedSender;
 use tokio::sync::oneshot;
 use tokio::time;
-use tokio_tungstenite::tungstenite::protocol::Message;
 use uuid::Uuid;
 
 pub struct ServerHandler {
-    xms: u32,
-    xmx: u32,
-    dir: String,
-    jar: String,
+    config: Configs,
     pub properties: Option<ServerProperties>,
     process: Option<ServerProcess>,
     query_channel: Option<oneshot::Sender<()>>,
 }
 
-impl Default for ServerHandler {
-    fn default() -> Self {
-        let props = if Path::new("./server.properties").exists() {
-            ServerProperties::new("./").ok()
-        } else {
-            None
+impl ServerHandler {
+    pub fn new(config: Configs) -> Self {
+        let properties = match ServerProperties::new(&config.dir) {
+            Ok(prop) => Some(prop),
+            Err(e) => panic!("{}", e),
         };
         Self {
-            xms: 1024,
-            xmx: 1024,
-            dir: String::from("./"),
-            jar: String::from("server.jar"),
-            properties: props,
+            properties,
+            config,
             process: None,
             query_channel: None,
         }
     }
-}
-impl ServerHandler {
     pub fn start_server(&mut self, ws_sender: UnboundedSender<ServerActions>) -> Result<()> {
         self.process = Some(ServerProcess::new(
-            self.xms, self.xmx, &self.jar, &self.dir, ws_sender,
+            self.config.xms,
+            self.config.xmx,
+            &self.config.jar,
+            &self.config.dir,
+            ws_sender,
         )?);
         println!("Started server");
         Ok(())
@@ -56,35 +51,35 @@ impl ServerHandler {
         Ok(())
     }
 
-    pub fn xms(mut self, xms: u32) -> Self {
-        self.xms = xms;
-        self
+    pub fn xms(&mut self, xms: u32) {
+        self.config.xms = xms;
+        self.config.save();
     }
-    pub fn xmx(mut self, xmx: u32) -> Self {
-        self.xmx = xmx;
-        self
+    pub fn xmx(mut self, xmx: u32) {
+        self.config.xmx = xmx;
+        self.config.save();
     }
-    pub fn dir(mut self, dir: String) -> Self {
-        self.dir = dir;
-        self
+    pub fn dir(mut self, dir: String) {
+        self.config.dir = dir;
+        self.config.save();
     }
-    pub fn jar(mut self, jar: String) -> Self {
-        self.jar = jar;
-        self
+    pub fn jar(mut self, jar: String) {
+        self.config.jar = jar;
+        self.config.save()
     }
     pub fn update_properties(&mut self) -> &Self {
-        let path_str = format!("{}/server.properties", self.dir);
+        let path_str = format!("{}/server.properties", self.config.dir);
         let path = Path::new(&path_str);
 
         if path.exists() {
             match self.properties.as_mut() {
-                Some(props) if props.dir == self.dir => {
+                Some(props) if props.dir == self.config.dir => {
                     if let Err(e) = props.update() {
                         println!("Failed to update server properties: {}", e);
                     }
                 }
                 _ => {
-                    self.properties = ServerProperties::new(&self.dir).ok();
+                    self.properties = ServerProperties::new(&self.config.dir).ok();
                 }
             }
         } else {
@@ -124,8 +119,6 @@ impl ServerHandler {
 
     pub async fn start_query(
         &mut self,
-        message_id: u64,
-        channel_id: u64,
         options: QueryOptions,
         sender: UnboundedSender<ServerActions>,
         request_id: Uuid,
@@ -140,8 +133,6 @@ impl ServerHandler {
                 .get("server-port")
                 .ok_or_else(|| anyhow!("No server port found"))?
                 .parse::<u32>()?,
-            message_id,
-            channel_id,
             options,
         );
 
@@ -153,7 +144,7 @@ impl ServerHandler {
         Ok(())
     }
 
-    pub fn shutdown_query(&mut self) {
+    pub fn stop_query(&mut self) {
         if let Some(sender) = self.query_channel.take() {
             let _ = sender.send(());
         }

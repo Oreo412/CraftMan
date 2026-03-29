@@ -1,6 +1,7 @@
 mod mods;
-use crate::mods::*;
+use crate::mods::{server_handler::ServerHandler, *};
 use anyhow::Result;
+use directories::ProjectDirs;
 use futures_util::{
     sink::{Sink, SinkExt},
     stream::{SplitSink, SplitStream, StreamExt},
@@ -19,22 +20,24 @@ use uuid::Uuid;
 async fn main() {
     dotenvy::dotenv().ok();
     let url = env::var("URL").expect("Expected something in URL");
+    let config = configs::Configs::new();
 
     let (ws_stream, _) = connect_async(url).await.expect("Failed to connect");
 
     println!("Connected to server");
 
-    let (mut write, mut read) = ws_stream.split();
+    let (write, mut read) = ws_stream.split();
 
-    let (mut sender, receiver) = mpsc::unbounded_channel::<ServerActions>();
+    let (sender, receiver) = mpsc::unbounded_channel::<ServerActions>();
 
     tokio::spawn(send_task(receiver, write));
-    if let Err(e) = sender.send(ServerActions::ConnectAgent(Uuid::new_v4())) {
+    if let Err(e) = sender.send(ServerActions::ConnectAgent(config.id)) {
         println!("Error sending initialization: {}", e);
     }
 
-    // Listen for messages
-    if let Err(e) = listener::listen(&mut read, sender).await {
+    let mut handler = ServerHandler::new(config);
+
+    if let Err(e) = listener::listen(&mut read, sender, &mut handler).await {
         println!("Error: {}", e);
     }
 }

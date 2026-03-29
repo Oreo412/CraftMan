@@ -12,19 +12,15 @@ use uuid::Uuid;
 
 pub struct QueryHandler {
     client: McClient,
-    message_id: u64,
-    channel_id: u64,
     port: u32,
     options: QueryOptions,
     last_status: Option<ServerStatus>,
 }
 
 impl QueryHandler {
-    pub fn new(port: u32, message_id: u64, channel_id: u64, options: QueryOptions) -> Self {
+    pub fn new(port: u32, options: QueryOptions) -> Self {
         QueryHandler {
             client: McClient::new(),
-            message_id,
-            channel_id,
             port,
             options,
             last_status: None,
@@ -112,8 +108,6 @@ impl QueryHandler {
                     );
                 }
                 sender.send(ServerActions::UpdateQueryHeader {
-                    message_id: self.message_id,
-                    channel_id: self.channel_id,
                     description: status.description.clone(),
                     image,
                 })?;
@@ -139,8 +133,6 @@ impl QueryHandler {
 
         if self.last_status.is_none() || (&server_status != self.last_status.as_ref().unwrap()) {
             sender.send(ServerActions::UpdateQuery {
-                message_id: self.message_id,
-                channel_id: self.channel_id,
                 status: server_status.clone(),
             })?;
             self.last_status = Some(server_status);

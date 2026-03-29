@@ -1,5 +1,4 @@
 use anyhow::anyhow;
-use axum::extract::ws::Message;
 use moka::future::Cache;
 use sqlx::PgPool;
 use std::{
@@ -14,9 +13,8 @@ use twilight_model::id::{
 };
 
 use anyhow::{Result, bail};
-use dashmap::DashMap;
 use protocol::properties::property;
-use protocol::serveractions::OneshotResponses;
+use protocol::serveractions::RequestResponses;
 use protocol::{
     agentactions::AgentActions,
     query_options::{QueryOptions, ServerStatus},
@@ -25,7 +23,6 @@ use tokio::{
     sync::{
         RwLock,
         mpsc::{self, UnboundedReceiver, UnboundedSender},
-        oneshot,
     },
     time::interval,
 };
@@ -36,9 +33,9 @@ use crate::mods::bot::chat_channel;
 pub struct Agent {
     id: Uuid,
     sender: mpsc::UnboundedSender<AgentActions>,
-    pending_requests: Arc<Cache<Uuid, mpsc::Sender<OneshotResponses>>>,
+    pending_requests: Arc<Cache<Uuid, mpsc::Sender<RequestResponses>>>,
     chat_channel_cache: RwLock<Cached<Option<Id<ChannelMarker>>>>,
-    query_monitor_cache: RwLock<Cached<Option<(Id<MessageMarker>, Id<ChannelMarker>)>>>,
+    query_monitor_cache: RwLock<Cached<Option<(Id<ChannelMarker>, Id<MessageMarker>)>>>,
     dbpool: PgPool,
     chat_sender: RwLock<Option<UnboundedSender<String>>>,
 }
@@ -66,7 +63,7 @@ impl Agent {
         }
     }
 
-    pub async fn complete_request(&self, id: &Uuid, response: OneshotResponses) -> Result<()> {
+    pub async fn complete_request(&self, id: &Uuid, response: RequestResponses) -> Result<()> {
         if let Some(sender) = self.pending_requests.remove(id).await {
             println!("Request sender found. Sending response");
             sender.send(response).await?;
@@ -78,12 +75,12 @@ impl Agent {
     }
 
     pub async fn request_props(&self) -> Result<HashMap<String, String>> {
-        let (sender, mut receiver) = mpsc::channel::<OneshotResponses>(1);
+        let (sender, mut receiver) = mpsc::channel::<RequestResponses>(1);
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender).await;
         let message = AgentActions::RequestProps(request_id);
         self.send(message)?;
-        if let Some(OneshotResponses::PropsResponse(props)) = receiver.recv().await {
+        if let Some(RequestResponses::PropsResponse(props)) = receiver.recv().await {
             Ok(props)
         } else {
             bail!("Received incorrect response format, or sender was dropped");
@@ -94,15 +91,24 @@ impl Agent {
         if let Some(channel) = self.chat_sender.read().await.clone() {
             channel.send(message)?;
         } else {
-            self.send(AgentActions::StopChatStream)?;
             bail!("No open chat connection. Telling agent to stop");
         }
         Ok(())
     }
 
-    pub async fn stop_chat(&self) -> Result<()> {
+    pub async fn stop_chat_stream(&self) -> Result<()> {
+        let (request_sender, mut request_receiver) = mpsc::channel::<RequestResponses>(1);
+        let request_id = Uuid::new_v4();
+        self.pending_requests
+            .insert(request_id, request_sender)
+            .await;
         if self.chat_sender.write().await.take().is_some() {
-            Ok(())
+            self.send(AgentActions::StopChatStream(request_id))?;
+            if let Some(RequestResponses::StopChatResponses) = request_receiver.recv().await {
+                Ok(())
+            } else {
+                bail!("Failed to stop chat stream")
+            }
         } else {
             bail!("No chat channel found to stop")
         }
@@ -138,11 +144,11 @@ impl Agent {
     }
 
     pub async fn edit_props(&self, prop: property) -> Result<HashMap<String, String>> {
-        let (sender, mut receiver) = mpsc::channel::<OneshotResponses>(1);
+        let (sender, mut receiver) = mpsc::channel::<RequestResponses>(1);
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender).await;
         self.send(AgentActions::EditProp(request_id, prop))?;
-        if let Some(OneshotResponses::PropsResponse(props)) = receiver.recv().await {
+        if let Some(RequestResponses::PropsResponse(props)) = receiver.recv().await {
             Ok(props)
         } else {
             bail!("Received incorrect response format!");
@@ -152,19 +158,25 @@ impl Agent {
     pub async fn start_query(
         &self,
         options: HashSet<String>,
-        message_id: u64,
-        channel_id: u64,
+        message_id: Id<MessageMarker>,
+        channel_id: Id<ChannelMarker>,
     ) -> Result<(String, Option<Vec<u8>>, ServerStatus)> {
-        let (sender, mut receiver) = mpsc::channel::<OneshotResponses>(1);
+        sqlx::query!(
+            "UPDATE servers SET query_channel_id = $1, query_message_id = $2 WHERE agent_id = $3",
+            channel_id.get() as i64,
+            message_id.get() as i64,
+            self.id
+        )
+        .execute(&self.dbpool)
+        .await?;
+        let (sender, mut receiver) = mpsc::channel::<RequestResponses>(1);
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender).await;
-        self.send(AgentActions::StartQuery {
-            id: request_id,
-            options: QueryOptions::new(options),
-            message_id,
-            channel_id,
-        })?;
-        if let Some(OneshotResponses::QueryResponse(description, image_bytes, query)) =
+        self.send(AgentActions::StartQuery(
+            request_id,
+            QueryOptions::new(options),
+        ))?;
+        if let Some(RequestResponses::QueryResponse(description, image_bytes, query)) =
             receiver.recv().await
         {
             Ok((description, image_bytes, query))
@@ -174,6 +186,7 @@ impl Agent {
     }
 
     pub async fn start_chat_loop(&self, client: Arc<Client>) -> Result<()> {
+        let (request_sender, mut request_receiver) = mpsc::channel::<RequestResponses>(1);
         let (chat_sender, chat_receiver) = mpsc::unbounded_channel::<String>();
         tokio::spawn(chat_loop(
             self.chat_channel()
@@ -183,17 +196,25 @@ impl Agent {
             client,
         ));
         *self.chat_sender.write().await = Some(chat_sender);
-
-        Ok(())
+        let request_id = Uuid::new_v4();
+        self.pending_requests
+            .insert(request_id, request_sender)
+            .await;
+        self.send(AgentActions::StartChatStream(request_id))?;
+        if let Some(RequestResponses::StartChatResponse) = request_receiver.recv().await {
+            Ok(())
+        } else {
+            bail!("Could not start chat");
+        }
     }
 
     pub async fn start_server(&self) -> Result<()> {
         println!("Attempting to start server");
-        let (sender, mut receiver) = mpsc::channel::<OneshotResponses>(1);
+        let (sender, mut receiver) = mpsc::channel::<RequestResponses>(1);
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender).await;
         self.sender.send(AgentActions::SvStart(request_id))?;
-        if let Some(OneshotResponses::StartServerResponse) = receiver.recv().await {
+        if let Some(RequestResponses::StartServerResponse) = receiver.recv().await {
             println!("Successfully received server response");
             Ok(())
         } else {
@@ -203,15 +224,38 @@ impl Agent {
     }
 
     pub async fn stop_server(&self) -> Result<()> {
-        let (sender, mut receiver) = mpsc::channel::<OneshotResponses>(1);
+        let (sender, mut receiver) = mpsc::channel::<RequestResponses>(1);
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender).await;
         self.sender.send(AgentActions::SvStop(request_id))?;
-        if let Some(OneshotResponses::StopServerResponse) = receiver.recv().await {
+        if let Some(RequestResponses::StopServerResponse) = receiver.recv().await {
             Ok(())
         } else {
             println!("Unable to properly receive server response");
             bail!("Could not stop minecraft server");
+        }
+    }
+
+    pub async fn query_ids(&self) -> Result<Option<(Id<ChannelMarker>, Id<MessageMarker>)>> {
+        if let Cached::Cached(ids) = *self.query_monitor_cache.read().await {
+            Ok(ids)
+        } else {
+            let record = sqlx::query!(
+                "SELECT query_channel_id, query_message_id FROM servers WHERE agent_id = $1",
+                self.id
+            )
+            .fetch_one(&self.dbpool)
+            .await?;
+            let ids = if record.query_channel_id.is_some() && record.query_message_id.is_some() {
+                Some((
+                    Id::new(record.query_channel_id.expect("wtf") as u64),
+                    Id::new(record.query_message_id.expect("wtf") as u64),
+                ))
+            } else {
+                None
+            };
+            *self.query_monitor_cache.write().await = Cached::Cached(ids);
+            Ok(ids)
         }
     }
 }

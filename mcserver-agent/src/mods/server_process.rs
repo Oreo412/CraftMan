@@ -113,6 +113,7 @@ async fn commander(
                 stdin.write_all(format!("{}\n", command).as_bytes());
             }
             ServerCommands::Stop => {
+                println!("Stopping");
                 stdin.write_all(b"stop");
             }
         }

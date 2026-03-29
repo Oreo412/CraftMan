@@ -9,6 +9,7 @@ use moka::future::Cache;
 use nanoid::nanoid;
 use protocol::agentactions::AgentActions;
 use sqlx::PgPool;
+use sqlx::query;
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::sync::Mutex;
@@ -100,6 +101,13 @@ impl AppState {
             .get(code)
             .await
             .ok_or_else(|| anyhow!("Code not found. Code is either wrong or has expired"))?;
+        query!(
+            "INSERT INTO servers (agent_id, guild_id) VALUES ($1, $2)",
+            id,
+            guild_id as i64
+        )
+        .execute(&self.dbpool)
+        .await?;
         self.build_agent(
             id,
             receiver

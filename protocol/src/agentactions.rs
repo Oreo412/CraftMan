@@ -10,13 +10,9 @@ pub enum AgentActions {
     Message(String),
     RequestProps(Uuid),
     EditProp(Uuid, property),
-    StartQuery {
-        id: Uuid,
-        options: QueryOptions,
-        message_id: u64,
-        channel_id: u64,
-    },
-    StartChatStream,
-    StopChatStream,
+    StartQuery(Uuid, QueryOptions),
+    StopQuery,
+    StartChatStream(Uuid),
+    StopChatStream(Uuid),
     ConnectionKey(String),
 }

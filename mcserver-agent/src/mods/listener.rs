@@ -9,14 +9,16 @@ use tokio_tungstenite::tungstenite::protocol::Message;
 use anyhow::{Result, anyhow};
 use protocol::properties::property;
 
-use crate::mods::server_handler;
+use crate::mods::server_handler::{self, ServerHandler};
 
-pub async fn listen<R>(receiver: &mut R, sender: UnboundedSender<ServerActions>) -> Result<()>
+pub async fn listen<R>(
+    receiver: &mut R,
+    sender: UnboundedSender<ServerActions>,
+    handler: &mut ServerHandler,
+) -> Result<()>
 where
     R: Stream<Item = Result<Message, Error>> + Unpin,
 {
-    let mut handler =
-        server_handler::ServerHandler::default().dir(String::from("/home/oreo/mcserver/"));
     while let Some(msg) = receiver.next().await {
         let Message::Text(text) = msg? else {
             return Ok(());
@@ -37,19 +39,17 @@ where
                     sender.send(ServerActions::StopResponse(id))?;
                 }
             }
-            AgentActions::StartQuery {
-                id: request_id,
-                options,
-                message_id,
-                channel_id,
-            } => {
+            AgentActions::StartQuery(request_id, options) => {
                 println!("Received query");
                 if let Err(e) = handler
-                    .start_query(message_id, channel_id, options, sender.clone(), request_id)
+                    .start_query(options, sender.clone(), request_id)
                     .await
                 {
                     println!("Error starting query handling: {}", e);
                 }
+            }
+            AgentActions::StopQuery => {
+                handler.stop_query();
             }
             AgentActions::RequestProps(request_id) => {
                 println!("Received request_props action with ID: {}", request_id);
@@ -165,11 +165,15 @@ where
                     .send_properties_response(sender.clone(), request_id)
                     .await?;
             }
-            AgentActions::StartChatStream => {
+            AgentActions::StartChatStream(uuid) => {
                 handler.start_chat()?;
+                println!("Sending start chat response");
+                sender.send(ServerActions::StartChatResponse(uuid))?;
             }
-            AgentActions::StopChatStream => {
+            AgentActions::StopChatStream(uuid) => {
                 handler.stop_chat()?;
+                println!("Sending stop chat response");
+                sender.send(ServerActions::StopChatResponse(uuid))?;
             }
             AgentActions::ConnectionKey(key) => {
                 println!("Enter key into discord: {}", key);

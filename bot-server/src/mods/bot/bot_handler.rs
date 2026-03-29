@@ -52,7 +52,7 @@ impl EventHandler for Handler {
                     startserver::register(),
                     stopserver::register(),
                     settingsview::register(),
-                    create_monitor::register(),
+                    query_monitor::register(),
                     chat_channel::register(),
                     start_chat::register(),
                     stop_chat::register(),
@@ -160,10 +160,22 @@ impl Handler {
                         .await
                     }
                     "startchat" => {
-                        start_chat(&command, &self.app_state, self.twilight_client.clone()).await
+                        start_chat(
+                            &ctx,
+                            &command,
+                            &self.app_state,
+                            self.twilight_client.clone(),
+                        )
+                        .await
                     }
                     "stopchat" => {
-                        stop_chat(&command, &self.app_state, self.twilight_client.clone()).await
+                        stop_chat(
+                            &ctx,
+                            &command,
+                            &self.app_state,
+                            self.twilight_client.clone(),
+                        )
+                        .await
                     }
                     "serverproperties" => {
                         crate::bot::settingsview::run(
@@ -175,7 +187,7 @@ impl Handler {
                         Ok(())
                     }
                     "thumbnail" => {
-                        if let Err(e) = crate::bot::create_monitor::builder_modal(
+                        if let Err(e) = crate::bot::query_monitor::builder_modal(
                             &self.twilight_client,
                             command,
                             &self.app_state,
@@ -187,9 +199,12 @@ impl Handler {
                         Ok(())
                     }
                     "set_chat" => {
-                        if let Err(e) =
-                            crate::bot::chat_channel::set_chat_channel(&command, &self.app_state)
-                                .await
+                        if let Err(e) = crate::bot::chat_channel::set_chat_channel(
+                            &ctx,
+                            &command,
+                            &self.app_state,
+                        )
+                        .await
                         {
                             println!("Error setting chat: {}", e);
                         }
@@ -421,7 +436,7 @@ impl Handler {
                         else {
                             bail!("Not a checkbox group I gess");
                         };
-                        create_monitor::build_view(
+                        query_monitor::build_view(
                             checkbox_group.values.clone().into_iter().collect(),
                             &self.twilight_client,
                             &modal,

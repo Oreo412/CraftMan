@@ -16,3 +16,5 @@ uuid.workspace = true
 anyhow.workspace = true
 rust-mc-status = "2"
 base64 = "0.22"
+dirs = "6.0.0"
+directories = "6.0.0"

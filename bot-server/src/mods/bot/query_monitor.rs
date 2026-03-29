@@ -91,9 +91,7 @@ pub async fn build_view(
 
     let agent = appstate.find_connection(&uuid)?;
 
-    let (description, image, status) = agent
-        .start_query(options, message_id.get(), channel_id.get())
-        .await?;
+    let (description, image, status) = agent.start_query(options, message_id, channel_id).await?;
     let filename = format!("{}.png", uuid::Uuid::new_v4());
     let mut attachment =
         Attachment::from_bytes(filename.clone(), image.unwrap_or(DEFAULT_ICON.to_vec()), 1);
@@ -201,14 +199,12 @@ pub fn build_monitor(uuid: Uuid) -> InteractionResponse {
 }
 
 pub async fn update_monitor(
-    message_id: u64,
-    channel_id: u64,
+    channel_id: Id<ChannelMarker>,
+    message_id: Id<MessageMarker>,
     status: ServerStatus,
     client: &twilight_http::Client,
 ) -> Result<()> {
     if let ServerStatus::ServerOnline(query) = status {
-        let message_id: Id<MessageMarker> = Id::new(message_id);
-        let channel_id: Id<ChannelMarker> = Id::new(channel_id);
         let message = client
             .message(channel_id, message_id)
             .await?
@@ -225,8 +221,6 @@ pub async fn update_monitor(
             .components(Some(&components))
             .await?;
     } else {
-        let message_id: Id<MessageMarker> = Id::new(message_id);
-        let channel_id: Id<ChannelMarker> = Id::new(channel_id);
         let message = client
             .message(channel_id, message_id)
             .await?
@@ -327,14 +321,12 @@ pub fn build_monitor_display(query: QueryStatus) -> Result<Vec<Component>> {
 }
 
 pub async fn update_header(
-    message_id: u64,
-    channel_id: u64,
+    message_id: Id<MessageMarker>,
+    channel_id: Id<ChannelMarker>,
     description: String,
     image: Option<Vec<u8>>,
     client: &twilight_http::Client,
 ) -> Result<()> {
-    let message_id: Id<MessageMarker> = Id::new(message_id);
-    let channel_id: Id<ChannelMarker> = Id::new(channel_id);
     let message = client
         .message(channel_id, message_id)
         .await?

@@ -1,6 +1,6 @@
 use crate::mods::agents::Agent;
 use crate::mods::bot::chat_channel;
-use crate::mods::bot::create_monitor::{update_header, update_monitor};
+use crate::mods::bot::query_monitor::{update_header, update_monitor};
 use anyhow::Result;
 use anyhow::bail;
 use axum::Error;
@@ -8,7 +8,7 @@ use axum::extract::ws::Message;
 use futures_util::Stream;
 use futures_util::stream::StreamExt;
 use protocol::agentactions::AgentActions;
-use protocol::serveractions::{OneshotResponses, ServerActions};
+use protocol::serveractions::{RequestResponses, ServerActions};
 use std::sync::Arc;
 use tokio::sync::mpsc::{UnboundedSender, WeakUnboundedSender, unbounded_channel};
 
@@ -19,7 +19,6 @@ pub async fn listen<R>(
 ) where
     R: Stream<Item = Result<Message, Error>> + Unpin,
 {
-    let mut chat_channel: Option<WeakUnboundedSender<String>> = None;
     while let Some(msg) = receiver.next().await {
         if let Message::Text(text) = msg.unwrap()
             && let Ok(message) = serde_json::from_str::<ServerActions>(text.as_str())
@@ -41,7 +40,7 @@ async fn handle_message(
     match message {
         ServerActions::PropsResponse(id, props) => {
             agent
-                .complete_request(&id, OneshotResponses::PropsResponse(props))
+                .complete_request(&id, RequestResponses::PropsResponse(props))
                 .await?;
             // if let Some((_id, sender)) = something {
             //     if sender.send(OneshotResponses::PropsResponse(props)).is_err() {
@@ -63,25 +62,24 @@ async fn handle_message(
             agent
                 .complete_request(
                     &id,
-                    OneshotResponses::QueryResponse(description, image, status),
+                    RequestResponses::QueryResponse(description, image, status),
                 )
                 .await?;
         }
-        ServerActions::UpdateQuery {
-            message_id,
-            channel_id,
-            status,
-        } => {
-            update_monitor(message_id, channel_id, status, &twilight_client).await?;
+        ServerActions::UpdateQuery { status } => {
+            if let Some((channel_id, message_id)) = agent.query_ids().await? {
+                update_monitor(channel_id, message_id, status, &twilight_client).await?;
+            } else {
+                agent.send(AgentActions::StopQuery)?;
+            }
         }
-        ServerActions::UpdateQueryHeader {
-            message_id,
-            channel_id,
-            description,
-            image,
-        } => {
+        ServerActions::UpdateQueryHeader { description, image } => {
             println!("Updating query header");
-            update_header(message_id, channel_id, description, image, &twilight_client).await?;
+            if let Some((channel_id, message_id)) = agent.query_ids().await? {
+                update_header(message_id, channel_id, description, image, &twilight_client).await?;
+            } else {
+                agent.send(AgentActions::StopQuery)?;
+            }
         }
         ServerActions::NewMessage(message) => {
             agent.send_chat(message).await?;
@@ -89,16 +87,28 @@ async fn handle_message(
         ServerActions::StartResponse(id) => {
             println!("Received start response. Trying to complete request");
             agent
-                .complete_request(&id, OneshotResponses::StartServerResponse)
+                .complete_request(&id, RequestResponses::StartServerResponse)
                 .await?;
         }
         ServerActions::StopResponse(id) => {
             agent
-                .complete_request(&id, OneshotResponses::StopServerResponse)
+                .complete_request(&id, RequestResponses::StopServerResponse)
                 .await?;
         }
         ServerActions::ConnectAgent(_) => {
             bail!("Agent already connected")
+        }
+        ServerActions::StartChatResponse(id) => {
+            println!("Received start chat response. Completing request");
+            agent
+                .complete_request(&id, RequestResponses::StartChatResponse)
+                .await?;
+        }
+        ServerActions::StopChatResponse(id) => {
+            println!("Received stop chat response. Completing request");
+            agent
+                .complete_request(&id, RequestResponses::StopChatResponses)
+                .await?;
         }
     }
     Ok(())
