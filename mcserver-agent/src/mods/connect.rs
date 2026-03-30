@@ -1,38 +1,32 @@
-mod mods;
-use crate::mods::{server_handler::ServerHandler, *};
+use crate::mods::{configs::Configs, server_handler::ServerHandler, *};
 use anyhow::Result;
-use connect::connect;
 use futures_util::{
     sink::{Sink, SinkExt},
-    stream::StreamExt,
+    stream::{SplitStream, StreamExt},
 };
 use protocol::serveractions::ServerActions;
-use std::{env, time::Duration};
+use std::env;
 use tokio::sync::mpsc;
 use tokio::sync::mpsc::UnboundedReceiver;
-use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
+use tokio_tungstenite::{
+    connect_async,
+    tungstenite::{WebSocket, protocol::Message},
+};
 
-#[tokio::main]
-async fn main() {
-    dotenvy::dotenv().ok();
-    let config = configs::Configs::new();
+pub async fn connect(handler: &mut ServerHandler) -> anyhow::Result<()> {
+    let url = env::var("URL")?;
 
-    println!("Connected to server");
+    let (ws_stream, _) = connect_async(url).await?;
 
-    let mut handler = ServerHandler::new(config);
+    let (ws_write, mut ws_read) = ws_stream.split();
 
-    loop {
-        match connect(&mut handler).await {
-            Ok(()) => {
-                println!("Disconnected. Reconnecting...");
-            }
-            Err(e) => {
-                eprintln!("Connection failed: {e}");
-            }
-        }
+    let (sender, receiver) = mpsc::unbounded_channel();
 
-        tokio::time::sleep(Duration::from_secs(3)).await;
-    }
+    tokio::spawn(send_task(receiver, ws_write));
+
+    listener::listen(ws_read, sender, handler).await?;
+
+    Ok(())
 }
 
 async fn send_task<S>(mut receiver: UnboundedReceiver<ServerActions>, mut sender: S) -> Result<()>

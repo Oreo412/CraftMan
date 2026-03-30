@@ -12,7 +12,7 @@ use protocol::properties::property;
 use crate::mods::server_handler::{self, ServerHandler};
 
 pub async fn listen<R>(
-    receiver: &mut R,
+    mut receiver: R,
     sender: UnboundedSender<ServerActions>,
     handler: &mut ServerHandler,
 ) -> Result<()>

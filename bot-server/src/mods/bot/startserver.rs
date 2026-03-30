@@ -24,6 +24,8 @@ pub async fn start_mc_server(
             .ok_or_else(|| anyhow!("interaction outside of guild"))?
             .get(),
     )?;
+
+    println!("Found agent");
     let response = CreateInteractionResponseMessage::new();
     if let Err(e) = agent.start_server().await {
         interaction
@@ -40,6 +42,7 @@ pub async fn start_mc_server(
             )
             .await?;
     }
+    println!("Everything worked?");
     Ok(())
 }
 

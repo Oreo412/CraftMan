@@ -1,4 +1,5 @@
 pub mod configs;
+pub mod connect;
 pub mod listener;
 pub mod query_handler;
 pub mod server_handler;

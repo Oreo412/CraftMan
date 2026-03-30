@@ -22,7 +22,7 @@ use protocol::{
 use protocol::{properties::property, server_commands::ServerCommands};
 use tokio::{
     sync::{
-        Mutex, RwLock,
+        RwLock,
         mpsc::{self, UnboundedReceiver, UnboundedSender},
     },
     time::interval,
@@ -33,33 +33,28 @@ use crate::mods::bot::chat_channel;
 
 pub struct Agent {
     id: Uuid,
-    sender: Mutex<Option<mpsc::UnboundedSender<AgentActions>>>,
+    sender: Option<mpsc::UnboundedSender<AgentActions>>,
     pending_requests: Arc<Cache<Uuid, mpsc::Sender<RequestResponses>>>,
     chat_channel_cache: RwLock<Cached<Option<Id<ChannelMarker>>>>,
     query_monitor_cache: RwLock<Cached<Option<(Id<ChannelMarker>, Id<MessageMarker>)>>>,
     dbpool: PgPool,
     chat_sender: RwLock<Option<UnboundedSender<String>>>,
-    last_seen: Mutex<Option<AtomicInstant>>,
+    last_seen: Option<AtomicInstant>
 }
 
 impl Agent {
     pub fn id(&self) -> Uuid {
         self.id
     }
-    pub async fn send(&self, message: AgentActions) -> Result<()> {
-        self.sender
-            .lock()
-            .await
-            .as_ref()
-            .ok_or_else(|| anyhow!("No connection on this agent"))?
-            .send(message)?;
+    pub fn send(&self, message: AgentActions) -> Result<()> {
+        self.sender.as_ref().ok_or_else(|| anyhow!("No connection on this agent"))?.send(message)?;
         Ok(())
     }
 
     pub fn new(id: Uuid, sender: mpsc::UnboundedSender<AgentActions>, dbpool: PgPool) -> Self {
         Agent {
             id,
-            sender: Mutex::new(Some(sender)),
+            sender: Some(sender),
             pending_requests: Cache::builder()
                 .time_to_live(Duration::from_secs(5))
                 .build()
@@ -68,7 +63,7 @@ impl Agent {
             query_monitor_cache: RwLock::new(Cached::NotCached),
             dbpool,
             chat_sender: RwLock::new(None),
-            last_seen: Mutex::new(None),
+            last_seen: None
         }
     }
 
@@ -88,7 +83,7 @@ impl Agent {
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender).await;
         let message = AgentActions::RequestProps(request_id);
-        self.send(message).await?;
+        self.send(message)?;
         if let Some(RequestResponses::PropsResponse(props)) = receiver.recv().await {
             Ok(props)
         } else {
@@ -112,7 +107,7 @@ impl Agent {
             .insert(request_id, request_sender)
             .await;
         if self.chat_sender.write().await.take().is_some() {
-            self.send(AgentActions::StopChatStream(request_id)).await?;
+            self.send(AgentActions::StopChatStream(request_id))?;
             if let Some(RequestResponses::StopChatResponses) = request_receiver.recv().await {
                 Ok(())
             } else {
@@ -156,7 +151,7 @@ impl Agent {
         let (sender, mut receiver) = mpsc::channel::<RequestResponses>(1);
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender).await;
-        self.send(AgentActions::EditProp(request_id, prop)).await?;
+        self.send(AgentActions::EditProp(request_id, prop))?;
         if let Some(RequestResponses::PropsResponse(props)) = receiver.recv().await {
             Ok(props)
         } else {
@@ -184,8 +179,7 @@ impl Agent {
         self.send(AgentActions::StartQuery(
             request_id,
             QueryOptions::new(options),
-        ))
-        .await?;
+        ))?;
         if let Some(RequestResponses::QueryResponse(description, image_bytes, query)) =
             receiver.recv().await
         {
@@ -210,7 +204,7 @@ impl Agent {
         self.pending_requests
             .insert(request_id, request_sender)
             .await;
-        self.send(AgentActions::StartChatStream(request_id)).await?;
+        self.send(AgentActions::StartChatStream(request_id))?;
         if let Some(RequestResponses::StartChatResponse) = request_receiver.recv().await {
             Ok(())
         } else {
@@ -223,7 +217,7 @@ impl Agent {
         let (sender, mut receiver) = mpsc::channel::<RequestResponses>(1);
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender).await;
-        self.send(AgentActions::SvStart(request_id)).await?;
+        self.send(AgentActions::SvStart(request_id))?;
         if let Some(RequestResponses::StartServerResponse) = receiver.recv().await {
             println!("Successfully received server response");
             Ok(())
@@ -237,7 +231,7 @@ impl Agent {
         let (sender, mut receiver) = mpsc::channel::<RequestResponses>(1);
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender).await;
-        self.send(AgentActions::SvStop(request_id)).await?;
+        self.send(AgentActions::SvStop(request_id))?;
         if let Some(RequestResponses::StopServerResponse) = receiver.recv().await {
             Ok(())
         } else {
@@ -273,8 +267,7 @@ impl Agent {
         let (request_sender, mut request_receiver) = mpsc::channel::<RequestResponses>(1);
         let uuid = Uuid::new_v4();
         self.pending_requests.insert(uuid, request_sender).await;
-        self.send(AgentActions::ServerCommand(uuid, command))
-            .await?;
+        self.send(AgentActions::ServerCommand(uuid, command))?;
         if let Some(RequestResponses::CommandResponse) = request_receiver.recv().await {
             Ok(())
         } else {
@@ -282,13 +275,11 @@ impl Agent {
         }
     }
 
-    pub async fn lost_connection(&self) {
-        *self.last_seen.lock().await = Some(AtomicInstant::now());
-        *self.sender.lock().await = None;
-    }
+    pub fn lost_connection(&mut self) {
+        self.last_seen = Some(AtomicInstant::now());
+        self.sender = None
 
-    pub async fn reconnect(&self, sender: mpsc::UnboundedSender<AgentActions>) {
-        *self.sender.lock().await = Some(sender);
+
     }
 }
 

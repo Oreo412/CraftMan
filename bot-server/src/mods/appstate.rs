@@ -23,17 +23,7 @@ pub struct AppState {
     uuid_by_guild: Arc<DashMap<u64, Uuid>>,
     pub twilight_client: Arc<Client>,
     pub dbpool: PgPool,
-    connection_requests: Cache<
-        String,
-        (
-            Uuid,
-            Arc<Mutex<Option<SplitStream<WebSocket>>>>, //There's gotta be a better way to do this.
-            //This shouldn't need protection, but I need
-            //all this to get around the clone
-            //requirements
-            mpsc::UnboundedSender<AgentActions>,
-        ),
-    >,
+    connection_requests: Cache<String, PendingRequest>,
 }
 
 impl AppState {
@@ -47,10 +37,6 @@ impl AppState {
                 .time_to_live(Duration::from_secs(300))
                 .build(),
         }
-    }
-
-    pub fn add_connection(&self, id: Uuid, agent: Agent) {
-        self.connections.insert(id, Arc::new(agent));
     }
 
     pub async fn create_agent(
@@ -70,7 +56,7 @@ impl AppState {
             sender.send(AgentActions::ConnectionKey(nanoid.clone()))?;
             println!("Inserted connection key to cache: {}", &nanoid);
             self.connection_requests
-                .insert(nanoid, (id, Arc::new(Mutex::new(Some(receiver))), sender))
+                .insert(nanoid, PendingRequest::new(id, receiver, sender))
                 .await;
         }
         Ok(())
@@ -100,7 +86,9 @@ impl AppState {
             .connection_requests
             .get(code)
             .await
-            .ok_or_else(|| anyhow!("Code not found. Code is either wrong or has expired"))?;
+            .ok_or_else(|| anyhow!("Code not found. Code is either wrong or has expired"))?
+            .complete()
+            .await;
         query!(
             "INSERT INTO servers (agent_id, guild_id) VALUES ($1, $2)",
             id,
@@ -108,17 +96,7 @@ impl AppState {
         )
         .execute(&self.dbpool)
         .await?;
-        self.build_agent(
-            id,
-            receiver
-                .lock()
-                .await
-                .take()
-                .ok_or_else(|| anyhow!("receiver missing"))?,
-            sender,
-            guild_id,
-        )
-        .await
+        self.build_agent(id, receiver, sender, guild_id).await
     }
 
     pub fn find_connection(&self, id: &Uuid) -> Result<Arc<Agent>> {
@@ -142,12 +120,51 @@ impl AppState {
     pub async fn send_message(&self, id: Uuid, message: AgentActions) -> Result<()> {
         print!("Sending message to agent connected on guild: {}", id);
         let agent = self.find_connection(&id)?;
-        agent.send(message)?;
+        agent.send(message).await?;
         Ok(())
     }
 
     pub async fn send_by_guild(&self, guild_id: u64, message: AgentActions) -> Result<()> {
         self.send_message(self.find_id_by_guild(guild_id)?, message)
             .await
+    }
+}
+
+#[derive(Clone)]
+pub struct PendingRequest {
+    agent_id: Uuid,
+    ws_receiver: Arc<Mutex<Option<SplitStream<WebSocket>>>>,
+    sender: mpsc::UnboundedSender<AgentActions>,
+}
+
+impl PendingRequest {
+    pub fn new(
+        agent_id: Uuid,
+        receiver: SplitStream<WebSocket>,
+        sender: mpsc::UnboundedSender<AgentActions>,
+    ) -> Self {
+        PendingRequest {
+            agent_id,
+            ws_receiver: Arc::new(Mutex::new(Some(receiver))),
+            sender,
+        }
+    }
+
+    pub async fn complete(
+        self,
+    ) -> (
+        Uuid,
+        SplitStream<WebSocket>,
+        mpsc::UnboundedSender<AgentActions>,
+    ) {
+        (
+            self.agent_id,
+            self.ws_receiver
+                .lock()
+                .await
+                .take()
+                .expect("No receiver found"),
+            self.sender,
+        )
     }
 }

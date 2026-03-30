@@ -58,8 +58,10 @@ async fn handle_socket(socket: WebSocket, app_state: appstate::AppState) {
                 if let ServerActions::ConnectAgent(id) =
                     serde_json::from_str::<ServerActions>(text.as_str()).expect("Uh oh")
                 {
-                    if let Err(e) = app_state.create_agent(id, receiver, c_sender).await {
-                        println!("Error connecting and creating agent");
+                    if let Ok(agent) = app_state.find_connection(&id) {
+                        agent.reconnect(c_sender).await;
+                    } else if let Err(e) = app_state.create_agent(id, receiver, c_sender).await {
+                        println!("Error connecting and creating agent: {}", e);
                     }
                     break;
                 }

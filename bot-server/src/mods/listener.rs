@@ -1,5 +1,4 @@
 use crate::mods::agents::Agent;
-use crate::mods::bot::chat_channel;
 use crate::mods::bot::query_monitor::{update_header, update_monitor};
 use anyhow::Result;
 use anyhow::bail;
@@ -10,7 +9,6 @@ use futures_util::stream::StreamExt;
 use protocol::agentactions::AgentActions;
 use protocol::serveractions::{RequestResponses, ServerActions};
 use std::sync::Arc;
-use tokio::sync::mpsc::{UnboundedSender, WeakUnboundedSender, unbounded_channel};
 
 pub async fn listen<R>(
     mut receiver: R,
@@ -30,6 +28,7 @@ pub async fn listen<R>(
             println!("Received unhandled message in websocket.");
         }
     }
+    agent.lost_connection().await;
 }
 
 async fn handle_message(
@@ -42,15 +41,6 @@ async fn handle_message(
             agent
                 .complete_request(&id, RequestResponses::PropsResponse(props))
                 .await?;
-            // if let Some((_id, sender)) = something {
-            //     if sender.send(OneshotResponses::PropsResponse(props)).is_err() {
-            //         println!("Error sending properties to pending request: {}", id);
-            //     } else {
-            //         println!("Properties sent to pending request successfully");
-            //     }
-            // } else {
-            //     println!("No pending request found for ID: {}", id);
-            // }
         }
         ServerActions::QueryResponse {
             uuid: id,
@@ -70,7 +60,7 @@ async fn handle_message(
             if let Some((channel_id, message_id)) = agent.query_ids().await? {
                 update_monitor(channel_id, message_id, status, &twilight_client).await?;
             } else {
-                agent.send(AgentActions::StopQuery)?;
+                agent.send(AgentActions::StopQuery).await?;
             }
         }
         ServerActions::UpdateQueryHeader { description, image } => {
@@ -78,7 +68,7 @@ async fn handle_message(
             if let Some((channel_id, message_id)) = agent.query_ids().await? {
                 update_header(message_id, channel_id, description, image, &twilight_client).await?;
             } else {
-                agent.send(AgentActions::StopQuery)?;
+                agent.send(AgentActions::StopQuery).await?;
             }
         }
         ServerActions::NewMessage(message) => {

@@ -24,3 +24,4 @@ base64 = "0.22"
 sqlx = {version = "0.8", features = ["runtime-tokio", "postgres", "macros", "uuid"]}
 moka = { version = "0.12.15", features = ["future"] }
 nanoid = "0.4.0"
+atomic-time = "0.1.5"
