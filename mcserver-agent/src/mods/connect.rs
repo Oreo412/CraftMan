@@ -24,6 +24,9 @@ pub async fn connect(handler: &mut ServerHandler) -> anyhow::Result<()> {
 
     tokio::spawn(send_task(receiver, ws_write));
 
+    sender.send(ServerActions::ConnectAgent(handler.id()))?;
+    println!("Connected to server!");
+
     listener::listen(ws_read, sender, handler).await?;
 
     Ok(())
@@ -35,6 +38,7 @@ where
     S::Error: std::error::Error + Send + Sync + 'static,
 {
     while let Some(message) = receiver.recv().await {
+        println!("Sending server action");
         sender
             .send(Message::Text(
                 serde_json::to_string(&message)

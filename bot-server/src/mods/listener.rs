@@ -18,7 +18,7 @@ pub async fn listen<R>(
     R: Stream<Item = Result<Message, Error>> + Unpin,
 {
     while let Some(msg) = receiver.next().await {
-        if let Message::Text(text) = msg.unwrap()
+        if let Ok(Message::Text(text)) = msg
             && let Ok(message) = serde_json::from_str::<ServerActions>(text.as_str())
         {
             if let Err(e) = handle_message(message, agent.clone(), twilight_client.clone()).await {
@@ -28,6 +28,7 @@ pub async fn listen<R>(
             println!("Received unhandled message in websocket.");
         }
     }
+    println!("Connection lost!");
     agent.lost_connection().await;
 }
 
@@ -36,6 +37,7 @@ async fn handle_message(
     agent: Arc<Agent>,
     twilight_client: Arc<twilight_http::Client>,
 ) -> Result<()> {
+    println!("Handling message");
     match message {
         ServerActions::PropsResponse(id, props) => {
             agent

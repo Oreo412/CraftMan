@@ -6,7 +6,7 @@ use futures_util::{
 };
 use protocol::{agentactions::AgentActions, serveractions::ServerActions};
 use sqlx::postgres::PgPoolOptions;
-use std::env;
+use std::{env, time::Duration};
 use tokio::sync::mpsc;
 
 use crate::mods::*;
@@ -26,6 +26,7 @@ async fn main() {
             .await
             .expect("Could not connect to database"),
     );
+    app_state.start_clean_task(Duration::from_secs(15), Duration::from_secs(30));
     let app = Router::new()
         .route("/", get(|| async { "Axum all over you!" }))
         .route("/ws", get(handler))
@@ -58,7 +59,9 @@ async fn handle_socket(socket: WebSocket, app_state: appstate::AppState) {
                 if let ServerActions::ConnectAgent(id) =
                     serde_json::from_str::<ServerActions>(text.as_str()).expect("Uh oh")
                 {
+                    println!("Looking for agent connection!");
                     if let Ok(agent) = app_state.find_connection(&id) {
+                        println!("Found Agent for this connection. Reconnecting!");
                         agent.reconnect(c_sender).await;
                     } else if let Err(e) = app_state.create_agent(id, receiver, c_sender).await {
                         println!("Error connecting and creating agent: {}", e);

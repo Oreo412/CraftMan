@@ -173,6 +173,10 @@ impl ServerHandler {
             bail!("No running process")
         }
     }
+
+    pub fn id(&self) -> Uuid {
+        self.config.id
+    }
 }
 
 async fn query_loop(

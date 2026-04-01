@@ -14,6 +14,7 @@ use std::sync::Arc;
 use std::time::Duration;
 use tokio::sync::Mutex;
 use tokio::sync::mpsc;
+use tokio::time::sleep;
 use twilight_http::Client;
 use uuid::Uuid;
 
@@ -23,7 +24,7 @@ pub struct AppState {
     uuid_by_guild: Arc<DashMap<u64, Uuid>>,
     pub twilight_client: Arc<Client>,
     pub dbpool: PgPool,
-    connection_requests: Cache<String, PendingRequest>,
+    connection_requests: Arc<Cache<String, PendingRequest>>,
 }
 
 impl AppState {
@@ -33,9 +34,11 @@ impl AppState {
             uuid_by_guild: Arc::new(DashMap::new()),
             twilight_client: Arc::new(Client::new(token)),
             dbpool,
-            connection_requests: Cache::builder()
-                .time_to_live(Duration::from_secs(300))
-                .build(),
+            connection_requests: Arc::new(
+                Cache::builder()
+                    .time_to_live(Duration::from_secs(300))
+                    .build(),
+            ),
         }
     }
 
@@ -45,6 +48,7 @@ impl AppState {
         receiver: SplitStream<WebSocket>,
         sender: mpsc::UnboundedSender<AgentActions>,
     ) -> Result<()> {
+        println!("Creating agent");
         let guild = sqlx::query!("SELECT guild_id FROM servers WHERE agent_id = $1", id)
             .fetch_optional(&self.dbpool)
             .await?;
@@ -127,6 +131,27 @@ impl AppState {
     pub async fn send_by_guild(&self, guild_id: u64, message: AgentActions) -> Result<()> {
         self.send_message(self.find_id_by_guild(guild_id)?, message)
             .await
+    }
+
+    pub async fn clean_connections(&self, limit: Duration, cycle_time: Duration) {
+        loop {
+            println!("Cleaning!");
+            for connection in self.connections.iter() {
+                let agent = connection.value();
+                if let Some(since) = agent.since_last_seen().await
+                    && since > limit
+                {
+                    self.connections.remove(connection.key());
+                    println!("Removed: {}", connection.key());
+                };
+            }
+            sleep(cycle_time).await;
+        }
+    }
+
+    pub fn start_clean_task(&self, limit: Duration, cycle_time: Duration) {
+        let run_this = self.clone();
+        tokio::spawn(async move { run_this.clean_connections(limit, cycle_time).await });
     }
 }
 

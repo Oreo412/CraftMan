@@ -1,23 +1,12 @@
 mod mods;
 use crate::mods::{server_handler::ServerHandler, *};
-use anyhow::Result;
 use connect::connect;
-use futures_util::{
-    sink::{Sink, SinkExt},
-    stream::StreamExt,
-};
-use protocol::serveractions::ServerActions;
-use std::{env, time::Duration};
-use tokio::sync::mpsc;
-use tokio::sync::mpsc::UnboundedReceiver;
-use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
+use std::time::Duration;
 
 #[tokio::main]
 async fn main() {
     dotenvy::dotenv().ok();
     let config = configs::Configs::new();
-
-    println!("Connected to server");
 
     let mut handler = ServerHandler::new(config);
 
@@ -33,21 +22,4 @@ async fn main() {
 
         tokio::time::sleep(Duration::from_secs(3)).await;
     }
-}
-
-async fn send_task<S>(mut receiver: UnboundedReceiver<ServerActions>, mut sender: S) -> Result<()>
-where
-    S: Sink<Message> + Unpin,
-    S::Error: std::error::Error + Send + Sync + 'static,
-{
-    while let Some(message) = receiver.recv().await {
-        sender
-            .send(Message::Text(
-                serde_json::to_string(&message)
-                    .expect("send_task serialization failed. This should not be possible. Major programming bug")
-                    .into(),
-            ))
-            .await?;
-    }
-    Ok(())
 }

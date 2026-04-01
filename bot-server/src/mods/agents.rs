@@ -285,10 +285,23 @@ impl Agent {
     pub async fn lost_connection(&self) {
         *self.last_seen.lock().await = Some(AtomicInstant::now());
         *self.sender.lock().await = None;
+        println!("Lost Connection, last seen and sender changed!");
     }
 
     pub async fn reconnect(&self, sender: mpsc::UnboundedSender<AgentActions>) {
         *self.sender.lock().await = Some(sender);
+    }
+
+    pub async fn since_last_seen(&self) -> Option<Duration> {
+        if let Some(last_seen) = self.last_seen.lock().await.as_ref() {
+            Some(
+                last_seen
+                    .load(std::sync::atomic::Ordering::Relaxed)
+                    .elapsed(),
+            )
+        } else {
+            None
+        }
     }
 }
 

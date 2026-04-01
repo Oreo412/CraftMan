@@ -148,11 +148,13 @@ impl Handler {
             Interaction::Command(command) => {
                 println!("Received command interaction: {command:#?}");
                 let command_name = command.data.name.as_str();
-                let _result = match command_name {
-                    "send_ws" => crate::bot::send_ws::run(&command, self.app_state.clone()).await,
+                match command_name {
+                    "send_ws" => {
+                        crate::bot::send_ws::run(&command, self.app_state.clone()).await?;
+                    }
                     "startserver" => {
                         crate::bot::startserver::start_mc_server(&ctx, &command, &self.app_state)
-                            .await
+                            .await?;
                     }
                     "stopserver" => {
                         crate::bot::stopserver::stop_minecraft_server(
@@ -160,7 +162,7 @@ impl Handler {
                             &command,
                             &self.app_state,
                         )
-                        .await
+                        .await?;
                     }
                     "startchat" => {
                         start_chat(
@@ -169,7 +171,7 @@ impl Handler {
                             &self.app_state,
                             self.twilight_client.clone(),
                         )
-                        .await
+                        .await?;
                     }
                     "stopchat" => {
                         stop_chat(
@@ -178,7 +180,7 @@ impl Handler {
                             &self.app_state,
                             self.twilight_client.clone(),
                         )
-                        .await
+                        .await?;
                     }
                     "serverproperties" => {
                         crate::bot::settingsview::run(
@@ -187,39 +189,21 @@ impl Handler {
                             &self.app_state,
                         )
                         .await?;
-                        Ok(())
                     }
                     "thumbnail" => {
-                        if let Err(e) = crate::bot::query_monitor::builder_modal(
+                        crate::bot::query_monitor::builder_modal(
                             &self.twilight_client,
                             command,
                             &self.app_state,
                         )
-                        .await
-                        {
-                            println!("issue: {}", e);
-                        }
-                        Ok(())
+                        .await?;
                     }
                     "set_chat" => {
-                        if let Err(e) = crate::bot::chat_channel::set_chat_channel(
-                            &ctx,
-                            &command,
-                            &self.app_state,
-                        )
-                        .await
-                        {
-                            println!("Error setting chat: {}", e);
-                        }
-                        Ok(())
+                        crate::bot::chat_channel::set_chat_channel(&ctx, &command, &self.app_state)
+                            .await?;
                     }
                     "verify" => {
-                        if let Err(e) =
-                            connect_to_server::connect_server(&ctx, &command, &self.app_state).await
-                        {
-                            println!("Error verifying connection: {}", e);
-                        }
-                        Ok(())
+                        connect_to_server::connect_server(&ctx, &command, &self.app_state).await?;
                     }
                     "say" | "command" => {
                         message_chat::send_to_minecraft(
@@ -228,18 +212,21 @@ impl Handler {
                             &self.app_state,
                             command_name,
                         )
-                        .await
+                        .await?;
                     }
-                    _ => command
-                        .create_response(
-                            ctx.http,
-                            CreateInteractionResponse::Message(
-                                CreateInteractionResponseMessage::new()
-                                    .content(format!("Could not find command: {}", command_name)),
-                            ),
-                        )
-                        .await
-                        .context("stink"),
+                    _ => {
+                        command
+                            .create_response(
+                                ctx.http,
+                                CreateInteractionResponse::Message(
+                                    CreateInteractionResponseMessage::new().content(format!(
+                                        "Could not find command: {}",
+                                        command_name
+                                    )),
+                                ),
+                            )
+                            .await?;
+                    }
                 };
             }
             Interaction::Component(component) => {
@@ -260,14 +247,14 @@ impl Handler {
                             &component.message,
                         )
                         .await?;
-                        let _response = component
+                        component
                             .create_response(&ctx.http, CreateInteractionResponse::Acknowledge)
-                            .await;
+                            .await?;
                     }
                     ComponentAction::OpenModal(modal) => {
-                        let _result = component
+                        component
                             .create_response(&ctx.http, CreateInteractionResponse::Modal(modal))
-                            .await;
+                            .await?;
                     }
                     ComponentAction::ChangeScreen(screen) => {
                         let props = agent.request_props().await?;
@@ -282,13 +269,9 @@ impl Handler {
                         )
                         .await?;
                         println!("Updated settings view");
-                        if component
+                        component
                             .create_response(ctx.http, CreateInteractionResponse::Acknowledge)
-                            .await
-                            .is_ok()
-                        {
-                            println!("acknowledged");
-                        }
+                            .await?;
                     }
                 }
             }
@@ -317,7 +300,7 @@ impl Handler {
                                     property::MaxPlayers(value)
                                 } else {
                                     println!("Invalid number input");
-                                    let _result = modal
+                                    modal
                                         .create_response(
                                             ctx.http,
                                             CreateInteractionResponse::Message(
@@ -326,7 +309,7 @@ impl Handler {
                                                     .ephemeral(true),
                                             ),
                                         )
-                                        .await;
+                                        .await?;
                                     return Ok(());
                                 }
                             }
@@ -336,7 +319,7 @@ impl Handler {
                                     property::MaxWorldSize(value)
                                 } else {
                                     println!("Invalid number input");
-                                    let _result = modal
+                                    modal
                                         .create_response(
                                             ctx.http,
                                             CreateInteractionResponse::Message(
@@ -345,7 +328,7 @@ impl Handler {
                                                     .ephemeral(true),
                                             ),
                                         )
-                                        .await;
+                                        .await?;
                                     return Ok(());
                                 }
                             }
@@ -355,7 +338,7 @@ impl Handler {
                                     property::ViewDistance(value)
                                 } else {
                                     println!("Invalid number input");
-                                    let _result = modal
+                                    modal
                                         .create_response(
                                             ctx.http,
                                             CreateInteractionResponse::Message(
@@ -364,7 +347,7 @@ impl Handler {
                                                     .ephemeral(true),
                                             ),
                                         )
-                                        .await;
+                                        .await?;
                                     return Ok(());
                                 }
                             }
@@ -374,7 +357,7 @@ impl Handler {
                                     property::SimulationDistance(value)
                                 } else {
                                     println!("Invalid number input");
-                                    let _result = modal
+                                    modal
                                         .create_response(
                                             ctx.http,
                                             CreateInteractionResponse::Message(
@@ -383,7 +366,7 @@ impl Handler {
                                                     .ephemeral(true),
                                             ),
                                         )
-                                        .await;
+                                        .await?;
                                     return Ok(());
                                 }
                             }
@@ -393,7 +376,7 @@ impl Handler {
                                     property::SpawnProtection(value)
                                 } else {
                                     println!("Invalid number input");
-                                    let _result = modal
+                                    modal
                                         .create_response(
                                             ctx.http,
                                             CreateInteractionResponse::Message(
@@ -402,7 +385,7 @@ impl Handler {
                                                     .ephemeral(true),
                                             ),
                                         )
-                                        .await;
+                                        .await?;
                                     return Ok(());
                                 }
                             }
@@ -428,9 +411,9 @@ impl Handler {
                         )
                         .await?;
 
-                        let _result = modal
+                        modal
                             .create_response(ctx.http, CreateInteractionResponse::Acknowledge)
-                            .await;
+                            .await?;
                         println!("Updated settings view");
                     }
                     ModalAction::BuildQuery => {
