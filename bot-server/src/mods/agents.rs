@@ -290,6 +290,7 @@ impl Agent {
 
     pub async fn reconnect(&self, sender: mpsc::UnboundedSender<AgentActions>) {
         *self.sender.lock().await = Some(sender);
+        *self.last_seen.lock().await = None;
     }
 
     pub async fn since_last_seen(&self) -> Option<Duration> {

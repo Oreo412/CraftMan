@@ -136,13 +136,17 @@ impl AppState {
     pub async fn clean_connections(&self, limit: Duration, cycle_time: Duration) {
         loop {
             println!("Cleaning!");
-            for connection in self.connections.iter() {
-                let agent = connection.value();
+            let agents: Vec<Arc<Agent>> = self
+                .connections
+                .iter()
+                .map(|entry| entry.value().clone())
+                .collect();
+            for agent in agents {
                 if let Some(since) = agent.since_last_seen().await
                     && since > limit
                 {
-                    self.connections.remove(connection.key());
-                    println!("Removed: {}", connection.key());
+                    self.connections.remove(&agent.id());
+                    println!("Removed: {}", agent.id());
                 };
             }
             sleep(cycle_time).await;
