@@ -26,7 +26,7 @@ async fn main() {
             .await
             .expect("Could not connect to database"),
     );
-    app_state.start_clean_task(Duration::from_secs(15), Duration::from_secs(30));
+    app_state.start_clean_task(Duration::from_secs(300), Duration::from_secs(120));
     let app = Router::new()
         .route("/", get(|| async { "Axum all over you!" }))
         .route("/ws", get(handler))
