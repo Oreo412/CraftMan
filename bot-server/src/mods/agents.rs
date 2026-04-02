@@ -1,12 +1,14 @@
 use anyhow::anyhow;
 use atomic_time::AtomicInstant;
-use moka::future::Cache;
+use dashmap::DashMap;
 use sqlx::PgPool;
 use std::{
     collections::{HashMap, HashSet},
     sync::Arc,
     time::Duration,
 };
+use tokio::sync::oneshot::Sender as OneshotSender;
+use tokio::sync::oneshot::channel;
 use twilight_http::Client;
 use twilight_model::id::{
     Id,
@@ -29,12 +31,10 @@ use tokio::{
 };
 use uuid::Uuid;
 
-use crate::mods::bot::chat_channel;
-
 pub struct Agent {
     id: Uuid,
     sender: Mutex<Option<mpsc::UnboundedSender<AgentActions>>>,
-    pending_requests: Arc<Cache<Uuid, mpsc::Sender<RequestResponses>>>,
+    pending_requests: DashMap<Uuid, OneshotSender<RequestResponses>>,
     chat_channel_cache: RwLock<Cached<Option<Id<ChannelMarker>>>>,
     query_monitor_cache: RwLock<Cached<Option<(Id<ChannelMarker>, Id<MessageMarker>)>>>,
     dbpool: PgPool,
@@ -60,10 +60,7 @@ impl Agent {
         Agent {
             id,
             sender: Mutex::new(Some(sender)),
-            pending_requests: Cache::builder()
-                .time_to_live(Duration::from_secs(5))
-                .build()
-                .into(),
+            pending_requests: DashMap::new(),
             chat_channel_cache: RwLock::new(Cached::NotCached),
             query_monitor_cache: RwLock::new(Cached::NotCached),
             dbpool,
@@ -73,9 +70,9 @@ impl Agent {
     }
 
     pub async fn complete_request(&self, id: &Uuid, response: RequestResponses) -> Result<()> {
-        if let Some(sender) = self.pending_requests.remove(id).await {
+        if let Some((_, sender)) = self.pending_requests.remove(id) {
             println!("Request sender found. Sending response");
-            sender.send(response).await?;
+            sender.send(response);
         } else {
             println!("No request found");
             bail!("No request found");
@@ -84,12 +81,12 @@ impl Agent {
     }
 
     pub async fn request_props(&self) -> Result<HashMap<String, String>> {
-        let (sender, mut receiver) = mpsc::channel::<RequestResponses>(1);
+        let (sender, receiver) = channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
-        self.pending_requests.insert(request_id, sender).await;
+        self.pending_requests.insert(request_id, sender);
         let message = AgentActions::RequestProps(request_id);
         self.send(message).await?;
-        if let Some(RequestResponses::PropsResponse(props)) = receiver.recv().await {
+        if let Ok(RequestResponses::PropsResponse(props)) = receiver.await {
             Ok(props)
         } else {
             bail!("Received incorrect response format, or sender was dropped");
@@ -106,14 +103,12 @@ impl Agent {
     }
 
     pub async fn stop_chat_stream(&self) -> Result<()> {
-        let (request_sender, mut request_receiver) = mpsc::channel::<RequestResponses>(1);
+        let (request_sender, request_receiver) = channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
-        self.pending_requests
-            .insert(request_id, request_sender)
-            .await;
+        self.pending_requests.insert(request_id, request_sender);
         if self.chat_sender.write().await.take().is_some() {
             self.send(AgentActions::StopChatStream(request_id)).await?;
-            if let Some(RequestResponses::StopChatResponses) = request_receiver.recv().await {
+            if let Ok(RequestResponses::StopChatResponses) = request_receiver.await {
                 Ok(())
             } else {
                 bail!("Failed to stop chat stream")
@@ -153,11 +148,11 @@ impl Agent {
     }
 
     pub async fn edit_props(&self, prop: property) -> Result<HashMap<String, String>> {
-        let (sender, mut receiver) = mpsc::channel::<RequestResponses>(1);
+        let (sender, receiver) = channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
-        self.pending_requests.insert(request_id, sender).await;
+        self.pending_requests.insert(request_id, sender);
         self.send(AgentActions::EditProp(request_id, prop)).await?;
-        if let Some(RequestResponses::PropsResponse(props)) = receiver.recv().await {
+        if let Ok(RequestResponses::PropsResponse(props)) = receiver.await {
             Ok(props)
         } else {
             bail!("Received incorrect response format!");
@@ -178,16 +173,15 @@ impl Agent {
         )
         .execute(&self.dbpool)
         .await?;
-        let (sender, mut receiver) = mpsc::channel::<RequestResponses>(1);
+        let (sender, receiver) = channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
-        self.pending_requests.insert(request_id, sender).await;
+        self.pending_requests.insert(request_id, sender);
         self.send(AgentActions::StartQuery(
             request_id,
             QueryOptions::new(options),
         ))
         .await?;
-        if let Some(RequestResponses::QueryResponse(description, image_bytes, query)) =
-            receiver.recv().await
+        if let Ok(RequestResponses::QueryResponse(description, image_bytes, query)) = receiver.await
         {
             Ok((description, image_bytes, query))
         } else {
@@ -196,7 +190,7 @@ impl Agent {
     }
 
     pub async fn start_chat_loop(&self, client: Arc<Client>) -> Result<()> {
-        let (request_sender, mut request_receiver) = mpsc::channel::<RequestResponses>(1);
+        let (request_sender, request_receiver) = channel::<RequestResponses>();
         let (chat_sender, chat_receiver) = mpsc::unbounded_channel::<String>();
         tokio::spawn(chat_loop(
             self.chat_channel()
@@ -207,11 +201,9 @@ impl Agent {
         ));
         *self.chat_sender.write().await = Some(chat_sender);
         let request_id = Uuid::new_v4();
-        self.pending_requests
-            .insert(request_id, request_sender)
-            .await;
+        self.pending_requests.insert(request_id, request_sender);
         self.send(AgentActions::StartChatStream(request_id)).await?;
-        if let Some(RequestResponses::StartChatResponse) = request_receiver.recv().await {
+        if let Ok(RequestResponses::StartChatResponse) = request_receiver.await {
             Ok(())
         } else {
             bail!("Could not start chat");
@@ -220,11 +212,11 @@ impl Agent {
 
     pub async fn start_server(&self) -> Result<()> {
         println!("Attempting to start server");
-        let (sender, mut receiver) = mpsc::channel::<RequestResponses>(1);
+        let (sender, mut receiver) = channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
-        self.pending_requests.insert(request_id, sender).await;
+        self.pending_requests.insert(request_id, sender);
         self.send(AgentActions::SvStart(request_id)).await?;
-        if let Some(RequestResponses::StartServerResponse) = receiver.recv().await {
+        if let Ok(RequestResponses::StartServerResponse) = receiver.await {
             println!("Successfully received server response");
             Ok(())
         } else {
@@ -234,11 +226,11 @@ impl Agent {
     }
 
     pub async fn stop_server(&self) -> Result<()> {
-        let (sender, mut receiver) = mpsc::channel::<RequestResponses>(1);
+        let (sender, mut receiver) = channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
-        self.pending_requests.insert(request_id, sender).await;
+        self.pending_requests.insert(request_id, sender);
         self.send(AgentActions::SvStop(request_id)).await?;
-        if let Some(RequestResponses::StopServerResponse) = receiver.recv().await {
+        if let Ok(RequestResponses::StopServerResponse) = receiver.await {
             Ok(())
         } else {
             println!("Unable to properly receive server response");
@@ -270,12 +262,12 @@ impl Agent {
     }
 
     pub async fn message_chat(&self, command: ServerCommands) -> Result<()> {
-        let (request_sender, mut request_receiver) = mpsc::channel::<RequestResponses>(1);
+        let (request_sender, mut request_receiver) = channel::<RequestResponses>();
         let uuid = Uuid::new_v4();
-        self.pending_requests.insert(uuid, request_sender).await;
+        self.pending_requests.insert(uuid, request_sender);
         self.send(AgentActions::ServerCommand(uuid, command))
             .await?;
-        if let Some(RequestResponses::CommandResponse) = request_receiver.recv().await {
+        if let Ok(RequestResponses::CommandResponse) = request_receiver.await {
             Ok(())
         } else {
             bail!("Could not send command to server")
@@ -294,15 +286,11 @@ impl Agent {
     }
 
     pub async fn since_last_seen(&self) -> Option<Duration> {
-        if let Some(last_seen) = self.last_seen.lock().await.as_ref() {
-            Some(
-                last_seen
-                    .load(std::sync::atomic::Ordering::Relaxed)
-                    .elapsed(),
-            )
-        } else {
-            None
-        }
+        self.last_seen
+            .lock()
+            .await
+            .as_ref()
+            .map(|time| time.load(std::sync::atomic::Ordering::Relaxed).elapsed())
     }
 }
 
