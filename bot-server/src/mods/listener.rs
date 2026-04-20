@@ -9,7 +9,9 @@ use futures_util::stream::StreamExt;
 use protocol::agentactions::AgentActions;
 use protocol::serveractions::{RequestResponses, ServerActions};
 use std::sync::Arc;
+use tracing::{debug, error, instrument, warn};
 
+#[instrument(skip(receiver, agent, twilight_client))]
 pub async fn listen<R>(
     mut receiver: R,
     agent: Arc<Agent>,
@@ -22,16 +24,17 @@ pub async fn listen<R>(
             && let Ok(message) = serde_json::from_str::<ServerActions>(text.as_str())
         {
             if let Err(e) = handle_message(message, agent.clone(), twilight_client.clone()).await {
-                println!("Error handling received action: {}", e);
+                error!("Error handling received action: {}", e);
             }
         } else {
-            println!("Received unhandled message in websocket.");
+            warn!("Received unhandled message in websocket.");
         }
     }
     println!("Connection lost!");
     agent.lost_connection().await;
 }
 
+#[instrument(skip(agent, twilight_client))]
 async fn handle_message(
     message: ServerActions,
     agent: Arc<Agent>,
@@ -40,6 +43,7 @@ async fn handle_message(
     println!("Handling message");
     match message {
         ServerActions::PropsResponse(id, props) => {
+            debug!("Handling props response");
             agent
                 .complete_request(&id, RequestResponses::PropsResponse(props))
                 .await?;
@@ -50,7 +54,7 @@ async fn handle_message(
             image,
             status,
         } => {
-            println!("Handling query response");
+            debug!("Handling query response");
             agent
                 .complete_request(
                     &id,
@@ -59,30 +63,35 @@ async fn handle_message(
                 .await?;
         }
         ServerActions::UpdateQuery { status } => {
+            debug!("Handling update query");
             if let Some((channel_id, message_id)) = agent.query_ids().await? {
                 update_monitor(channel_id, message_id, status, &twilight_client).await?;
             } else {
+                warn!("Update query received without an associated monitor");
                 agent.send(AgentActions::StopQuery).await?;
             }
         }
         ServerActions::UpdateQueryHeader { description, image } => {
-            println!("Updating query header");
+            debug!("Handling update query header");
             if let Some((channel_id, message_id)) = agent.query_ids().await? {
                 update_header(message_id, channel_id, description, image, &twilight_client).await?;
             } else {
+                debug!("Update query header received without an associated monitor");
                 agent.send(AgentActions::StopQuery).await?;
             }
         }
         ServerActions::NewMessage(message) => {
+            warn!("New message, a testing enum received");
             agent.send_chat(message).await?;
         }
         ServerActions::StartResponse(id) => {
-            println!("Received start response. Trying to complete request");
+            debug!("Handling start response");
             agent
                 .complete_request(&id, RequestResponses::StartServerResponse)
                 .await?;
         }
         ServerActions::StopResponse(id) => {
+            debug!("Handling stop response");
             agent
                 .complete_request(&id, RequestResponses::StopServerResponse)
                 .await?;
@@ -91,18 +100,19 @@ async fn handle_message(
             bail!("Agent already connected")
         }
         ServerActions::StartChatResponse(id) => {
-            println!("Received start chat response. Completing request");
+            debug!("Handling start chat response");
             agent
                 .complete_request(&id, RequestResponses::StartChatResponse)
                 .await?;
         }
         ServerActions::StopChatResponse(id) => {
-            println!("Received stop chat response. Completing request");
+            debug!("Handling stop chat response");
             agent
                 .complete_request(&id, RequestResponses::StopChatResponses)
                 .await?;
         }
         ServerActions::SendCommandResponse(id) => {
+            debug!("Handling send command response");
             agent
                 .complete_request(&id, RequestResponses::CommandResponse)
                 .await?;

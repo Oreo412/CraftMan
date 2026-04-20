@@ -1,31 +1,17 @@
 use crate::appstate::AppState;
+use crate::mods::bot::get_guild::get_guild;
 use anyhow::Result;
-use anyhow::anyhow;
-use protocol::agentactions::AgentActions;
 use serenity::all::Context;
 use serenity::builder::*;
 use serenity::model::application::CommandInteraction;
-use serenity::model::application::*;
-use uuid::Uuid;
 
 pub async fn start_mc_server(
     ctx: &Context,
     interaction: &CommandInteraction,
     appstate: &AppState,
 ) -> Result<()> {
-    println!(
-        "Sending start signal to socket '{}'",
-        &interaction.channel_id.get()
-    );
+    let agent = appstate.find_connection_by_guild(get_guild(ctx, interaction).await?)?;
 
-    let agent = appstate.find_connection_by_guild(
-        interaction
-            .guild_id
-            .ok_or_else(|| anyhow!("interaction outside of guild"))?
-            .get(),
-    )?;
-
-    println!("Found agent");
     let response = CreateInteractionResponseMessage::new();
     if let Err(e) = agent.start_server().await {
         interaction
@@ -42,7 +28,6 @@ pub async fn start_mc_server(
             )
             .await?;
     }
-    println!("Everything worked?");
     Ok(())
 }
 

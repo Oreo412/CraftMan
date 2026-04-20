@@ -29,6 +29,7 @@ use tokio::{
     },
     time::interval,
 };
+use tracing::{debug, error, info, instrument};
 use uuid::Uuid;
 
 pub struct Agent {
@@ -46,6 +47,7 @@ impl Agent {
     pub fn id(&self) -> Uuid {
         self.id
     }
+
     pub async fn send(&self, message: AgentActions) -> Result<()> {
         self.sender
             .lock()
@@ -69,12 +71,15 @@ impl Agent {
         }
     }
 
+    #[instrument(skip(self, response))] //response shouldn't be relavent to if anything goes wrong
+    //here
     pub async fn complete_request(&self, id: &Uuid, response: RequestResponses) -> Result<()> {
         if let Some((_, sender)) = self.pending_requests.remove(id) {
-            println!("Request sender found. Sending response");
-            sender.send(response);
+            debug!("Request sender found. Sending response");
+            sender
+                .send(response)
+                .map_err(|_| anyhow!("Receiver dropped before request could be completed"))?;
         } else {
-            println!("No request found");
             bail!("No request found");
         }
         Ok(())
@@ -211,29 +216,25 @@ impl Agent {
     }
 
     pub async fn start_server(&self) -> Result<()> {
-        println!("Attempting to start server");
-        let (sender, mut receiver) = channel::<RequestResponses>();
+        let (sender, receiver) = channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);
         self.send(AgentActions::SvStart(request_id)).await?;
         if let Ok(RequestResponses::StartServerResponse) = receiver.await {
-            println!("Successfully received server response");
             Ok(())
         } else {
-            println!("Unable to properly receive server response");
             bail!("Could not start minecraft server");
         }
     }
 
     pub async fn stop_server(&self) -> Result<()> {
-        let (sender, mut receiver) = channel::<RequestResponses>();
+        let (sender, receiver) = channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);
         self.send(AgentActions::SvStop(request_id)).await?;
         if let Ok(RequestResponses::StopServerResponse) = receiver.await {
             Ok(())
         } else {
-            println!("Unable to properly receive server response");
             bail!("Could not stop minecraft server");
         }
     }
@@ -262,7 +263,7 @@ impl Agent {
     }
 
     pub async fn message_chat(&self, command: ServerCommands) -> Result<()> {
-        let (request_sender, mut request_receiver) = channel::<RequestResponses>();
+        let (request_sender, request_receiver) = channel::<RequestResponses>();
         let uuid = Uuid::new_v4();
         self.pending_requests.insert(uuid, request_sender);
         self.send(AgentActions::ServerCommand(uuid, command))
@@ -274,10 +275,11 @@ impl Agent {
         }
     }
 
+    #[instrument(skip(self))]
     pub async fn lost_connection(&self) {
         *self.last_seen.lock().await = Some(AtomicInstant::now());
         *self.sender.lock().await = None;
-        println!("Lost Connection, last seen and sender changed!");
+        info!("Lost Connection, last seen and sender changed!");
     }
 
     pub async fn reconnect(&self, sender: mpsc::UnboundedSender<AgentActions>) {
@@ -294,6 +296,7 @@ impl Agent {
     }
 }
 
+#[instrument(skip(client, receiver))]
 pub async fn chat_loop(
     channel_id: Id<ChannelMarker>,
     mut receiver: UnboundedReceiver<String>,
@@ -301,6 +304,7 @@ pub async fn chat_loop(
 ) -> Result<()> {
     let mut interval = interval(Duration::from_secs(2));
     let mut buffer: Vec<String> = Vec::new();
+    info!("Starting chat loop");
     loop {
         tokio::select! {
             message = receiver.recv() => {
@@ -319,6 +323,7 @@ pub async fn chat_loop(
             }
         }
     }
+    info!("Closing chat loop");
     Ok(())
 }
 

@@ -1,3 +1,4 @@
+mod gui;
 mod mods;
 use crate::mods::{server_handler::ServerHandler, *};
 use connect::connect;

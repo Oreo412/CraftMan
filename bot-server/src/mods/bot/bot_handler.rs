@@ -16,6 +16,7 @@ use settingscreen::SettingScreen;
 use std::env;
 use std::str::FromStr;
 use std::sync::Arc;
+use tracing::{debug, error, info, instrument, warn};
 use twilight_model::application::interaction::Interaction as TwilightInteraction;
 use twilight_model::application::interaction::InteractionData;
 use twilight_model::application::interaction::modal::ModalInteractionComponent;
@@ -30,50 +31,57 @@ pub struct Handler {
 impl EventHandler for Handler {
     async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
         if let Err(e) = self.handle_interaction(ctx, interaction).await {
-            println!("Error with interaction: {}", e);
+            error!("Error with interaction: {}", e);
         }
     }
 
+    #[instrument(skip(self, ctx, ready))]
     async fn ready(&self, ctx: Context, ready: Ready) {
-        println!("{} is connected!", ready.user.name);
+        info!("{} is connected!", ready.user.name);
 
-        let guild_id = GuildId::new(
-            env::var("GUILD_ID")
-                .expect("Expected GUILD_ID in environment")
-                .parse()
-                .expect("GUILD_ID must be an integer"),
-        );
+        let create_commands = vec![
+            send_ws::register(),
+            startserver::register(),
+            stopserver::register(),
+            settingsview::register(),
+            query_monitor::register(),
+            chat_channel::register(),
+            start_chat::register(),
+            stop_chat::register(),
+            connect_to_server::register(),
+            message_chat::register_say(),
+            message_chat::register_command(),
+        ];
 
-        let commands = guild_id
-            .set_commands(
-                &ctx.http,
-                vec![
-                    send_ws::register(),
-                    startserver::register(),
-                    stopserver::register(),
-                    settingsview::register(),
-                    query_monitor::register(),
-                    chat_channel::register(),
-                    start_chat::register(),
-                    stop_chat::register(),
-                    connect_to_server::register(),
-                    message_chat::register_say(),
-                    message_chat::register_command(),
-                ],
-            )
-            .await;
-        println!("I now have the following guild slash commands: {commands:#?}");
+        let commands = if cfg!(debug_assertions) {
+            let guild_id = GuildId::new(
+                env::var("GUILD_ID")
+                    .expect("Expected GUILD_ID in environment")
+                    .parse()
+                    .expect("GUILD_ID must be an integer"),
+            );
+            guild_id
+                .set_commands(&ctx.http, create_commands)
+                .await
+                .expect("Could not register commands :(")
+        } else {
+            serenity::model::application::Command::set_global_commands(&ctx.http, create_commands)
+                .await
+                .expect("Could not register commands :(")
+        };
+        info!("Registered the following guild slash commands: {commands:#?}");
     }
 }
 
+#[instrument]
 fn parse_custom_id(id: &str) -> Option<(ComponentAction, &str)> {
-    println!("parsing, received: {}", id);
+    debug!("parsing");
     let mut parts = id.split(':');
 
     let kind = parts.next()?;
     let value = parts.next()?;
     let server_id = parts.next()?;
-    println!("Kind: {}", kind);
+    debug!("Kind: {}", kind);
 
     let action = match kind {
         "edit" => {
@@ -90,11 +98,11 @@ fn parse_custom_id(id: &str) -> Option<(ComponentAction, &str)> {
                 "spawn-animalsbutton" => property::SpawnAnimals,
                 "spawn-monstersbutton" => property::SpawnMonsters,
                 _ => {
-                    println!("parsing returned none");
+                    error!("parsing returned none");
                     return None;
                 }
             };
-            println!("Selected prop");
+            debug!("Selected prop");
             ComponentAction::Edit(prop)
         }
         "modal" => {
@@ -117,7 +125,7 @@ fn parse_custom_id(id: &str) -> Option<(ComponentAction, &str)> {
                 }
                 _ => return None,
             };
-            println!("Selected modal");
+            debug!("Selected modal");
             ComponentAction::OpenModal(modal)
         }
         "screen" => {
@@ -125,7 +133,7 @@ fn parse_custom_id(id: &str) -> Option<(ComponentAction, &str)> {
             match result {
                 Ok(screen) => ComponentAction::ChangeScreen(screen),
                 Err(_e) => {
-                    println!("Failed get Setting Screen value from string:");
+                    error!("Failed get Setting Screen value from string:");
                     return None;
                 }
             }
@@ -459,8 +467,9 @@ enum ModalAction {
     BuildQuery,
 }
 
+#[instrument]
 fn parse_modal_custom_id(id: &str) -> Option<(ModalAction, &str, &str)> {
-    println!("parsing, received: {}", id);
+    debug!("parsing");
     let mut parts = id.split(':');
 
     let kind = parts.next()?;
@@ -469,14 +478,17 @@ fn parse_modal_custom_id(id: &str) -> Option<(ModalAction, &str, &str)> {
 
     let action = match kind {
         "edit_props" => {
-            println!("Selected prop");
+            debug!("Selected prop");
             ModalAction::EditProp
         }
         "build_query" => {
-            println!("Build query");
+            debug!("Build query");
             ModalAction::BuildQuery
         }
-        _ => return None,
+        _ => {
+            error!("No action found for this parse");
+            return None;
+        }
     };
     Some((action, value, server_id))
 }

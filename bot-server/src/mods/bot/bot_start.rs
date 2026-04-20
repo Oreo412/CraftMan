@@ -4,7 +4,9 @@ use serenity::prelude::*;
 
 use crate::bot_handler;
 use crate::mods::appstate;
+use tracing::{error, info, instrument};
 
+#[instrument(skip(appstate))]
 pub async fn start_bot(appstate: appstate::AppState) {
     // Configure the client with your Discord bot token in the environment.
     dotenvy::dotenv().ok();
@@ -19,7 +21,9 @@ pub async fn start_bot(appstate: appstate::AppState) {
         .await
         .expect("Error creating client");
 
-    if let Err(why) = client.start().await {
-        println!("Client error: {why:?}");
+    if let Err(e) = client.start().await {
+        error!("Client error: {}", e);
+        panic!("Couldn't start bot");
     }
+    info!("Bot started");
 }

@@ -1,9 +1,11 @@
 use crate::appstate::AppState;
+use crate::mods::bot::get_guild::get_guild;
 use crate::mods::bot::settingscreen::SettingScreen;
 use crate::mods::bot::si2tr::si2tr;
 use anyhow::Result;
 use anyhow::anyhow;
 use serenity::all::ActionRowComponent;
+use serenity::all::Context;
 use serenity::builder::*;
 use serenity::model::application::CommandOptionType;
 use std::collections::HashMap;
@@ -16,32 +18,24 @@ use twilight_util::builder::message::*;
 use uuid::Uuid;
 
 pub async fn run(
+    ctx: &Context,
     client: &twilight_http::Client,
     serenity_interaction: serenity::model::application::CommandInteraction,
     appstate: &AppState,
 ) -> Result<()> {
-    println!("received");
-    let id = appstate.find_id_by_guild(
-        serenity_interaction
-            .guild_id
-            .ok_or_else(|| anyhow!("interaction not in guild"))?
-            .get(),
-    )?;
+    let id = appstate.find_id_by_guild(get_guild(ctx, &serenity_interaction).await?)?;
     let agent = appstate.find_connection(&id)?;
     let props = agent.request_props().await?;
     let mut response = InteractionResponseDataBuilder::new()
         .components(build_settings_view(&props, id, &SettingScreen::Gameplay)?)
         .build();
-    println!("Added components to response");
     response.flags = Some(MessageFlags::IS_COMPONENTS_V2);
     let response = InteractionResponse {
         kind: InteractionResponseType::ChannelMessageWithSource,
         data: Some(response),
     };
-    println!("Constructed interaction response");
 
     si2tr(client, &serenity_interaction, &response).await;
-    println!("got to here...");
 
     Ok(())
 }

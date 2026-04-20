@@ -1,7 +1,9 @@
 use crate::appstate::AppState;
+use crate::mods::bot::get_guild::get_guild;
 use crate::mods::bot::si2tr::si2tr;
 use anyhow::{Result, anyhow};
 use protocol::query_options::{QueryStatus, ServerStatus};
+use serenity::all::Context;
 use serenity::builder::{CreateCommand, CreateCommandOption};
 use serenity::model::application::CommandOptionType;
 use std::collections::HashSet;
@@ -25,18 +27,12 @@ use uuid::Uuid;
 static DEFAULT_ICON: &[u8] = include_bytes!("../../../assets/default_icon.png");
 
 pub async fn builder_modal(
+    ctx: &Context,
     client: &twilight_http::Client,
     serenity_interaction: serenity::model::application::CommandInteraction,
     appstate: &AppState,
 ) -> Result<()> {
-    println!("received");
-
-    let id = appstate.find_id_by_guild(
-        serenity_interaction
-            .guild_id
-            .ok_or_else(|| anyhow!("Interaction happened outside of guild"))?
-            .get(),
-    )?;
+    let id = appstate.find_id_by_guild(get_guild(ctx, &serenity_interaction).await?)?;
 
     let response = build_monitor(id);
 

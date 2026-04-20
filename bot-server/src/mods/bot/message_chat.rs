@@ -1,4 +1,5 @@
 use crate::appstate::AppState;
+use crate::mods::bot::get_guild::get_guild;
 use anyhow::Result;
 use anyhow::anyhow;
 use anyhow::bail;
@@ -16,12 +17,7 @@ pub async fn send_to_minecraft(
     appstate: &AppState,
     command: &str,
 ) -> Result<()> {
-    let agent = appstate.find_connection_by_guild(
-        interaction
-            .guild_id
-            .ok_or_else(|| anyhow!("interaction outside of guild"))?
-            .get(),
-    )?;
+    let agent = appstate.find_connection_by_guild(get_guild(ctx, interaction).await?)?;
     let response = CreateInteractionResponseMessage::new();
     let command_data = if let Some(data) = interaction.data.options[0].value.as_str() {
         data

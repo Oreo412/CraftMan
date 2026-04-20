@@ -18,3 +18,9 @@ rust-mc-status = "2"
 base64 = "0.22"
 dirs = "6.0.0"
 directories = "6.0.0"
+tracing = "0.1.44"
+bot-server = { version = "0.1.0", path = "../bot-server" }
+tracing-subscriber = "0.3.23"
+ratatui = { version = "0.30.0", features = ["all-widgets"] }
+crossterm = "0.29.0"
+tui-file-explorer = "0.9.8"

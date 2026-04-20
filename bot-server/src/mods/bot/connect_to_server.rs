@@ -1,12 +1,11 @@
 use crate::appstate::AppState;
+use crate::mods::bot::get_guild::get_guild;
 use anyhow::Result;
 use anyhow::anyhow;
-use protocol::agentactions::AgentActions;
 use serenity::all::Context;
 use serenity::builder::*;
 use serenity::model::application::CommandInteraction;
 use serenity::model::application::*;
-use uuid::Uuid;
 
 pub async fn connect_server(
     ctx: &Context,
@@ -20,13 +19,7 @@ pub async fn connect_server(
     println!("Entered code: {}", code);
     let response = CreateInteractionResponseMessage::new().ephemeral(true);
     if let Err(e) = appstate
-        .verify_agent(
-            code,
-            interaction
-                .guild_id
-                .ok_or_else(|| anyhow!("Interaction took place outside of guild"))?
-                .get(),
-        )
+        .verify_agent(code, get_guild(ctx, interaction).await?)
         .await
     {
         interaction
