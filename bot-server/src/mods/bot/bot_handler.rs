@@ -186,12 +186,12 @@ impl Handler {
                             &ctx,
                             &command,
                             &self.app_state,
-                            self.twilight_client.clone(),
                         )
                         .await?;
                     }
                     "serverproperties" => {
                         crate::bot::settingsview::run(
+                            &ctx,
                             &self.twilight_client,
                             command,
                             &self.app_state,
@@ -200,6 +200,7 @@ impl Handler {
                     }
                     "thumbnail" => {
                         crate::bot::query_monitor::builder_modal(
+                            &ctx,
                             &self.twilight_client,
                             command,
                             &self.app_state,

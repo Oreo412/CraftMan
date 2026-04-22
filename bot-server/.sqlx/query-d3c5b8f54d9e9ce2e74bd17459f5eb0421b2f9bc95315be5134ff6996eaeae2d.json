@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT query_channel_id, query_message_id FROM servers WHERE agent_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "query_channel_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "query_message_id",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      true,
+      true
+    ]
+  },
+  "hash": "d3c5b8f54d9e9ce2e74bd17459f5eb0421b2f9bc95315be5134ff6996eaeae2d"
+}

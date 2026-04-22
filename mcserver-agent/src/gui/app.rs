@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{collections::VecDeque, path::PathBuf};
 
 use protocol::agentactions::AgentActions;
 use tokio::sync::mpsc::UnboundedSender;
@@ -10,6 +10,9 @@ pub struct App {
     explorer: FileExplorer,
     state: AppState,
     agent_sender: UnboundedSender<AgentActions>,
+    pub server_running: bool,
+    pub stdout: VecDeque<String>,
+    pub scroll: u16,
     pub config: Config,
 }
 
@@ -35,15 +38,27 @@ impl App {
             explorer,
             state: AppState::Default,
             agent_sender,
+            server_running: false,
+            stdout: VecDeque::new(),
+            scroll: 0,
             config: Config::new(config),
+        }
+    }
+
+    pub fn start_validation(&mut self, key: String) {
+        self.state = AppState::Validate(key);
+    }
+
+    pub fn complete_validation(&mut self) {
+        if matches!(self.state, AppState::Validate(_)) {
+            self.state = AppState::Default;
         }
     }
 }
 
-pub enum AppState {
-    ServerRunning,
+enum AppState {
     Default,
-    Verifying,
+    Validate(String),
 }
 
 pub struct Config {
