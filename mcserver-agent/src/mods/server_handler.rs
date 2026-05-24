@@ -41,7 +41,7 @@ impl ServerHandler {
             &self.config.dir,
             ws_sender,
         )?);
-        println!("Started server");
+        tracing::info!("Started server");
         Ok(())
     }
 
@@ -52,22 +52,6 @@ impl ServerHandler {
         Ok(())
     }
 
-    pub fn xms(&mut self, xms: u32) {
-        self.config.xms = xms;
-        self.config.save();
-    }
-    pub fn xmx(mut self, xmx: u32) {
-        self.config.xmx = xmx;
-        self.config.save();
-    }
-    pub fn dir(mut self, dir: String) {
-        self.config.dir = dir;
-        self.config.save();
-    }
-    pub fn jar(mut self, jar: String) {
-        self.config.jar = jar;
-        self.config.save()
-    }
     pub fn update_properties(&mut self) -> &Self {
         let path_str = format!("{}/server.properties", self.config.dir);
         let path = Path::new(&path_str);
@@ -76,7 +60,7 @@ impl ServerHandler {
             match self.properties.as_mut() {
                 Some(props) if props.dir == self.config.dir => {
                     if let Err(e) = props.update() {
-                        println!("Failed to update server properties: {}", e);
+                        tracing::info!("Failed to update server properties: {}", e);
                     }
                 }
                 _ => {
@@ -177,6 +161,15 @@ impl ServerHandler {
     pub fn id(&self) -> Uuid {
         self.config.id
     }
+
+    pub fn config(&self) -> Configs {
+        self.config.clone()
+    }
+
+    pub fn edit_config(&mut self, config: Configs) -> Result<()> {
+        self.config = config;
+        Ok(())
+    }
 }
 
 async fn query_loop(
@@ -187,11 +180,11 @@ async fn query_loop(
     let mut interval = time::interval(Duration::from_secs(10));
 
     loop {
-        println!("Updating???");
+        tracing::info!("Updating???");
         tokio::select! {
             _ = interval.tick() => {
                 if let Err(e) = query_handler.update(sender.clone()).await {
-                    eprintln!("Query update failed: {e}");
+                    tracing::info!("Query update failed: {e}");
                 }
             }
 
@@ -201,7 +194,7 @@ async fn query_loop(
             }
         }
     }
-    println!("Exiting update loop");
+    tracing::info!("Exiting update loop");
 
     Ok(())
 }

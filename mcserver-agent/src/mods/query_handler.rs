@@ -66,7 +66,7 @@ impl QueryHandler {
         let description = &status.description;
 
         let mut image = None;
-        println!("Boutta try to decode the image");
+        tracing::info!("Boutta try to decode the image");
         if let Some(image_data) = image_base64 {
             image = Some(
                 STANDARD.decode(
@@ -76,7 +76,7 @@ impl QueryHandler {
                 )?,
             );
         }
-        println!("decoded image");
+        tracing::info!("decoded image");
 
         let query_response = self.query_builder(status.clone());
 
@@ -97,7 +97,7 @@ impl QueryHandler {
                 let image_base64 = &status.favicon;
 
                 let mut image = None;
-                println!("Boutta try to decode the image");
+                tracing::info!("Boutta try to decode the image");
                 if let Some(image_data) = image_base64 {
                     image = Some(
                         STANDARD.decode(
@@ -117,7 +117,7 @@ impl QueryHandler {
             ServerStatus::ServerOffline
         };
 
-        println!(
+        tracing::info!(
             "Current Status: {} \nLast Status: {}",
             if server_status == ServerStatus::ServerOffline {
                 "Offline"
@@ -144,12 +144,12 @@ impl QueryHandler {
     fn query_builder(&mut self, status: JavaStatus) -> QueryStatus {
         let mut query_response = QueryStatus::default();
         if self.options.version() {
-            println!("set version");
+            tracing::info!("set version");
             query_response.set_version(status.version.name);
         }
 
         if self.options.player_count() {
-            println!("set player count");
+            tracing::info!("set player count");
             query_response
                 .set_player_count(format!("{}/{}", status.players.online, status.players.max));
         }
@@ -157,17 +157,17 @@ impl QueryHandler {
         if self.options.player_list()
             && let Some(players) = status.players.sample
         {
-            println!("set player list");
+            tracing::info!("set player list");
             query_response.set_player_list(players.into_iter().map(|player| player.name).collect())
         }
 
         if self.options.map() {
-            println!("set map");
+            tracing::info!("set map");
             query_response.set_map(Some(status.map.unwrap_or("No map found".to_string())));
         }
 
         if self.options.gamemode() {
-            println!(
+            tracing::info!(
                 "set gamemode to {}",
                 status
                     .gamemode
@@ -180,14 +180,14 @@ impl QueryHandler {
         }
 
         if self.options.software() {
-            println!("set software");
+            tracing::info!("set software");
             query_response.set_software(Some(
                 status.software.unwrap_or("No software found".to_string()),
             ));
         }
 
         if self.options.plugins() {
-            println!("set plugins");
+            tracing::info!("set plugins");
             if let Some(plugins) = status.plugins {
                 query_response.set_plugins(Some(
                     plugins.into_iter().map(|plugin| plugin.name).collect(),
@@ -198,7 +198,7 @@ impl QueryHandler {
         }
 
         if self.options.mods() {
-            println!("set mods");
+            tracing::info!("set mods");
             if let Some(mods) = status.mods {
                 query_response.set_mods(Some(mods.into_iter().map(|mcmod| mcmod.modid).collect()));
             } else {

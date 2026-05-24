@@ -1,23 +1,57 @@
 mod gui;
 mod mods;
-use crate::mods::{server_handler::ServerHandler, *};
+use crate::{
+    gui::{
+        gui::{GuiEvents, handler},
+        gui_actions::ConfigRequest,
+    },
+    mods::{server_handler::ServerHandler, stdout_writer::TuiWriter, *},
+};
 use connect::connect;
 use std::time::Duration;
+use tokio::sync::mpsc;
+use tracing_subscriber::fmt;
 
 #[tokio::main]
 async fn main() {
+    println!("starting");
     dotenvy::dotenv().ok();
+    println!("poopy");
     let config = configs::Configs::new();
+
+    println!("configs ready");
+
+    let (mut tui_to_agent, mut agent_from_tui) = mpsc::unbounded_channel::<ConfigRequest>();
+
+    let (mut agent_to_tui, mut tui_from_agent) = mpsc::unbounded_channel::<GuiEvents>();
+
+    println!("Got to here");
+
+    tokio::spawn(handler(
+        config.clone(),
+        tui_to_agent.clone(),
+        tui_from_agent,
+    ));
+
+    println!("After spawn?");
 
     let mut handler = ServerHandler::new(config);
 
+    let writer = TuiWriter::new(agent_to_tui.clone());
+
+    tracing_subscriber::fmt()
+        .with_writer(move || writer.clone())
+        .without_time()
+        .with_target(false)
+        .init();
+
     loop {
-        match connect(&mut handler).await {
+        match connect(&mut handler, &mut agent_from_tui, agent_to_tui.clone()).await {
             Ok(()) => {
-                println!("Disconnected. Reconnecting...");
+                tracing::info!("Disconnected. Reconnecting...");
             }
             Err(e) => {
-                eprintln!("Connection failed: {e}");
+                tracing::info!("Connection failed: {e}");
             }
         }
 

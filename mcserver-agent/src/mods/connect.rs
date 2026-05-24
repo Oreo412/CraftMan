@@ -1,3 +1,5 @@
+use crate::gui::gui::GuiEvents;
+use crate::gui::gui_actions::ConfigRequest;
 use crate::mods::{configs::Configs, server_handler::ServerHandler, *};
 use anyhow::Result;
 use futures_util::{
@@ -7,27 +9,38 @@ use futures_util::{
 use protocol::serveractions::ServerActions;
 use std::env;
 use tokio::sync::mpsc;
-use tokio::sync::mpsc::UnboundedReceiver;
+use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
 use tokio_tungstenite::{
     connect_async,
     tungstenite::{WebSocket, protocol::Message},
 };
 
-pub async fn connect(handler: &mut ServerHandler) -> anyhow::Result<()> {
+pub async fn connect(
+    handler: &mut ServerHandler,
+    agent_from_tui: &mut UnboundedReceiver<ConfigRequest>,
+    agent_to_tui: UnboundedSender<GuiEvents>,
+) -> anyhow::Result<()> {
     let url = env::var("URL")?;
 
     let (ws_stream, _) = connect_async(url).await?;
 
-    let (ws_write, mut ws_read) = ws_stream.split();
+    let (ws_write, ws_read) = ws_stream.split();
 
     let (sender, receiver) = mpsc::unbounded_channel();
 
     tokio::spawn(send_task(receiver, ws_write));
 
     sender.send(ServerActions::ConnectAgent(handler.id()))?;
-    println!("Connected to server!");
+    tracing::info!("Connected to server!");
 
-    listener::listen(ws_read, sender, handler).await?;
+    listener::listen(
+        ws_read,
+        sender,
+        handler,
+        agent_from_tui,
+        agent_to_tui.clone(),
+    )
+    .await?;
 
     Ok(())
 }
@@ -38,7 +51,7 @@ where
     S::Error: std::error::Error + Send + Sync + 'static,
 {
     while let Some(message) = receiver.recv().await {
-        println!("Sending server action");
+        tracing::info!("Sending server action");
         sender
             .send(Message::Text(
                 serde_json::to_string(&message)

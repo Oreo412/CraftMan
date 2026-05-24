@@ -1,36 +1,32 @@
 use std::{collections::VecDeque, path::PathBuf};
 
+use mods::configs::Configs;
 use protocol::agentactions::AgentActions;
 use tokio::sync::mpsc::UnboundedSender;
 use tui_file_explorer::{FileExplorer, FileExplorerBuilder};
 
-use crate::mods;
+use crate::{gui::gui_actions::ConfigRequest, mods};
 
 pub struct App {
     explorer: FileExplorer,
     state: AppState,
-    agent_sender: UnboundedSender<AgentActions>,
+    agent_sender: UnboundedSender<ConfigRequest>,
     pub server_running: bool,
     pub stdout: VecDeque<String>,
     pub scroll: u16,
-    pub config: Config,
+    pub config: Configs,
 }
 
 impl App {
-    pub fn new(
-        config: &mods::configs::Configs,
-        agent_sender: UnboundedSender<AgentActions>,
-        directory: String,
-        server_file: String,
-    ) -> Self {
-        let mut explorer = FileExplorer::builder(PathBuf::from(directory))
+    pub fn new(config: Configs, agent_sender: UnboundedSender<ConfigRequest>) -> Self {
+        let mut explorer = FileExplorer::builder(PathBuf::from(&config.dir))
             .extension_filter(vec!["jar".into()])
             .build();
         if let Some(index) = explorer //I guess this doesn't need to fail if
             //server_file doesn't actually load
             .entries
             .iter()
-            .position(|e| e.path == PathBuf::from(&server_file))
+            .position(|e| e.path == PathBuf::from(&config.jar))
         {
             explorer.cursor = index;
         }
@@ -41,7 +37,7 @@ impl App {
             server_running: false,
             stdout: VecDeque::new(),
             scroll: 0,
-            config: Config::new(config),
+            config,
         }
     }
 
@@ -59,22 +55,4 @@ impl App {
 enum AppState {
     Default,
     Validate(String),
-}
-
-pub struct Config {
-    pub xms: u32,
-    pub xmx: u32,
-    pub dir: String,
-    pub jar: String,
-}
-
-impl Config {
-    pub fn new(configs: &mods::configs::Configs) -> Self {
-        Config {
-            xms: configs.xms,
-            xmx: configs.xmx,
-            dir: configs.dir.clone(),
-            jar: configs.jar.clone(),
-        }
-    }
 }

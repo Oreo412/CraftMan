@@ -89,7 +89,7 @@ async fn chat_listener(
             line = lines.next_line() => {
                 match line? {
                     Some(new_message) => {
-                        println!("{}", new_message);
+                        tracing::info!("{}", new_message);
                         if *watcher.borrow()
                         {sender.send(ServerActions::NewMessage(new_message))?;
                     }}
@@ -120,7 +120,7 @@ async fn commander(
                 stdin.write_all(format!("{}\n", command).as_bytes()).await?;
             }
             ServerCommands::Stop => {
-                println!("Stopping");
+                tracing::info!("Stopping");
                 stdin.write_all(b"stop").await?;
             }
         }
