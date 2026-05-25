@@ -57,7 +57,7 @@ impl AppState {
                 .await?;
         } else {
             let nanoid = nanoid!(8);
-            sender.send(AgentActions::ConnectionKey(nanoid.clone()))?;
+            sender.send(AgentActions::ValidationToken(nanoid.clone()))?;
             println!("Inserted connection key to cache: {}", &nanoid);
             self.connection_requests
                 .insert(nanoid, PendingRequest::new(id, receiver, sender))
@@ -75,13 +75,14 @@ impl AppState {
     ) -> Result<()> {
         self.uuid_by_guild.insert(guild_id, id);
         println!("Should have inserted guild id: {}", guild_id);
-        let agent = Arc::new(Agent::new(id, sender, self.dbpool.clone()));
+        let agent = Arc::new(Agent::new(id, sender.clone(), self.dbpool.clone()));
         tokio::spawn(listener::listen(
             receiver,
             agent.clone(),
             self.twilight_client.clone(),
         ));
         self.connections.insert(id, agent);
+        sender.send(AgentActions::Validate)?;
         Ok(())
     }
 

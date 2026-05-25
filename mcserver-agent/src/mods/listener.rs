@@ -29,7 +29,7 @@ where
         tokio::select! {
             next_msg = receiver.next() => {
                 if let Some(msg) = next_msg {
-                    if let Err(e) = websocket_action(handler, &sender, msg?).await {
+                    if let Err(e) = websocket_action(handler, &sender, msg?, &agent_to_tui).await {
                         agent_to_tui.send(GuiEvents::AddStdoutLine(format!("Error handling AgentAction: {}", e)));
                     }
                 }
@@ -62,6 +62,7 @@ async fn websocket_action(
     handler: &mut ServerHandler,
     sender: &UnboundedSender<ServerActions>,
     msg: Message,
+    agent_to_tui: &UnboundedSender<GuiEvents>,
 ) -> Result<()> {
     let Message::Text(text) = msg else {
         return Ok(());
@@ -218,8 +219,12 @@ async fn websocket_action(
             tracing::info!("Sending stop chat response");
             sender.send(ServerActions::StopChatResponse(uuid))?;
         }
-        AgentActions::ConnectionKey(key) => {
+        AgentActions::ValidationToken(key) => {
             tracing::info!("Enter key into discord: {}", key);
+            agent_to_tui.send(GuiEvents::Validate(key))?;
+        }
+        AgentActions::Validate => {
+            agent_to_tui.send(GuiEvents::Validated)?;
         }
         AgentActions::ServerCommand(id, command) => {
             handler.send_command(command)?;

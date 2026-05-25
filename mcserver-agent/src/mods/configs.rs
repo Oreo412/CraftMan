@@ -1,9 +1,16 @@
 use anyhow::Result;
-use std::path::PathBuf;
+use crossterm::{
+    execute,
+    terminal::{EnterAlternateScreen, enable_raw_mode},
+};
+use ratatui::{Terminal, prelude::CrosstermBackend};
+use std::{io, path::PathBuf};
 
 use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
+
+use crate::gui::file_explorer;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Configs {
@@ -42,18 +49,22 @@ impl Configs {
 
             serde_json::from_str::<Configs>(&data).expect("Invalid config format")
         } else {
-            println!("path doesn't exist");
-            let mut directory = String::new();
-            std::io::stdin()
-                .read_line(&mut directory)
-                .expect("Failed to read line");
-            directory = directory.trim().to_string();
+            enable_raw_mode().expect("Can not enable raw mode. Fatal error");
+            let mut stdout = io::stdout();
+            execute!(stdout, EnterAlternateScreen)
+                .expect("Can not edecute EnterAlternateScreen. Fatal error");
+
+            let backend = CrosstermBackend::new(stdout);
+            let mut terminal =
+                Terminal::new(backend).expect("Can not create new Terminal. Fatal Error");
+
+            let (file, directory) = file_explorer::file_selection(&mut terminal).unwrap();
             Configs {
                 id: Uuid::new_v4(),
                 xms: 1024,
                 xmx: 1024,
                 dir: directory,
-                jar: "server.jar".to_string(),
+                jar: file,
             }
         }
     }
@@ -61,5 +72,25 @@ impl Configs {
     pub fn save(&self) {
         let json = serde_json::to_string_pretty(self).expect("Unable to serialize config");
         std::fs::write(Configs::path(), json).expect("Unable to save config");
+    }
+
+    pub fn set_xms(mut self, xms: u32) -> Self {
+        self.xms = xms;
+        self
+    }
+
+    pub fn set_xmx(mut self, xmx: u32) -> Self {
+        self.xmx = xmx;
+        self
+    }
+
+    pub fn set_dir(mut self, dir: String) -> Self {
+        self.dir = dir;
+        self
+    }
+
+    pub fn set_jar(mut self, jar: String) -> Self {
+        self.jar = jar;
+        self
     }
 }

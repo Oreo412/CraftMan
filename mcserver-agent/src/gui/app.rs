@@ -1,15 +1,19 @@
 use std::{collections::VecDeque, path::PathBuf};
 
+use anyhow::{Result, bail};
 use mods::configs::Configs;
 use protocol::agentactions::AgentActions;
-use tokio::sync::mpsc::UnboundedSender;
+use tokio::sync::{mpsc::UnboundedSender, oneshot};
 use tui_file_explorer::{FileExplorer, FileExplorerBuilder};
 
-use crate::{gui::gui_actions::ConfigRequest, mods};
+use crate::{
+    gui::gui_actions::{ConfigRequest, EditRequestReturn},
+    mods,
+};
 
 pub struct App {
     explorer: FileExplorer,
-    state: AppState,
+    pub state: AppState,
     agent_sender: UnboundedSender<ConfigRequest>,
     pub server_running: bool,
     pub stdout: VecDeque<String>,
@@ -50,9 +54,33 @@ impl App {
             self.state = AppState::Default;
         }
     }
+
+    pub async fn update_config(&mut self) -> Result<()> {
+        let (oneshot_sender, oneshot_receiver) = oneshot::channel::<Configs>();
+        tracing::info!("Updating tui app config");
+        self.agent_sender
+            .send(ConfigRequest::Request(oneshot_sender))?;
+        tracing::info!("Update config request sent, awaiting updated config");
+        self.config = oneshot_receiver.await?;
+        tracing::info!("Updated config received, tui app updated!");
+        Ok(())
+    }
+
+    pub async fn edit_config(&mut self, config: Configs) -> Result<()> {
+        tracing::info!("Beginning config edit");
+        let (oneshot_sender, oneshot_receiver) = oneshot::channel::<EditRequestReturn>();
+        self.agent_sender
+            .send(ConfigRequest::Edit(oneshot_sender, config))?;
+        tracing::info!("New config sent, awaiting return");
+        if let EditRequestReturn::EditInvalid(err) = oneshot_receiver.await? {
+            bail!("Could not edit config: {}", err);
+        }
+        tracing::info!("Edited config. Updating app with new config");
+        self.update_config().await
+    }
 }
 
-enum AppState {
+pub enum AppState {
     Default,
     Validate(String),
 }

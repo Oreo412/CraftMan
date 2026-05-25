@@ -1,0 +1,2330 @@
+2026-05-25T05:30:17.380074Z TRACE mio::poll: registering event source with poller: token=Token(97879622128128), interests=READABLE | WRITABLE
+2026-05-25T05:30:17.389989Z TRACE tokio_tungstenite::handshake: Setting ctx when starting handshake
+2026-05-25T05:30:17.390074Z TRACE tungstenite::handshake::client: Request: "GET /ws HTTP/1.1\r\nHost: localhost:3000\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dW55xlVEiZWNo1wG4SAw7g==\r\n\r\n"
+2026-05-25T05:30:17.390152Z TRACE tungstenite::handshake::client: Client handshake initiated.
+2026-05-25T05:30:17.390168Z TRACE tungstenite::handshake::machine: Doing handshake round.
+2026-05-25T05:30:17.390177Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:172 Write.write
+2026-05-25T05:30:17.390188Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T05:30:17.390200Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:174 Write.with_context write -> poll_write
+2026-05-25T05:30:17.390279Z TRACE tungstenite::handshake::machine: Doing handshake round.
+2026-05-25T05:30:17.390313Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:183 Write.flush
+2026-05-25T05:30:17.390329Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T05:30:17.390342Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:185 Write.with_context flush -> poll_flush
+2026-05-25T05:30:17.390355Z TRACE tungstenite::handshake::machine: Doing handshake round.
+2026-05-25T05:30:17.390366Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T05:30:17.390377Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T05:30:17.390388Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T05:30:17.390404Z TRACE tokio_tungstenite::handshake: Setting context in handshake
+2026-05-25T05:30:17.390411Z TRACE tungstenite::handshake::machine: Doing handshake round.
+2026-05-25T05:30:17.390419Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T05:30:17.390430Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T05:30:17.390441Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T05:30:17.392164Z TRACE tokio_tungstenite::handshake: Setting context in handshake
+2026-05-25T05:30:17.392209Z TRACE tungstenite::handshake::machine: Doing handshake round.
+2026-05-25T05:30:17.392223Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T05:30:17.392234Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T05:30:17.392245Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T05:30:17.392309Z DEBUG tungstenite::handshake::client: Client handshake done.
+2026-05-25T05:30:17.392402Z  INFO mcserver_agent::mods::connect: Connected to server!
+2026-05-25T05:30:17.392432Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T05:30:17.392466Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T05:30:17.392481Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T05:30:17.392429Z  INFO mcserver_agent::mods::connect: Sending server action
+2026-05-25T05:30:17.392577Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T05:30:17.392614Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T05:30:17.392629Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T05:30:17.392644Z TRACE tokio_tungstenite::compat: WouldBlock
+2026-05-25T05:30:17.392752Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T05:30:17.392927Z TRACE tungstenite::protocol: Sending frame: Frame { header: FrameHeader { is_final: true, rsv1: false, rsv2: false, rsv3: false, opcode: Data(Text), mask: Some([228, 219, 101, 107]) }, payload: b"{\"ConnectAgent\":\"20690106-f054-477e-9c70-14e6fb6f085f\"}" }
+2026-05-25T05:30:17.392986Z TRACE tungstenite::protocol::frame: writing frame 
+<FRAME>
+final: true
+reserved: false false false
+opcode: TEXT
+length: 61
+payload length: 55
+payload: 0x7b22436f6e6e6563744167656e74223a2232303639303130362d663035342d343737652d396337302d313465366662366630383566227d
+            
+2026-05-25T05:30:17.393012Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T05:30:17.393025Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:172 Write.write
+2026-05-25T05:30:17.393036Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T05:30:17.393048Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:174 Write.with_context write -> poll_write
+2026-05-25T05:30:17.393170Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:183 Write.flush
+2026-05-25T05:30:17.393216Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T05:30:17.393230Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:185 Write.with_context flush -> poll_flush
+2026-05-25T05:30:17.398114Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T05:30:17.398166Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T05:30:17.398183Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T05:30:17.398207Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T05:30:17.398218Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T05:30:17.398230Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T05:30:17.398248Z TRACE tungstenite::protocol::frame::frame: Parsed headers [129, 28]
+2026-05-25T05:30:17.398254Z TRACE tungstenite::protocol::frame::frame: First: 10000001
+2026-05-25T05:30:17.398260Z TRACE tungstenite::protocol::frame::frame: Second: 11100
+2026-05-25T05:30:17.398266Z TRACE tungstenite::protocol::frame::frame: Opcode: Data(Text)
+2026-05-25T05:30:17.398273Z TRACE tungstenite::protocol::frame::frame: Masked: false
+2026-05-25T05:30:17.398295Z TRACE tungstenite::protocol::frame: received frame 
+<FRAME>
+final: true
+reserved: false false false
+opcode: TEXT
+length: 30
+payload length: 28
+payload: 0x7b22436f6e6e656374696f6e4b6579223a22676862725854466c227d
+            
+2026-05-25T05:30:17.398354Z TRACE tungstenite::protocol: Received message {"ConnectionKey":"ghbrXTFl"}
+2026-05-25T05:30:17.398388Z  INFO mcserver_agent::mods::listener: Enter key into discord: ghbrXTFl
+2026-05-25T05:30:17.398425Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T05:30:17.398441Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T05:30:17.398454Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T05:30:17.398469Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T05:30:17.398481Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T05:30:17.398492Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T05:30:17.398504Z TRACE tokio_tungstenite::compat: WouldBlock
+2026-05-25T05:31:24.410123Z  INFO mcserver_agent::gui::file_explorer: File selected. Exiting file_selection
+2026-05-25T05:31:24.410232Z  INFO mcserver_agent::gui::app: Beginning config edit
+2026-05-25T05:31:24.410304Z  INFO mcserver_agent::gui::app: New config sent, awaiting return
+2026-05-25T05:31:24.410423Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T05:31:24.410502Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T05:31:24.410527Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T05:31:24.410571Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T05:31:24.410624Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T05:31:24.410650Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T05:31:24.410678Z TRACE tokio_tungstenite::compat: WouldBlock
+2026-05-25T05:31:24.410756Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T05:31:24.410812Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T05:31:24.410835Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T05:31:24.410857Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T05:31:24.410873Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T05:31:24.410891Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T05:31:24.410907Z TRACE tokio_tungstenite::compat: WouldBlock
+2026-05-25T05:31:24.410944Z  INFO mcserver_agent::gui::app: Edited config. Updating app with new config
+2026-05-25T05:31:24.411012Z  INFO mcserver_agent::gui::app: Updating tui app config
+2026-05-25T05:31:24.411065Z  INFO mcserver_agent::gui::app: Update config request sent, awaiting updated config
+2026-05-25T05:31:24.411142Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T05:31:24.411149Z  INFO mcserver_agent::gui::app: Updated config received, tui app updated!
+2026-05-25T05:31:24.411229Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T05:31:24.411255Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T05:31:24.411292Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T05:31:24.411344Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T05:31:24.411370Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T05:31:24.411429Z TRACE tokio_tungstenite::compat: WouldBlock
+2026-05-25T16:30:31.074702Z TRACE mio::poll: registering event source with poller: token=Token(98250307214464), interests=READABLE | WRITABLE
+2026-05-25T16:30:31.075197Z TRACE tokio_tungstenite::handshake: Setting ctx when starting handshake
+2026-05-25T16:30:31.075301Z TRACE tungstenite::handshake::client: Request: "GET /ws HTTP/1.1\r\nHost: localhost:3000\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: Ymk+WLf6tez0yzRyBR3mVA==\r\n\r\n"
+2026-05-25T16:30:31.075379Z TRACE tungstenite::handshake::client: Client handshake initiated.
+2026-05-25T16:30:31.075394Z TRACE tungstenite::handshake::machine: Doing handshake round.
+2026-05-25T16:30:31.075410Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:172 Write.write
+2026-05-25T16:30:31.075427Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:30:31.075446Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:174 Write.with_context write -> poll_write
+2026-05-25T16:30:31.075508Z TRACE tungstenite::handshake::machine: Doing handshake round.
+2026-05-25T16:30:31.075522Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:183 Write.flush
+2026-05-25T16:30:31.075539Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:30:31.075557Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:185 Write.with_context flush -> poll_flush
+2026-05-25T16:30:31.075575Z TRACE tungstenite::handshake::machine: Doing handshake round.
+2026-05-25T16:30:31.075589Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T16:30:31.075606Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:30:31.075623Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T16:30:31.075647Z TRACE tokio_tungstenite::handshake: Setting context in handshake
+2026-05-25T16:30:31.075657Z TRACE tungstenite::handshake::machine: Doing handshake round.
+2026-05-25T16:30:31.075669Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T16:30:31.075686Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:30:31.075702Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T16:30:31.076943Z TRACE tokio_tungstenite::handshake: Setting context in handshake
+2026-05-25T16:30:31.076989Z TRACE tungstenite::handshake::machine: Doing handshake round.
+2026-05-25T16:30:31.077003Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T16:30:31.077014Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:30:31.077025Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T16:30:31.077121Z DEBUG tungstenite::handshake::client: Client handshake done.
+2026-05-25T16:30:31.077218Z  INFO mcserver_agent::mods::connect: Connected to server!
+2026-05-25T16:30:31.077263Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T16:30:31.077278Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T16:30:31.077289Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T16:30:31.077332Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T16:30:31.077354Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:30:31.077355Z  INFO mcserver_agent::mods::connect: Sending server action
+2026-05-25T16:30:31.077366Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T16:30:31.077379Z TRACE tokio_tungstenite::compat: WouldBlock
+2026-05-25T16:30:31.077522Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T16:30:31.077671Z TRACE tungstenite::protocol: Sending frame: Frame { header: FrameHeader { is_final: true, rsv1: false, rsv2: false, rsv3: false, opcode: Data(Text), mask: Some([69, 244, 33, 71]) }, payload: b"{\"ConnectAgent\":\"4a5af980-afa3-400d-8553-2d0045a04e78\"}" }
+2026-05-25T16:30:31.077730Z TRACE tungstenite::protocol::frame: writing frame 
+<FRAME>
+final: true
+reserved: false false false
+opcode: TEXT
+length: 61
+payload length: 55
+payload: 0x7b22436f6e6e6563744167656e74223a2234613561663938302d616661332d343030642d383535332d326430303435613034653738227d
+            
+2026-05-25T16:30:31.077759Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T16:30:31.077771Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:172 Write.write
+2026-05-25T16:30:31.077782Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:30:31.077794Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:174 Write.with_context write -> poll_write
+2026-05-25T16:30:31.077875Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:183 Write.flush
+2026-05-25T16:30:31.077913Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:30:31.077929Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:185 Write.with_context flush -> poll_flush
+2026-05-25T16:30:31.093427Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T16:30:31.093486Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T16:30:31.093504Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T16:30:31.093533Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T16:30:31.093544Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:30:31.093556Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T16:30:31.093580Z TRACE tungstenite::protocol::frame::frame: Parsed headers [129, 30]
+2026-05-25T16:30:31.093586Z TRACE tungstenite::protocol::frame::frame: First: 10000001
+2026-05-25T16:30:31.093592Z TRACE tungstenite::protocol::frame::frame: Second: 11110
+2026-05-25T16:30:31.093600Z TRACE tungstenite::protocol::frame::frame: Opcode: Data(Text)
+2026-05-25T16:30:31.093607Z TRACE tungstenite::protocol::frame::frame: Masked: false
+2026-05-25T16:30:31.093633Z TRACE tungstenite::protocol::frame: received frame 
+<FRAME>
+final: true
+reserved: false false false
+opcode: TEXT
+length: 32
+payload length: 30
+payload: 0x7b2256616c69646174696f6e546f6b656e223a22626f4a6f574f6458227d
+            
+2026-05-25T16:30:31.093651Z TRACE tungstenite::protocol: Received message {"ValidationToken":"boJoWOdX"}
+2026-05-25T16:30:31.093731Z  INFO mcserver_agent::mods::listener: Enter key into discord: boJoWOdX
+2026-05-25T16:30:31.093774Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T16:30:31.093790Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T16:30:31.093803Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T16:30:31.093820Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T16:30:31.093836Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:30:31.093848Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T16:30:31.093860Z TRACE tokio_tungstenite::compat: WouldBlock
+2026-05-25T16:31:23.968438Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T16:31:23.968610Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T16:31:23.968632Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T16:31:23.968724Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T16:31:23.968740Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:31:23.968753Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T16:31:23.968845Z TRACE tungstenite::protocol::frame::frame: Parsed headers [129, 10]
+2026-05-25T16:31:23.968880Z TRACE tungstenite::protocol::frame::frame: First: 10000001
+2026-05-25T16:31:23.968889Z TRACE tungstenite::protocol::frame::frame: Second: 1010
+2026-05-25T16:31:23.968896Z TRACE tungstenite::protocol::frame::frame: Opcode: Data(Text)
+2026-05-25T16:31:23.968903Z TRACE tungstenite::protocol::frame::frame: Masked: false
+2026-05-25T16:31:23.968943Z TRACE tungstenite::protocol::frame: received frame 
+<FRAME>
+final: true
+reserved: false false false
+opcode: TEXT
+length: 12
+payload length: 10
+payload: 0x2256616c696461746522
+            
+2026-05-25T16:31:23.968984Z TRACE tungstenite::protocol: Received message "Validate"
+2026-05-25T16:31:23.969141Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T16:31:23.969204Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T16:31:23.969225Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T16:31:23.969248Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T16:31:23.969283Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:31:23.969300Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T16:31:23.969314Z TRACE tokio_tungstenite::compat: WouldBlock
+2026-05-25T16:32:15.203038Z  INFO mcserver_agent::gui::file_explorer: File selected. Exiting file_selection
+2026-05-25T16:32:15.203349Z  INFO mcserver_agent::gui::app: Beginning config edit
+2026-05-25T16:32:15.203437Z  INFO mcserver_agent::gui::app: New config sent, awaiting return
+2026-05-25T16:32:15.203629Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T16:32:15.203726Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T16:32:15.203752Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T16:32:15.203880Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T16:32:15.203963Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:32:15.203996Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T16:32:15.204020Z TRACE tokio_tungstenite::compat: WouldBlock
+2026-05-25T16:32:15.204106Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T16:32:15.204137Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T16:32:15.204158Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T16:32:15.204183Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T16:32:15.204180Z  INFO mcserver_agent::gui::app: Edited config. Updating app with new config
+2026-05-25T16:32:15.204201Z  INFO mcserver_agent::gui::app: Updating tui app config
+2026-05-25T16:32:15.204200Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:32:15.204215Z  INFO mcserver_agent::gui::app: Update config request sent, awaiting updated config
+2026-05-25T16:32:15.204219Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T16:32:15.204234Z TRACE tokio_tungstenite::compat: WouldBlock
+2026-05-25T16:32:15.204258Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T16:32:15.204312Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T16:32:15.204335Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T16:32:15.204358Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T16:32:15.204374Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:32:15.204393Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T16:32:15.204409Z TRACE tokio_tungstenite::compat: WouldBlock
+2026-05-25T16:32:15.204418Z  INFO mcserver_agent::gui::app: Updated config received, tui app updated!
+2026-05-25T16:34:33.809430Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T16:34:33.809490Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T16:34:33.809508Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T16:34:33.809541Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T16:34:33.809552Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:34:33.809564Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T16:34:33.809615Z TRACE tungstenite::protocol::frame::frame: Parsed headers [129, 50]
+2026-05-25T16:34:33.809649Z TRACE tungstenite::protocol::frame::frame: First: 10000001
+2026-05-25T16:34:33.809661Z TRACE tungstenite::protocol::frame::frame: Second: 110010
+2026-05-25T16:34:33.809670Z TRACE tungstenite::protocol::frame::frame: Opcode: Data(Text)
+2026-05-25T16:34:33.809676Z TRACE tungstenite::protocol::frame::frame: Masked: false
+2026-05-25T16:34:33.809707Z TRACE tungstenite::protocol::frame: received frame 
+<FRAME>
+final: true
+reserved: false false false
+opcode: TEXT
+length: 52
+payload length: 50
+payload: 0x7b2253765374617274223a2238653531326162322d313066332d343666342d613939612d373537316664633562623066227d
+            
+2026-05-25T16:34:33.809728Z TRACE tungstenite::protocol: Received message {"SvStart":"8e512ab2-10f3-46f4-a99a-7571fdc5bb0f"}
+2026-05-25T16:34:33.809786Z  INFO mcserver_agent::mods::listener: Starting server
+2026-05-25T16:34:33.821231Z TRACE mio::poll: registering event source with poller: token=Token(98250307217408), interests=READABLE | WRITABLE
+2026-05-25T16:34:33.821319Z TRACE mio::poll: registering event source with poller: token=Token(98250307187328), interests=READABLE | WRITABLE
+2026-05-25T16:34:33.821345Z TRACE mio::poll: registering event source with poller: token=Token(98250307107968), interests=READABLE
+2026-05-25T16:34:33.821492Z  INFO mcserver_agent::mods::server_handler: Started server
+2026-05-25T16:34:33.821542Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:292 Stream.poll_next
+2026-05-25T16:34:33.821557Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T16:34:33.821571Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:302 Stream.with_context poll_next -> read()
+2026-05-25T16:34:33.821597Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:154 Read.read
+2026-05-25T16:34:33.821608Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:34:33.821620Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:157 Read.with_context read -> poll_read
+2026-05-25T16:34:33.821633Z TRACE tokio_tungstenite::compat: WouldBlock
+2026-05-25T16:34:33.821771Z  INFO mcserver_agent::mods::connect: Sending server action
+2026-05-25T16:34:33.821823Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T16:34:33.821920Z TRACE tungstenite::protocol: Sending frame: Frame { header: FrameHeader { is_final: true, rsv1: false, rsv2: false, rsv3: false, opcode: Data(Text), mask: Some([15, 174, 175, 90]) }, payload: b"{\"StartResponse\":\"8e512ab2-10f3-46f4-a99a-7571fdc5bb0f\"}" }
+2026-05-25T16:34:33.821979Z TRACE tungstenite::protocol::frame: writing frame 
+<FRAME>
+final: true
+reserved: false false false
+opcode: TEXT
+length: 62
+payload length: 56
+payload: 0x7b225374617274526573706f6e7365223a2238653531326162322d313066332d343666342d613939612d373537316664633562623066227d
+            
+2026-05-25T16:34:33.822044Z TRACE tokio_tungstenite: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/lib.rs:243 WebSocketStream.with_context
+2026-05-25T16:34:33.822131Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:172 Write.write
+2026-05-25T16:34:33.822170Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:34:33.822185Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:174 Write.with_context write -> poll_write
+2026-05-25T16:34:33.822314Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:183 Write.flush
+2026-05-25T16:34:33.822353Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:131 AllowStd.with_context
+2026-05-25T16:34:33.822368Z TRACE tokio_tungstenite::compat: /home/oreo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-tungstenite-0.28.0/src/compat.rs:185 Write.with_context flush -> poll_flush
+2026-05-25T16:34:34.234375Z  INFO mcserver_agent::mods::server_process: Starting net.minecraft.server.Main
+2026-05-25T16:34:39.992074Z  INFO mcserver_agent::mods::server_process: [11:34:39] [ServerMain/INFO]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, profilesHost=https://api.mojang.com, name=PROD]
+2026-05-25T16:34:41.395899Z  INFO mcserver_agent::mods::server_process: [11:34:41] [ServerMain/INFO]: Loaded 1470 recipes
+2026-05-25T16:34:41.414149Z  INFO mcserver_agent::mods::server_process: [11:34:41] [ServerMain/INFO]: Loaded 1584 advancements
+2026-05-25T16:34:41.526812Z  INFO mcserver_agent::mods::server_process: [11:34:41] [Server thread/INFO]: Starting minecraft server version 1.21.11
+2026-05-25T16:34:41.526867Z  INFO mcserver_agent::mods::server_process: [11:34:41] [Server thread/INFO]: Loading properties
+2026-05-25T16:34:41.526963Z  INFO mcserver_agent::mods::server_process: [11:34:41] [Server thread/INFO]: Default game type: ADVENTURE
+2026-05-25T16:34:41.527080Z  INFO mcserver_agent::mods::server_process: [11:34:41] [Server thread/INFO]: Generating keypair
+2026-05-25T16:34:41.593525Z  INFO mcserver_agent::mods::server_process: [11:34:41] [Server thread/INFO]: Starting Minecraft server on *:25565
+2026-05-25T16:34:41.790538Z  INFO mcserver_agent::mods::server_process: [11:34:41] [Server thread/INFO]: Preparing level "world"
+2026-05-25T16:34:42.139978Z  INFO mcserver_agent::mods::server_process: [11:34:42] [Server thread/INFO]: Loading 0 persistent chunks...
+2026-05-25T16:34:42.146125Z  INFO mcserver_agent::mods::server_process: [11:34:42] [Server thread/INFO]: Time elapsed: 11 ms
+2026-05-25T16:34:42.147314Z  INFO mcserver_agent::mods::server_process: [11:34:42] [Server thread/INFO]: Done (0.364s)! For help, type "help"
+2026-05-25T16:42:14.829311Z  INFO mcserver_agent::mods::connect: Connected to server!
+2026-05-25T16:42:14.829390Z  INFO mcserver_agent::mods::connect: Sending server action
+2026-05-25T16:42:27.322409Z  INFO mcserver_agent::mods::listener: Starting server
+2026-05-25T16:42:27.323026Z  INFO mcserver_agent::mods::server_handler: Started server
+2026-05-25T16:42:27.323168Z  INFO mcserver_agent::mods::connect: Sending server action
+2026-05-25T16:42:27.613841Z  INFO mcserver_agent::mods::server_process: Starting net.minecraft.server.Main
+2026-05-25T16:42:33.355958Z  INFO mcserver_agent::mods::server_process: [11:42:33] [ServerMain/INFO]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, profilesHost=https://api.mojang.com, name=PROD]
+2026-05-25T16:42:34.726124Z  INFO mcserver_agent::mods::server_process: [11:42:34] [ServerMain/INFO]: Loaded 1470 recipes
+2026-05-25T16:42:34.744236Z  INFO mcserver_agent::mods::server_process: [11:42:34] [ServerMain/INFO]: Loaded 1584 advancements
+2026-05-25T16:42:34.853072Z  INFO mcserver_agent::mods::server_process: [11:42:34] [Server thread/INFO]: Starting minecraft server version 1.21.11
+2026-05-25T16:42:34.853703Z  INFO mcserver_agent::mods::server_process: [11:42:34] [Server thread/INFO]: Loading properties
+2026-05-25T16:42:34.853939Z  INFO mcserver_agent::mods::server_process: [11:42:34] [Server thread/INFO]: Default game type: ADVENTURE
+2026-05-25T16:42:34.854307Z  INFO mcserver_agent::mods::server_process: [11:42:34] [Server thread/INFO]: Generating keypair
+2026-05-25T16:42:35.005625Z  INFO mcserver_agent::mods::server_process: [11:42:34] [Server thread/INFO]: Starting Minecraft server on *:25565
+2026-05-25T16:42:35.171216Z  INFO mcserver_agent::mods::server_process: [11:42:35] [Server thread/INFO]: Preparing level "world"
+2026-05-25T16:42:35.582886Z  INFO mcserver_agent::mods::server_process: [11:42:35] [Server thread/INFO]: Loading 0 persistent chunks...
+2026-05-25T16:42:35.582937Z  INFO mcserver_agent::mods::server_process: [11:42:35] [Server thread/INFO]: Preparing spawn area: 100%
+2026-05-25T16:42:35.587709Z  INFO mcserver_agent::mods::server_process: [11:42:35] [Server thread/INFO]: Time elapsed: 18 ms
+2026-05-25T16:42:35.588145Z  INFO mcserver_agent::mods::server_process: [11:42:35] [Server thread/INFO]: Done (0.424s)! For help, type "help"
+2026-05-25T16:43:32.978664Z  INFO mcserver_agent::mods::server_process: [11:43:32] [Server thread/INFO]: Server empty for 60 seconds, pausing
+2026-05-25T16:44:01.925101Z  INFO mcserver_agent::mods::listener: Received query
+2026-05-25T16:44:01.994279Z  INFO mcserver_agent::mods::query_handler: Boutta try to decode the image
+2026-05-25T16:44:01.994405Z  INFO mcserver_agent::mods::query_handler: decoded image
+2026-05-25T16:44:01.994422Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:44:01.994428Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:44:01.994557Z  INFO mcserver_agent::mods::connect: Sending server action
+2026-05-25T16:44:01.994614Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:44:02.000353Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:44:02.000399Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:44:02.000419Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:44:02.000429Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:44:10.773821Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:44:10.773877Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:44:10.773897Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:44:10.773908Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:44:20.772296Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:44:20.772347Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:44:20.772365Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:44:20.772374Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:44:30.772077Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:44:30.772126Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:44:30.772143Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:44:30.772153Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:44:39.531943Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:44:39.532044Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:44:39.532069Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:44:39.532085Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:44:49.521807Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:44:49.521943Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:44:49.521969Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:44:49.521982Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:44:59.517474Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:44:59.517567Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:44:59.517601Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:44:59.517619Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:45:09.513898Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:45:09.513949Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:45:09.513969Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:45:09.513979Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:45:18.215650Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:45:18.215720Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:45:18.215737Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:45:18.215748Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:45:28.219290Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:45:28.219356Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:45:28.219378Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:45:28.219390Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:45:38.218400Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:45:38.218489Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:45:38.218539Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:45:38.218552Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:45:46.997414Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:45:46.997463Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:45:46.997482Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:45:46.997492Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:45:56.997338Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:45:56.997389Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:45:56.997407Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:45:56.997417Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:46:07.001238Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:46:07.001307Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:46:07.001324Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:46:07.001334Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:46:15.756095Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:46:15.756176Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:46:15.756193Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:46:15.756204Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:46:18.728231Z  INFO mcserver_agent::mods::server_process: [11:46:18] [User Authenticator #1/INFO]: UUID of player Oreo412 is ac6ab2ca-36ed-44d6-a9ca-5c1e78269d3a
+2026-05-25T16:46:19.857286Z  INFO mcserver_agent::mods::server_process: [11:46:19] [Server thread/INFO]: Oreo412[/172.24.96.1:58781] logged in with entity id 40 at (83.06940090000931, 151.86443826797674, 26.246003766925472)
+2026-05-25T16:46:19.893828Z  INFO mcserver_agent::mods::server_process: [11:46:19] [Server thread/INFO]: Oreo412 joined the game
+2026-05-25T16:46:25.766136Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:46:25.766225Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:46:25.766366Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:46:25.766459Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:46:25.766495Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:46:25.766667Z  INFO mcserver_agent::mods::connect: Sending server action
+2026-05-25T16:46:35.342897Z  INFO mcserver_agent::mods::server_process: [11:46:35] [Server thread/INFO]: <Oreo412> frick
+2026-05-25T16:46:35.756600Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:46:35.756650Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:46:35.756659Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:46:35.756680Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:46:35.756692Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:46:44.498400Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:46:44.498451Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:46:44.498462Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:46:44.498483Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:46:44.498494Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:46:54.497662Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:46:54.497717Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:46:54.497726Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:46:54.497747Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:46:54.497759Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:47:04.497839Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:47:04.497895Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:47:04.497905Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:47:04.497927Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:47:04.497938Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:47:05.061619Z  INFO mcserver_agent::mods::server_process: [11:47:05] [Server thread/INFO]: <Oreo412> hello
+2026-05-25T16:47:07.998227Z  INFO mcserver_agent::mods::server_process: [11:47:07] [Server thread/INFO]: <Oreo412> hello
+2026-05-25T16:47:12.776417Z  INFO mcserver_agent::mods::server_process: [11:47:12] [Server thread/INFO]: <Oreo412> whoa
+2026-05-25T16:47:14.497534Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:47:14.497592Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:47:14.497602Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:47:14.497623Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:47:14.497707Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:47:14.614980Z  INFO mcserver_agent::mods::server_process: [11:47:14] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:13.934819Z  INFO mcserver_agent::mods::server_process: [11:47:13] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:14.700144Z  INFO mcserver_agent::mods::server_process: [11:47:14] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:15.324646Z  INFO mcserver_agent::mods::server_process: [11:47:15] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:15.931182Z  INFO mcserver_agent::mods::server_process: [11:47:15] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:16.673539Z  INFO mcserver_agent::mods::server_process: [11:47:16] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:17.270103Z  INFO mcserver_agent::mods::server_process: [11:47:17] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:18.096390Z  INFO mcserver_agent::mods::server_process: [11:47:18] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:18.756640Z  INFO mcserver_agent::mods::server_process: [11:47:18] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:19.478135Z  INFO mcserver_agent::mods::server_process: [11:47:19] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:20.054450Z  INFO mcserver_agent::mods::server_process: [11:47:20] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:20.702512Z  INFO mcserver_agent::mods::server_process: [11:47:20] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:21.327055Z  INFO mcserver_agent::mods::server_process: [11:47:21] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:21.963334Z  INFO mcserver_agent::mods::server_process: [11:47:21] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:22.777437Z  INFO mcserver_agent::mods::server_process: [11:47:22] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:23.246641Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:47:23.246695Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:47:23.246704Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:47:23.246724Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:47:23.246735Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:47:23.454220Z  INFO mcserver_agent::mods::server_process: [11:47:23] [Server thread/INFO]: <Oreo412> t
+2026-05-25T16:47:30.884678Z  INFO mcserver_agent::mods::server_process: [11:47:30] [Server thread/INFO]: <Oreo412> hello
+2026-05-25T16:47:33.247923Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:47:33.247987Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:47:33.247998Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:47:33.248021Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:47:33.248032Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:47:43.246079Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:47:43.246128Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:47:43.246137Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:47:43.246157Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:47:43.246169Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:47:51.975282Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:47:51.975332Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:47:51.975344Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:47:51.975363Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:47:51.975373Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:48:01.976775Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:48:01.976837Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:48:01.976862Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:48:01.976886Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:48:01.976899Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:48:11.974821Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:48:11.974890Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:48:11.974900Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:48:11.974933Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:48:11.974944Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:48:16.881208Z  INFO mcserver_agent::mods::listener: Sending start chat response
+2026-05-25T16:48:16.881433Z  INFO mcserver_agent::mods::connect: Sending server action
+2026-05-25T16:48:20.716704Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:48:20.716754Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:48:20.716763Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:48:20.716784Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:48:20.716794Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:48:26.326178Z  INFO mcserver_agent::mods::server_process: [11:48:26] [Server thread/INFO]: <Oreo412> frickin frick
+2026-05-25T16:48:26.326252Z  INFO mcserver_agent::mods::connect: Sending server action
+2026-05-25T16:48:30.717358Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:48:30.717433Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:48:30.717443Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:48:30.717464Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:48:30.717475Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:48:40.716738Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:48:40.716789Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:48:40.716798Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:48:40.716820Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:48:40.716831Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:48:49.472659Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:48:49.472733Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:48:49.472743Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:48:49.472767Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:48:49.472778Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:48:57.221563Z  INFO mcserver_agent::mods::server_process: [11:48:57] [Server thread/INFO]: <Oreo412> what da heckity heck heck
+2026-05-25T16:48:57.221661Z  INFO mcserver_agent::mods::connect: Sending server action
+2026-05-25T16:48:59.472933Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:48:59.472986Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:48:59.472995Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:48:59.473015Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:48:59.473026Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:49:09.472787Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:49:09.472864Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:49:09.472874Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:49:09.472895Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:49:09.472906Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:49:18.188534Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:49:18.188621Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:49:18.188632Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:49:18.188653Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:49:18.188666Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:49:28.189068Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:49:28.189263Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:49:28.189281Z  INFO mcserver_agent::mods::query_handler: set player list
+2026-05-25T16:49:28.189308Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:49:28.189319Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:49:31.641500Z  INFO mcserver_agent::mods::server_process: [11:49:31] [Server thread/INFO]: Oreo412 lost connection: Disconnected
+2026-05-25T16:49:31.641607Z  INFO mcserver_agent::mods::connect: Sending server action
+2026-05-25T16:49:31.642477Z  INFO mcserver_agent::mods::server_process: [11:49:31] [Server thread/INFO]: Oreo412 left the game
+2026-05-25T16:49:31.642545Z  INFO mcserver_agent::mods::connect: Sending server action
+2026-05-25T16:49:38.210374Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:49:38.210449Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:49:38.210481Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:49:38.210502Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:49:38.210535Z  INFO mcserver_agent::mods::connect: Sending server action
+2026-05-25T16:49:48.188701Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:49:48.188778Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:49:48.188807Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:49:48.188822Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:49:56.889609Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:49:56.889693Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:49:56.889785Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:49:56.889821Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:50:06.905239Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:50:06.905290Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:50:06.905308Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:50:06.905319Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:50:16.903716Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:50:16.903791Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:50:16.903819Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:50:16.903835Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:50:25.639594Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:50:25.639671Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:50:25.639731Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:50:25.639753Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:50:29.085691Z  INFO mcserver_agent::mods::server_process: [11:50:29] [Server thread/INFO]: Server empty for 60 seconds, pausing
+2026-05-25T16:50:29.085829Z  INFO mcserver_agent::mods::connect: Sending server action
+2026-05-25T16:50:35.638907Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:50:35.638991Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:50:35.639023Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:50:35.639040Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:50:45.636425Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:50:45.636509Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:50:45.636543Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:50:45.636562Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:50:54.396314Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:50:54.396366Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:50:54.396385Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:50:54.396395Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:51:04.394521Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:51:04.394873Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:51:04.395308Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:51:04.395371Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:51:14.382857Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:51:14.382917Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:51:14.382941Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:51:14.382954Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:51:23.125940Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:51:23.125985Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:51:23.126001Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:51:23.126010Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:51:33.137738Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:51:33.137798Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:51:33.137821Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:51:33.137833Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:51:43.129580Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:51:43.129638Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:51:43.129661Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:51:43.129674Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:51:53.128372Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:51:53.128418Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:51:53.128435Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:51:53.128444Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:52:01.853010Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:52:01.853286Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:52:01.853435Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:52:01.853477Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:52:11.854341Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:52:11.854404Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:52:11.854429Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:52:11.854539Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:52:21.856626Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:52:21.856693Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:52:21.856713Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:52:21.856724Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:52:30.555382Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:52:30.556024Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:52:30.556099Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:52:30.556145Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:52:40.548171Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:52:40.548228Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:52:40.548246Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:52:40.548256Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:52:50.549520Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:52:50.549575Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:52:50.549596Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:52:50.549608Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:52:59.288762Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:52:59.288813Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:52:59.288831Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:52:59.288841Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:53:09.289223Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:53:09.289281Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:53:09.289300Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:53:09.289310Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:53:19.288448Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:53:19.288498Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:53:19.288517Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:53:19.288526Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:53:28.021977Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:53:28.022034Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:53:28.022055Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:53:28.022066Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:53:38.021721Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:53:38.021767Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:53:38.021784Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:53:38.021794Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:53:48.021498Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:53:48.021546Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:53:48.021563Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:53:48.021573Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:53:56.765324Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:53:56.765373Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:53:56.765390Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:53:56.765399Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:54:06.765379Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:54:06.765428Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:54:06.765445Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:54:06.765454Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:54:16.764628Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:54:16.764675Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:54:16.764691Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:54:16.764700Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:54:26.765499Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:54:26.765547Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:54:26.765563Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:54:26.765573Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:54:35.475702Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:54:35.475777Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:54:35.475807Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:54:35.475823Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:54:45.476404Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:54:45.476492Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:54:45.476526Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:54:45.476543Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:54:55.475215Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:54:55.475283Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:54:55.475309Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:54:55.475322Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:55:04.184267Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:55:04.184321Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:55:04.184342Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:55:04.184353Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:55:14.185624Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:55:14.185735Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:55:14.185769Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:55:14.185788Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:55:24.199250Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:55:24.199298Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:55:24.199316Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:55:24.199326Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:55:32.914476Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:55:32.914556Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:55:32.914587Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:55:32.914604Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:55:42.914453Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:55:42.914543Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:55:42.914576Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:55:42.914595Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:55:52.914359Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:55:52.914426Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:55:52.914456Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:55:52.914471Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:56:01.639735Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:56:01.639825Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:56:01.639861Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:56:01.639880Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:56:11.651861Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:56:11.652210Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:56:11.652272Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:56:11.652341Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:56:21.649476Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:56:21.649521Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:56:21.649538Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:56:21.649547Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:56:31.648588Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:56:31.648633Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:56:31.648650Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:56:31.648659Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:56:40.354233Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:56:40.354277Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:56:40.354295Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:56:40.354304Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:56:50.358986Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:56:50.359035Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:56:50.359054Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:56:50.359064Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:57:00.357691Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:57:00.357949Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:57:00.358410Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:57:00.358450Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:57:09.036516Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:57:09.036563Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:57:09.036581Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:57:09.036590Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:57:19.042625Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:57:19.042677Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:57:19.042698Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:57:19.042709Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:57:29.035978Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:57:29.036025Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:57:29.036042Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:57:29.036052Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:57:37.766699Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:57:37.766743Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:57:37.766760Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:57:37.766769Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:57:47.766580Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:57:47.766628Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:57:47.766646Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:57:47.766656Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:57:57.762282Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:57:57.762335Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:57:57.762355Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:57:57.762366Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:58:06.496056Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:58:06.496132Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:58:06.496162Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:58:06.496243Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:58:16.490503Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:58:16.490571Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:58:16.490598Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:58:16.490612Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:58:26.489556Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:58:26.489607Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:58:26.489626Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:58:26.489636Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:58:36.489313Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:58:36.489365Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:58:36.489384Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:58:36.489394Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:58:45.205744Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:58:45.205801Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:58:45.205819Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:58:45.205829Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:58:55.208799Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:58:55.208886Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:58:55.208918Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:58:55.208934Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:59:05.206488Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:59:05.206548Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:59:05.206569Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:59:05.206581Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:59:13.919023Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:59:13.919088Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:59:13.919114Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:59:13.919128Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:59:23.918186Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:59:23.918238Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:59:23.918259Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:59:23.918270Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:59:33.918687Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:59:33.918759Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:59:33.918787Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:59:33.918802Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:59:42.618779Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:59:42.618857Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:59:42.618904Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:59:42.618932Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T16:59:52.619083Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T16:59:52.619164Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T16:59:52.619195Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T16:59:52.619211Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:00:02.618329Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:00:02.618381Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:00:02.618401Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:00:02.618412Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:00:11.315633Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:00:11.315715Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:00:11.315746Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:00:11.315763Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:00:21.315400Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:00:21.315478Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:00:21.315508Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:00:21.315524Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:00:31.316937Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:00:31.317013Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:00:31.317045Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:00:31.317060Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:00:40.077874Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:00:40.077931Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:00:40.077954Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:00:40.077966Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:00:50.077299Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:00:50.077346Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:00:50.077364Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:00:50.077373Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:01:00.063050Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:01:00.063131Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:01:00.063165Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:01:00.063183Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:01:10.064813Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:01:10.064912Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:01:10.065013Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:01:10.065039Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:01:18.766188Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:01:18.766277Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:01:18.766312Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:01:18.766331Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:01:28.782989Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:01:28.783058Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:01:28.783085Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:01:28.783099Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:01:38.777314Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:01:38.777360Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:01:38.777378Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:01:38.777387Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:01:47.486554Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:01:47.486628Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:01:47.486646Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:01:47.486655Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:01:57.487367Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:01:57.487429Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:01:57.487452Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:01:57.487465Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:02:07.488423Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:02:07.488479Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:02:07.488499Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:02:07.488510Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:02:16.173250Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:02:16.173304Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:02:16.173322Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:02:16.173332Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:02:26.166419Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:02:26.166467Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:02:26.166485Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:02:26.166494Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:02:36.171557Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:02:36.171611Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:02:36.171630Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:02:36.171640Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:02:44.896607Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:02:44.896674Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:02:44.896699Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:02:44.896709Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:02:54.891019Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:02:54.891097Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:02:54.891115Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:02:54.891125Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:03:04.895316Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:03:04.895385Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:03:04.895411Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:03:04.895424Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:03:14.890336Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:03:14.890587Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:03:14.890814Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:03:14.890938Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:03:23.609974Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:03:23.610033Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:03:23.610056Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:03:23.610067Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:03:33.606188Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:03:33.606238Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:03:33.606257Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:03:33.606267Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:03:43.605937Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:03:43.606053Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:03:43.606083Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:03:43.606098Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:03:52.330718Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:03:52.330787Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:03:52.330813Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:03:52.330827Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:04:02.326777Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:04:02.327116Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:04:02.327328Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:04:02.327377Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:04:12.327087Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:04:12.327164Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:04:12.327193Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:04:12.327208Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:04:21.033445Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:04:21.033539Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:04:21.033565Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:04:21.033579Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:04:31.033414Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:04:31.033479Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:04:31.033505Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:04:31.033519Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:04:41.034396Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:04:41.034467Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:04:41.034495Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:04:41.034510Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:04:49.730605Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:04:49.730681Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:04:49.730711Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:04:49.730726Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:04:59.730042Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:04:59.730116Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:04:59.730144Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:04:59.730159Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:05:09.731397Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:05:09.731478Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:05:09.731510Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:05:09.731527Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:05:18.446167Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:05:18.446215Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:05:18.446232Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:05:18.446241Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:05:28.448257Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:05:28.448341Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:05:28.448373Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:05:28.448389Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:05:38.447877Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:05:38.447963Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:05:38.447997Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:05:38.448014Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:05:48.447105Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:05:48.447157Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:05:48.447174Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:05:48.447184Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:05:57.143976Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:05:57.144020Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:05:57.144037Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:05:57.144047Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:06:07.143537Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:06:07.143584Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:06:07.143602Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:06:07.143612Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:06:17.145299Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:06:17.145378Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:06:17.145408Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:06:17.145425Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:06:25.856363Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:06:25.856419Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:06:25.856440Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:06:25.856453Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:06:35.855711Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:06:35.855757Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:06:35.855773Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:06:35.855783Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:06:45.870107Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:06:45.870156Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:06:45.870173Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:06:45.870182Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:06:54.570363Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:06:54.570412Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:06:54.570429Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:06:54.570439Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:07:04.570630Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:07:04.570698Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:07:04.570721Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:07:04.570734Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:07:14.567164Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:07:14.567217Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:07:14.567238Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:07:14.567249Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:07:23.248464Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:07:23.248537Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:07:23.248568Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:07:23.248582Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:07:33.241568Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:07:33.241628Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:07:33.241651Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:07:33.241663Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:07:43.243158Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:07:43.243205Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:07:43.243223Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:07:43.243232Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:07:53.245896Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:07:53.245965Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:07:53.245993Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:07:53.246006Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:08:01.949645Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:08:01.949692Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:08:01.949709Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:08:01.949718Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:08:11.955810Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:08:11.955859Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:08:11.955876Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:08:11.955885Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:08:21.955960Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:08:21.956029Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:08:21.956055Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:08:21.956069Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:08:30.652868Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:08:30.652919Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:08:30.652938Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:08:30.652948Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:08:40.649759Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:08:40.649807Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:08:40.649825Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:08:40.649835Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:08:50.647710Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:08:50.647768Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:08:50.647786Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:08:50.647796Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:08:59.363736Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:08:59.363827Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:08:59.363854Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:08:59.363868Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:09:09.360082Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:09:09.360129Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:09:09.360146Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:09:09.360155Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:09:19.359255Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:09:19.359308Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:09:19.359328Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:09:19.359338Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:09:28.056959Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:09:28.057011Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:09:28.057030Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:09:28.057039Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:09:38.057683Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:09:38.057742Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:09:38.057765Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:09:38.057777Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:09:48.060463Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:09:48.060522Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:09:48.060542Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:09:48.060554Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:09:56.741942Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:09:56.742013Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:09:56.742042Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:09:56.742056Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:10:06.741590Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:10:06.741656Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:10:06.741678Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:10:06.741691Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:10:16.742782Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:10:16.742863Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:10:16.742895Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:10:16.742911Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:10:26.741413Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:10:26.741470Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:10:26.741491Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:10:26.741503Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:10:35.451149Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:10:35.451197Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:10:35.451214Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:10:35.451224Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:10:45.451616Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:10:45.451688Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:10:45.451716Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:10:45.451731Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:10:55.471358Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:10:55.471484Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:10:55.471521Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:10:55.471538Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:11:04.140830Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:11:04.141263Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:11:04.141313Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:11:04.141331Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:11:14.141149Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:11:14.141233Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:11:14.141269Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:11:14.141287Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:11:24.156252Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:11:24.156310Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:11:24.156327Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:11:24.156337Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:11:32.851727Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:11:32.851815Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:11:32.851849Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:11:32.851866Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:11:42.852292Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:11:42.852375Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:11:42.852407Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:11:42.852423Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:11:52.868366Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:11:52.868422Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:11:52.868443Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:11:52.868455Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:12:01.552941Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:12:01.552988Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:12:01.553006Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:12:01.553016Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:12:11.556153Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:12:11.556237Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:12:11.556266Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:12:11.556282Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:12:21.546992Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:12:21.547041Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:12:21.547059Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:12:21.547069Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:12:31.554259Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:12:31.554338Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:12:31.554371Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:12:31.554387Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:12:40.223982Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:12:40.224063Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:12:40.224087Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:12:40.224100Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:12:50.223085Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:12:50.223137Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:12:50.223155Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:12:50.223166Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:13:00.222949Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:13:00.223037Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:13:00.223068Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:13:00.223082Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:13:08.919754Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:13:08.919800Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:13:08.919818Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:13:08.919827Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:13:18.931019Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:13:18.931080Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:13:18.931102Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:13:18.931115Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:13:28.918889Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:13:28.918934Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:13:28.918951Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:13:28.918960Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:13:37.615439Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:13:37.615487Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:13:37.615505Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:13:37.615515Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:13:47.615923Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:13:47.616388Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:13:47.616526Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:13:47.616704Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:13:57.613375Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:13:57.613903Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:13:57.614006Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:13:57.614024Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:14:06.314683Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:14:06.314745Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:14:06.314767Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:14:06.314778Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:14:16.313492Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:14:16.313542Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:14:16.313561Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:14:16.313571Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:14:26.316326Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:14:26.316393Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:14:26.316418Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:14:26.316432Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:14:35.007403Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:14:35.007457Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:14:35.007478Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:14:35.007488Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:14:45.008100Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:14:45.008177Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:14:45.008205Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:14:45.008221Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:14:55.007109Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:14:55.007156Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:14:55.007173Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:14:55.007183Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:15:05.008170Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:15:05.008236Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:15:05.008265Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:15:05.008278Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:15:13.691378Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:15:13.691445Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:15:13.691472Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:15:13.691486Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:15:23.690887Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:15:23.690945Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:15:23.690966Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:15:23.690976Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:15:33.691840Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:15:33.691921Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:15:33.691953Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:15:33.691970Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:15:42.388049Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:15:42.388131Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:15:42.388162Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:15:42.388179Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:15:52.386964Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:15:52.387010Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:15:52.387028Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:15:52.387037Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:16:02.386999Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:16:02.387074Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:16:02.387102Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:16:02.387117Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:16:11.077608Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:16:11.077700Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:16:11.077735Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:16:11.077753Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:16:21.077847Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:16:21.077924Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:16:21.077956Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:16:21.077972Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:16:31.075998Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:16:31.076054Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:16:31.076075Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:16:31.076086Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:16:39.780978Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:16:39.781061Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:16:39.781093Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:16:39.781109Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:16:49.780521Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:16:49.780594Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:16:49.780621Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:16:49.780636Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:16:59.780063Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:16:59.780142Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:16:59.780172Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:16:59.780188Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:17:09.779181Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:17:09.779241Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:17:09.779265Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:17:09.779278Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:17:18.498898Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:17:18.498952Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:17:18.498973Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:17:18.498984Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:17:28.490276Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:17:28.490323Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:17:28.490340Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:17:28.490349Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:17:38.489516Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:17:38.489592Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:17:38.489739Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:17:38.489758Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:17:47.184667Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:17:47.184732Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:17:47.184758Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:17:47.184771Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:17:57.183897Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:17:57.183966Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:17:57.183995Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:17:57.184010Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:18:07.178277Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:18:07.178324Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:18:07.178362Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:18:07.178375Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:18:15.883722Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:18:15.883808Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:18:15.883842Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:18:15.883856Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:18:25.881458Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:18:25.881507Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:18:25.881524Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:18:25.881533Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:18:35.884999Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:18:35.885046Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:18:35.885064Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:18:35.885073Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:18:44.584198Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:18:44.584267Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:18:44.584294Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:18:44.584308Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:18:54.578504Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:18:54.578705Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:18:54.579003Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:18:54.579138Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:19:04.576069Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:19:04.576118Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:19:04.576136Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:19:04.576146Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:19:14.578524Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:19:14.578579Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:19:14.578601Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:19:14.578612Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:19:23.283548Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:19:23.283609Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:19:23.283633Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:19:23.283645Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:19:33.283777Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:19:33.283857Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:19:33.283886Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:19:33.283902Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:19:43.279897Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:19:43.279946Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:19:43.279963Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:19:43.279972Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:19:51.978743Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:19:51.978790Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:19:51.978807Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:19:51.978817Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:20:01.979478Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:20:01.979526Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:20:01.979563Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:20:01.979575Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:20:11.978322Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:20:11.978373Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:20:11.978392Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:20:11.978401Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:20:20.669911Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:20:20.669975Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:20:20.669998Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:20:20.670011Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:20:30.669786Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:20:30.669833Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:20:30.669851Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:20:30.669860Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:20:40.670548Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:20:40.670616Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:20:40.670643Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:20:40.670657Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:20:50.670025Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:20:50.670075Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:20:50.670093Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:20:50.670103Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:21:00.670256Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:21:00.670314Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:21:00.670337Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:21:00.670350Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:21:08.832327Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:21:08.832419Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:21:08.832455Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:21:08.832475Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:21:18.830865Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:21:18.830940Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:21:18.830970Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:21:18.830985Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:21:28.830553Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:21:28.830635Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:21:28.830669Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:21:28.830752Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:21:37.548101Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:21:37.548191Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:21:37.548226Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:21:37.548244Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:21:47.567034Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:21:47.567110Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:21:47.567140Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:21:47.567156Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:21:57.547226Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:21:57.547270Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:21:57.547288Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:21:57.547298Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:22:06.258576Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:22:06.258640Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:22:06.258666Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:22:06.258680Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:22:16.258135Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:22:16.258187Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:22:16.258205Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:22:16.258216Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:22:26.265252Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:22:26.265301Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:22:26.265318Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:22:26.265328Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:22:34.969085Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:22:34.969146Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:22:34.969170Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:22:34.969183Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:22:44.966383Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:22:44.966456Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:22:44.966486Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:22:44.966500Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:22:54.968593Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:22:54.968669Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:22:54.968698Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:22:54.968713Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:23:04.961209Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:23:04.961255Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:23:04.961272Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:23:04.961281Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:23:13.674270Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:23:13.674319Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:23:13.674337Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:23:13.674350Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:23:23.671942Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:23:23.671990Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:23:23.672007Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:23:23.672016Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:23:33.670449Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:23:33.670496Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:23:33.670513Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:23:33.670523Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:23:42.381916Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:23:42.381983Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:23:42.382009Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:23:42.382022Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:23:52.372707Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:23:52.372757Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:23:52.372775Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:23:52.372784Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:24:02.376609Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:24:02.376657Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:24:02.376675Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:24:02.376685Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:24:11.099168Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:24:11.099241Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:24:11.099270Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:24:11.099286Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:24:21.091859Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:24:21.092091Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:24:21.092222Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:24:21.092509Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:24:31.090802Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:24:31.090873Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:24:31.090900Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:24:31.090914Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:24:39.807873Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:24:39.807935Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:24:39.808270Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:24:39.808361Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:24:49.804543Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:24:49.804594Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:24:49.804611Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:24:49.804621Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:24:59.808460Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:24:59.808565Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:24:59.808594Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:24:59.808609Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:25:09.806493Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:25:09.806551Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:25:09.806573Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:25:09.806586Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:25:18.516612Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:25:18.516805Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:25:18.516888Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:25:18.516935Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:25:28.516954Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:25:28.517003Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:25:28.517020Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:25:28.517029Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:25:38.517267Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:25:38.517315Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:25:38.517332Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:25:38.517342Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:25:47.211762Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:25:47.211818Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:25:47.211839Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:25:47.211851Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:25:57.212377Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:25:57.212448Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:25:57.212479Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:25:57.212493Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:26:07.212497Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:26:07.212565Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:26:07.212593Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:26:07.212607Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:26:15.931400Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:26:15.931470Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:26:15.931496Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:26:15.931510Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:26:25.932430Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:26:25.932510Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:26:25.932539Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:26:25.932555Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:26:35.932211Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:26:35.932286Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:26:35.932318Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:26:35.932334Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:26:44.638747Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:26:44.638797Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:26:44.638814Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:26:44.638823Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:26:54.639221Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:26:54.639301Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:26:54.639333Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:26:54.639350Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:27:04.638998Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:27:04.639078Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:27:04.639110Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:27:04.639126Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:27:13.379871Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:27:13.379954Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:27:13.379985Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:27:13.380003Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:27:23.363061Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:27:23.363134Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:27:23.363162Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:27:23.363177Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:27:33.363144Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:27:33.363214Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:27:33.363242Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:27:33.363256Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:27:43.373436Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:27:43.373488Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:27:43.373506Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:27:43.373515Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:27:52.075669Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:27:52.075721Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:27:52.075741Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:27:52.075751Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:28:02.075642Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:28:02.075708Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:28:02.075735Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:28:02.075748Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:28:12.075539Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:28:12.075612Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:28:12.075783Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:28:12.075798Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:28:20.754549Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:28:20.754608Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:28:20.754629Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:28:20.754641Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:28:30.750257Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:28:30.750301Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:28:30.750318Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:28:30.750328Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:28:40.747238Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:28:40.747290Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:28:40.747311Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:28:40.747322Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:28:49.451612Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:28:49.451659Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:28:49.451677Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:28:49.451834Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:28:59.450878Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:28:59.450923Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:28:59.450940Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:28:59.450949Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:29:09.451714Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:29:09.451771Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:29:09.451845Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:29:09.451863Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:29:18.148871Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:29:18.148918Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:29:18.148935Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:29:18.148945Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:29:28.147654Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:29:28.147719Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:29:28.147744Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:29:28.147757Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:29:38.148483Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:29:38.148557Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:29:38.148585Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:29:38.148599Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:29:48.146183Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:29:48.146256Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:29:48.146284Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:29:48.146298Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:29:56.860003Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:29:56.860051Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:29:56.860068Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:29:56.860079Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:30:06.863452Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:30:06.863531Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:30:06.863562Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:30:06.863579Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:30:16.860755Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:30:16.860826Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:30:16.860855Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:30:16.860870Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:30:25.590727Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:30:25.590798Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:30:25.590827Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:30:25.590841Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:30:35.592116Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:30:35.592186Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:30:35.592215Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:30:35.592229Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:30:45.590241Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:30:45.590298Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:30:45.590319Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:30:45.590330Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:30:54.296132Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:30:54.296197Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:30:54.296221Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:30:54.296234Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:31:04.296011Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:31:04.296070Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:31:04.296092Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:31:04.296105Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:31:14.297305Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:31:14.297375Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:31:14.297404Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:31:14.297420Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:31:22.972121Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:31:22.972183Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:31:22.972207Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:31:22.972220Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:31:32.974020Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:31:32.974104Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:31:32.974138Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:31:32.974155Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:31:42.972477Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:31:42.972553Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:31:42.972585Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:31:42.972601Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:31:51.690413Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:31:51.690489Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:31:51.690517Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:31:51.690532Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:32:01.689667Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:32:01.689750Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:32:01.689781Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:32:01.689796Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:32:11.690198Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:32:11.690278Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:32:11.690309Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:32:11.690326Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:32:21.690210Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:32:21.690278Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:32:21.690304Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:32:21.690318Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:32:30.405848Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:32:30.405924Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:32:30.405942Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:32:30.405953Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:32:40.390878Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:32:40.390973Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:32:40.391011Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:32:40.391031Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:32:50.390719Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:32:50.390774Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:32:50.390794Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:32:50.390806Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:32:59.105044Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:32:59.105122Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:32:59.105153Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:32:59.105169Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:33:09.118950Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:33:09.119001Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:33:09.119018Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:33:09.119027Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:33:19.118676Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:33:19.118742Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:33:19.118766Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:33:19.118779Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:33:27.816230Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:33:27.816279Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:33:27.816298Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:33:27.816308Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:33:37.819607Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:33:37.819683Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:33:37.819709Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:33:37.819719Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:33:47.816984Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:33:47.817029Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:33:47.817047Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:33:47.817056Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:33:56.501344Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:33:56.501398Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:33:56.501418Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:33:56.501429Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:34:06.502386Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:34:06.502434Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:34:06.502452Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:34:06.502461Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:34:16.501458Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:34:16.501510Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:34:16.501529Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:34:16.501539Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:34:26.502456Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:34:26.502513Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:34:26.502531Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:34:26.502542Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:34:35.208319Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:34:35.208391Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:34:35.208419Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:34:35.208434Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:34:45.209704Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:34:45.209775Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:34:45.209804Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:34:45.209819Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:34:55.208757Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:34:55.208835Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:34:55.208861Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:34:55.208876Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:35:03.907378Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:35:03.907425Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:35:03.907442Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:35:03.907452Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:35:13.911547Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:35:13.911610Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:35:13.911633Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:35:13.911646Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:35:23.910531Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:35:23.910601Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:35:23.910627Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:35:23.910641Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:35:32.620507Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:35:32.620570Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:35:32.620603Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:35:32.620617Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:35:42.620218Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:35:42.620278Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:35:42.620297Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:35:42.620308Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:35:52.619482Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:35:52.619543Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:35:52.619568Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:35:52.619581Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:36:01.319947Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:36:01.320008Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:36:01.320035Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:36:01.320047Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:36:11.319308Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:36:11.319364Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:36:11.319384Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:36:11.319395Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:36:21.321281Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:36:21.321374Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:36:21.321408Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:36:21.321427Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:36:30.019047Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:36:30.019095Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:36:30.019112Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:36:30.019122Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:36:40.019503Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:36:40.019555Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:36:40.019574Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:36:40.019584Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:36:50.019007Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:36:50.019085Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:36:50.019117Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:36:50.019194Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:37:00.019592Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:37:00.019664Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:37:00.019691Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:37:00.019705Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:37:08.722770Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:37:08.722849Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:37:08.722879Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:37:08.722895Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:37:18.722121Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:37:18.722212Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:37:18.722246Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:37:18.722265Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:37:28.722708Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:37:28.722789Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:37:28.722821Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:37:28.722837Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:37:37.430015Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:37:37.430082Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:37:37.430107Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:37:37.430120Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:37:47.429893Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:37:47.429941Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:37:47.429986Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:37:47.429998Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:37:57.429593Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:37:57.429638Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:37:57.429655Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:37:57.429664Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:38:06.140127Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:38:06.140208Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:38:06.140241Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:38:06.140258Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:38:16.137879Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:38:16.137925Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:38:16.137942Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:38:16.137951Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:38:26.155940Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:38:26.156010Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:38:26.156035Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:38:26.156048Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:38:34.855311Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:38:34.855380Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:38:34.855403Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:38:34.855414Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:38:44.851562Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:38:44.851615Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:38:44.851632Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:38:44.851642Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:38:54.851860Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:38:54.851927Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:38:54.851953Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:38:54.851966Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:39:04.848802Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:39:04.848848Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:39:04.848865Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:39:04.848874Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:39:13.546485Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:39:13.546566Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:39:13.546597Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:39:13.546614Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:39:23.536368Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:39:23.536426Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:39:23.536446Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:39:23.536456Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:39:33.542905Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:39:33.542988Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:39:33.543010Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:39:33.543022Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:39:42.250428Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:39:42.250471Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:39:42.250489Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:39:42.250498Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:39:52.250511Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:39:52.250563Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:39:52.250584Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:39:52.250594Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:40:02.250978Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:40:02.251037Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:40:02.251058Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:40:02.251070Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:40:10.955407Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:40:10.955466Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:40:10.955486Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:40:10.955496Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:40:20.952456Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:40:20.952533Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:40:20.952562Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:40:20.952576Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:40:30.953336Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:40:30.953400Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:40:30.953423Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:40:30.953436Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:40:39.662748Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:40:39.662797Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:40:39.662817Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:40:39.662827Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:40:49.660798Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:40:49.660846Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:40:49.660862Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:40:49.660872Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:40:59.663963Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:40:59.664024Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:40:59.664047Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:40:59.664059Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:41:08.368966Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:41:08.369035Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:41:08.369061Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:41:08.369076Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:41:18.368574Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:41:18.368630Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:41:18.368664Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:41:18.368675Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:41:28.368633Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:41:28.368682Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:41:28.368700Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:41:28.368710Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:41:38.369003Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:41:38.369097Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:41:38.369127Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:41:38.369141Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:41:47.079409Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:41:47.079488Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:41:47.079517Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:41:47.079531Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:41:57.080036Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:41:57.080126Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:41:57.080157Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:41:57.080172Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:42:07.079725Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:42:07.079854Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:42:07.079887Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:42:07.079906Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:42:15.793680Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:42:15.793740Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:42:15.793762Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:42:15.793774Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:42:25.794822Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:42:25.794909Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:42:25.794942Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:42:25.794960Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:42:35.793637Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:42:35.793710Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:42:35.793738Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:42:35.793753Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:42:44.505047Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:42:44.505122Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:42:44.505147Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:42:44.505161Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:42:54.505531Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:42:54.505653Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:42:54.505687Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:42:54.505728Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:43:04.505526Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:43:04.505601Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:43:04.505631Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:43:04.505647Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:43:13.209875Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:43:13.209950Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:43:13.209979Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:43:13.209994Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:43:23.210925Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:43:23.211006Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:43:23.211035Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:43:23.211052Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:43:33.209660Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:43:33.209780Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:43:33.209814Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:43:33.209833Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:43:43.223028Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:43:43.223088Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:43:43.223109Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:43:43.223121Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:43:51.906920Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:43:51.906981Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:43:51.907004Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:43:51.907017Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:44:01.904003Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:44:01.904072Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:44:01.904097Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:44:01.904110Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:44:11.904298Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:44:11.904372Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:44:11.904398Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:44:11.904410Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:44:20.625439Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:44:20.625504Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:44:20.625530Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:44:20.625544Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:44:30.619849Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:44:30.619897Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:44:30.619916Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:44:30.619926Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:44:40.613664Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:44:40.613711Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:44:40.613728Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:44:40.613737Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:44:49.335723Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:44:49.335769Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:44:49.335802Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:44:49.335813Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:44:59.332681Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:44:59.332953Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:44:59.333026Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:44:59.333039Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:45:09.325214Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:45:09.325534Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:45:09.325665Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:45:09.325704Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:45:18.038424Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:45:18.038475Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:45:18.038494Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:45:18.038504Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:45:28.037157Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:45:28.037206Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:45:28.037224Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:45:28.037234Z  INFO mcserver_agent::mods::server_handler: Updating???
+2026-05-25T17:45:38.034038Z  INFO mcserver_agent::mods::query_handler: set version
+2026-05-25T17:45:38.034089Z  INFO mcserver_agent::mods::query_handler: set player count
+2026-05-25T17:45:38.034109Z  INFO mcserver_agent::mods::query_handler: Current Status: Online 
+Last Status: Online
+2026-05-25T17:45:38.034120Z  INFO mcserver_agent::mods::server_handler: Updating???

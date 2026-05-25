@@ -14,6 +14,7 @@ pub enum AgentActions {
     StopQuery,
     StartChatStream(Uuid),
     StopChatStream(Uuid),
-    ConnectionKey(String),
+    ValidationToken(String),
+    Validate,
     ServerCommand(Uuid, ServerCommands),
 }
