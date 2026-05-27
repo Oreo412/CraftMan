@@ -1,6 +1,7 @@
 use anyhow::anyhow;
 use atomic_time::AtomicInstant;
 use dashmap::DashMap;
+use futures_util::stream::SplitStream;
 use sqlx::PgPool;
 use std::{
     collections::{HashMap, HashSet},
@@ -9,6 +10,7 @@ use std::{
 };
 use tokio::sync::oneshot::Sender as OneshotSender;
 use tokio::{sync::oneshot, time::timeout};
+use tokio_tungstenite::tungstenite::WebSocket;
 use twilight_http::Client;
 use twilight_model::id::{
     Id,
@@ -32,6 +34,8 @@ use tokio::{
 use tracing::{debug, error, info, instrument};
 use uuid::Uuid;
 
+use crate::mods::listener;
+
 pub struct Agent {
     id: Uuid,
     sender: Mutex<Option<mpsc::UnboundedSender<AgentActions>>>,
@@ -43,7 +47,7 @@ pub struct Agent {
     last_seen: Mutex<Option<AtomicInstant>>,
 }
 
-const TTL: Duration = Duration::from_secs(3);
+const TTL: Duration = Duration::from_secs(2);
 
 impl Agent {
     pub fn id(&self) -> Uuid {

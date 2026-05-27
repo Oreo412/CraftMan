@@ -82,6 +82,11 @@ async fn handle_socket(socket: WebSocket, app_state: appstate::AppState) {
                     if let Ok(agent) = app_state.find_connection(&id) {
                         debug!("Found Agent for this connection. Reconnecting!");
                         agent.reconnect(c_sender).await;
+                        tokio::spawn(listener::listen(
+                            receiver,
+                            agent.clone(),
+                            app_state.twilight_client.clone(),
+                        ));
                     } else if let Err(e) = app_state.create_agent(id, receiver, c_sender).await {
                         error!("Error connecting and creating agent: {}", e);
                     }
