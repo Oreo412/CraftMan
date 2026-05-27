@@ -7,8 +7,8 @@ use std::{
     sync::Arc,
     time::Duration,
 };
-use tokio::sync::oneshot;
 use tokio::sync::oneshot::Sender as OneshotSender;
+use tokio::{sync::oneshot, time::timeout};
 use twilight_http::Client;
 use twilight_model::id::{
     Id,
@@ -42,6 +42,8 @@ pub struct Agent {
     chat_sender: RwLock<Option<UnboundedSender<String>>>,
     last_seen: Mutex<Option<AtomicInstant>>,
 }
+
+const TTL: Duration = Duration::from_secs(3);
 
 impl Agent {
     pub fn id(&self) -> Uuid {
@@ -91,10 +93,14 @@ impl Agent {
         self.pending_requests.insert(request_id, sender);
         let message = AgentActions::RequestProps(request_id);
         self.send(message).await?;
-        if let Ok(RequestResponses::PropsResponse(props)) = receiver.await {
-            Ok(props)
-        } else {
-            bail!("Received incorrect response format, or sender was dropped");
+        match timeout(TTL, receiver).await {
+            Ok(Ok(RequestResponses::PropsResponse(props))) => Ok(props),
+            Ok(_) => {
+                bail!("Received incorrect response format, or sender was dropped");
+            }
+            Err(_) => {
+                bail!("Request timed out")
+            }
         }
     }
 
@@ -157,10 +163,10 @@ impl Agent {
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);
         self.send(AgentActions::EditProp(request_id, prop)).await?;
-        if let Ok(RequestResponses::PropsResponse(props)) = receiver.await {
-            Ok(props)
-        } else {
-            bail!("Received incorrect response format!");
+        match timeout(TTL, receiver).await {
+            Ok(Ok(RequestResponses::PropsResponse(props))) => Ok(props),
+            Ok(_) => bail!("Received incorrect response format!"),
+            Err(_) => bail!("Edit_props timed out"),
         }
     }
 
@@ -186,11 +192,12 @@ impl Agent {
             QueryOptions::new(options),
         ))
         .await?;
-        if let Ok(RequestResponses::QueryResponse(description, image_bytes, query)) = receiver.await
-        {
-            Ok((description, image_bytes, query))
-        } else {
-            bail!("Received incorrect start_query response format!");
+        match timeout(TTL, receiver).await {
+            Ok(Ok(RequestResponses::QueryResponse(description, image_bytes, query))) => {
+                Ok((description, image_bytes, query))
+            }
+            Ok(_) => bail!("Received inmproper response format"),
+            Err(_) => bail!("start_query timed out"),
         }
     }
 
@@ -208,10 +215,10 @@ impl Agent {
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, request_sender);
         self.send(AgentActions::StartChatStream(request_id)).await?;
-        if let Ok(RequestResponses::StartChatResponse) = request_receiver.await {
-            Ok(())
-        } else {
-            bail!("Could not start chat");
+        match timeout(TTL, request_receiver).await {
+            Ok(Ok(RequestResponses::StartChatResponse)) => Ok(()),
+            Ok(_) => bail!("Received improper response format"),
+            Err(_) => bail!("start_chat_loop timed out"),
         }
     }
 
@@ -220,10 +227,10 @@ impl Agent {
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);
         self.send(AgentActions::SvStart(request_id)).await?;
-        if let Ok(RequestResponses::StartServerResponse) = receiver.await {
-            Ok(())
-        } else {
-            bail!("Could not start minecraft server");
+        match timeout(TTL, receiver).await {
+            Ok(Ok(RequestResponses::StartServerResponse)) => Ok(()),
+            Ok(_) => bail!("Received improper response format"),
+            Err(_) => bail!("start_server timed out"),
         }
     }
 
@@ -232,10 +239,10 @@ impl Agent {
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);
         self.send(AgentActions::SvStop(request_id)).await?;
-        if let Ok(RequestResponses::StopServerResponse) = receiver.await {
-            Ok(())
-        } else {
-            bail!("Could not stop minecraft server");
+        match timeout(TTL, receiver).await {
+            Ok(Ok(RequestResponses::StopServerResponse)) => Ok(()),
+            Ok(_) => bail!("Received improper response format"),
+            Err(_) => bail!("stop_server timed out"),
         }
     }
 
@@ -268,10 +275,10 @@ impl Agent {
         self.pending_requests.insert(uuid, request_sender);
         self.send(AgentActions::ServerCommand(uuid, command))
             .await?;
-        if let Ok(RequestResponses::CommandResponse) = request_receiver.await {
-            Ok(())
-        } else {
-            bail!("Could not send command to server")
+        match timeout(TTL, request_receiver).await {
+            Ok(Ok(RequestResponses::CommandResponse)) => Ok(()),
+            Ok(_) => bail!("Received improper response format"),
+            Err(_) => bail!("message_chat timed out"),
         }
     }
 

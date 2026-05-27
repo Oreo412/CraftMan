@@ -21,6 +21,7 @@ pub async fn start_mc_server(
                 CreateInteractionResponse::Message(response.content(e.to_string())),
             )
             .await?;
+        tracing::debug!("Is it getting to here???");
     } else {
         interaction
             .create_response(
