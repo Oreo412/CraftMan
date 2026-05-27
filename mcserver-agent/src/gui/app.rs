@@ -1,6 +1,6 @@
 use std::{collections::VecDeque, path::PathBuf};
 
-use anyhow::{Result, bail};
+use anyhow::{Result, anyhow, bail};
 use mods::configs::Configs;
 use protocol::agentactions::AgentActions;
 use tokio::sync::{mpsc::UnboundedSender, oneshot};
@@ -83,4 +83,53 @@ impl App {
 pub enum AppState {
     Default,
     Validate(String),
+    EditMemory(EditMemory),
+}
+
+pub struct EditMemory {
+    pub xms_string: String,
+    pub xms: Option<u32>,
+    pub xmx_string: String,
+    pub xmx: Option<u32>,
+    pub state: EditMemoryState,
+    pub invalid_input: bool,
+}
+
+impl EditMemory {
+    pub fn new() -> Self {
+        EditMemory {
+            xms_string: String::new(),
+            xms: None,
+            xmx_string: String::new(),
+            xmx: None,
+            state: EditMemoryState::Editxms,
+            invalid_input: false,
+        }
+    }
+
+    pub fn verify(&mut self) -> Result<()> {
+        self.xms = if self.xms_string.ends_with('G') {
+            let mut xms = self.xms_string.clone();
+            xms.pop();
+            Some(xms.parse::<u32>()? * 1024)
+        } else {
+            Some(self.xms_string.parse::<u32>()?)
+        };
+
+        self.xmx = if self.xmx_string.ends_with('G') {
+            let mut xmx = self.xmx_string.clone();
+            xmx.pop();
+            Some(xmx.parse::<u32>()? * 1024)
+        } else {
+            Some(self.xmx_string.parse::<u32>()?)
+        };
+        Ok(())
+    }
+}
+
+#[derive(PartialEq, Eq)]
+pub enum EditMemoryState {
+    Editxms,
+    Editxmx,
+    IsThisCorrect,
 }

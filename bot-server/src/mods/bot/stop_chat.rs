@@ -14,6 +14,7 @@ pub async fn stop_chat(
     let agent = appstate.find_connection_by_guild(id)?;
     let response = CreateInteractionResponseMessage::new();
     if let Err(e) = agent.stop_chat_stream().await {
+        tracing::warn!("Stop chat failed: {}", e);
         interaction
             .create_response(
                 &ctx.http,

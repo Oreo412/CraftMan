@@ -9,7 +9,7 @@ pub async fn si2tr<'a>(
     interaction: &'a CommandInteraction,
     response: &'a InteractionResponse,
 ) {
-    println!("Sending response via twilight");
+    tracing::debug!("Sending response via twilight");
     let application_id = Id::new(interaction.application_id.get());
     let interaction_id = Id::new(interaction.id.get());
     if let Err(e) = client
@@ -18,6 +18,6 @@ pub async fn si2tr<'a>(
         .into_future()
         .await
     {
-        eprintln!("Failed to send twilight response: {}", e);
+        tracing::error!("Failed to send twilight response: {}", e);
     }
 }

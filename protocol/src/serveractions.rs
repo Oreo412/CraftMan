@@ -24,7 +24,7 @@ pub enum ServerActions {
         description: String,
         image: Option<Vec<u8>>,
     },
-    NewMessage(String),
+    ChatMessage(String),
     SendCommandResponse(Uuid),
 }
 

@@ -2,7 +2,7 @@ use std::{io, time::Duration};
 
 use crate::{
     gui::{
-        app::{App, AppState},
+        app::{App, AppState, EditMemory, EditMemoryState},
         file_explorer,
         gui_actions::ConfigRequest,
     },
@@ -17,9 +17,9 @@ use futures::{FutureExt, StreamExt};
 use protocol::agentactions::AgentActions;
 use ratatui::{
     Frame, Terminal,
-    layout::{Constraint, Direction, Layout, Rect},
+    layout::{Alignment, Constraint, Direction, Layout, Margin, Rect},
     prelude::CrosstermBackend,
-    style::{Color, Style},
+    style::{Color, Style, Stylize},
     text::{Line, Span, Text},
     widgets::{Block, Borders, Clear, List, ListItem, Paragraph, Wrap},
 };
@@ -64,7 +64,7 @@ pub async fn handler(
         tokio::select! {
             Some(event) = tui_from_agent.recv() => {
                 match event {
-                    GuiEvents::AddStdoutLine(line) => app.stdout.push_front(line),
+                    GuiEvents::AddStdoutLine(line) => app.stdout.push_back(line),
                     GuiEvents::Validate(key) => app.start_validation(key),
                     GuiEvents::Validated => app.complete_validation(),
                     GuiEvents::ServerStarted => app.server_running = true,
@@ -77,7 +77,7 @@ pub async fn handler(
                 match maybe_event {
                     Some(Ok(Event::Key(key))) => {
                         if key.kind == KeyEventKind::Press {
-                            match key.code {
+                            match &mut app.state { AppState::Default =>  match key.code {
                                 KeyCode::Char('q') => {break;}
                                 KeyCode::Char('c') => {
                                     if let Ok((file, directory)) = file_explorer::file_selection(&mut terminal) &&
@@ -85,8 +85,54 @@ pub async fn handler(
                                             tracing::error!("Error editing selected file: {}", e);
                                     }
                                 }
+                                KeyCode::Char('x') => {
+                                    app.state = AppState::EditMemory(EditMemory::new());
+                                }
                                 _ => {}
                             }
+                            AppState::EditMemory(current) => {
+                                if current.state != EditMemoryState::IsThisCorrect {
+                                    // This is hilarious, Rust is so cool
+                                    let editing = if current.state == EditMemoryState::Editxms {
+                                        &mut current.xms_string
+                                    } else {
+                                        &mut current.xmx_string
+                                    };
+                                    match key.code {
+                                    KeyCode::Esc => {app.state = AppState::Default;}
+                                    KeyCode::Enter => {
+                                        if  current.verify().is_err() {
+                                            current.invalid_input = true;
+                                        } else {
+                                            current.invalid_input = false;
+                                            current.state = EditMemoryState::IsThisCorrect;
+                                        }
+                                    }
+                                    KeyCode::Left | KeyCode::Right => {
+                                        if current.state == EditMemoryState::Editxms {
+                                            current.state = EditMemoryState::Editxmx;
+                                        } else if current.state == EditMemoryState::Editxmx {
+                                            current.state = EditMemoryState::Editxms;
+                                        }
+                                    }
+                                    KeyCode::Char(c) if c.is_numeric() || c == 'G' || c == 'g' => {
+                                        editing.push(c.to_ascii_uppercase());
+                                    }
+                                    _ => {}
+                                }} else if key.code == KeyCode::Enter {
+                                        let new_config = app.config.clone().set_xms(current.xms.unwrap()).set_xmx(current.xmx.unwrap());
+                                        if let Err(e) = app.edit_config(new_config).await {
+                                            tracing::error!("Error editing config: {}", e);
+                                        }
+                                        app.state = AppState::Default;
+                                    } else {
+                                        current.state = EditMemoryState::Editxms;
+
+                                }
+                            }
+                            _ => {}
+                            }
+
 
                         }
                     }
@@ -121,14 +167,14 @@ fn ui(frame: &mut Frame, app: &App) {
             Constraint::Length(3),
             Constraint::Min(1),
             Constraint::Min(1),
-            Constraint::Length(2),
+            Constraint::Length(3),
         ])
         .split(frame.area());
 
     let status = Paragraph::new(if app.server_running {
-        "Server is running"
+        "Server is running".green()
     } else {
-        "Server is off"
+        "Server is off".red()
     })
     .block(
         Block::default()
@@ -138,7 +184,7 @@ fn ui(frame: &mut Frame, app: &App) {
 
     frame.render_widget(status, chunks[0]);
 
-    let config_text: Vec<Line<'_>> = vec![
+    let config_text: Vec<Line<'_>> = [
         Span::from(format!("Directory: {}", app.config.dir)),
         Span::from(format!("Min Memory: {}", app.config.xms)),
         Span::from(format!("Max Memory: {}", app.config.xmx)),
@@ -158,17 +204,21 @@ fn ui(frame: &mut Frame, app: &App) {
 
     let stdout_lines: Vec<Line<'_>> = app.stdout.iter().map(|l| Line::from(l.as_str())).collect();
 
+    let block = Block::default()
+        .title("Server Output")
+        .borders(Borders::ALL);
+
+    let scroll = stdout_lines
+        .len()
+        .saturating_sub(block.inner(chunks[2]).height as usize) as u16;
+
     let stdout = Paragraph::new(stdout_lines)
-        .block(
-            Block::default()
-                .title("Server Output")
-                .borders(Borders::ALL),
-        )
-        .scroll((app.scroll, 0));
+        .block(block)
+        .scroll((scroll, 0));
 
     frame.render_widget(stdout, chunks[2]);
 
-    let keys = Paragraph::new("q: quit | s: start | x: stop | r: restart")
+    let keys = Paragraph::new("q: quit | c: change server file | x: edit min and max memory")
         .block(Block::default().borders(Borders::ALL));
 
     frame.render_widget(keys, chunks[3]);
@@ -184,4 +234,92 @@ fn ui(frame: &mut Frame, app: &App) {
         frame.render_widget(Clear, popup_area);
         frame.render_widget(popup, popup_area);
     }
+
+    if let AppState::EditMemory(current) = &app.state {
+        edit_memory(frame, current);
+    }
+}
+
+fn edit_memory(frame: &mut Frame, current: &EditMemory) {
+    let area = frame.area();
+
+    let popup_area = area.centered(Constraint::Percentage(60), Constraint::Percentage(30));
+
+    frame.render_widget(Clear, popup_area);
+
+    let outer = Block::default().title("Edit values").borders(Borders::ALL);
+
+    frame.render_widget(outer, popup_area);
+
+    let inner = popup_area.inner(Margin {
+        vertical: 2,
+        horizontal: 2,
+    });
+
+    let vertical_chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Min(3), Constraint::Length(2)])
+        .split(inner);
+
+    let content_area = vertical_chunks[0];
+    let guide_area = vertical_chunks[1];
+
+    let mut lines = vec![
+        Line::from("Enter minimum and maximum amount of memory given to the server"),
+        Line::from("Arrow keys: Move between boxes | Enter: Set minimum and maximum | Esc: Exit"),
+    ];
+
+    if current.invalid_input {
+        lines.push(Line::from("Please enter a valid input".red()));
+    }
+    let guide = Paragraph::new("Enter minimum and maximum amount of memory given to the server")
+        .style(Style::default().fg(Color::DarkGray))
+        .alignment(Alignment::Center);
+
+    if let EditMemoryState::IsThisCorrect = current.state {
+        let is_this_correct = Paragraph::new(format!(
+            "Is this correct?\nxms: {}\nxmx: {}",
+            current.xms_string, current.xmx_string
+        ));
+
+        frame.render_widget(is_this_correct, content_area);
+        frame.render_widget(guide, guide_area);
+        return;
+    }
+
+    let chunks = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .spacing(1)
+        .split(content_area);
+
+    let left_border = if current.state == EditMemoryState::Editxms {
+        Style::default().fg(Color::Yellow)
+    } else {
+        Style::default()
+    };
+
+    let right_border = if current.state == EditMemoryState::Editxmx {
+        Style::default().fg(Color::Yellow)
+    } else {
+        Style::default()
+    };
+
+    let left_box = Paragraph::new(current.xms_string.as_str()).block(
+        Block::default()
+            .title("Minimum")
+            .borders(Borders::ALL)
+            .border_style(left_border),
+    );
+
+    let right_box = Paragraph::new(current.xmx_string.as_str()).block(
+        Block::default()
+            .title("Maximum")
+            .borders(Borders::ALL)
+            .border_style(right_border),
+    );
+
+    frame.render_widget(left_box, chunks[0]);
+    frame.render_widget(right_box, chunks[1]);
+    frame.render_widget(guide, guide_area);
 }

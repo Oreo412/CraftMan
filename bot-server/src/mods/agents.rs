@@ -7,8 +7,8 @@ use std::{
     sync::Arc,
     time::Duration,
 };
+use tokio::sync::oneshot;
 use tokio::sync::oneshot::Sender as OneshotSender;
-use tokio::sync::oneshot::channel;
 use twilight_http::Client;
 use twilight_model::id::{
     Id,
@@ -86,7 +86,7 @@ impl Agent {
     }
 
     pub async fn request_props(&self) -> Result<HashMap<String, String>> {
-        let (sender, receiver) = channel::<RequestResponses>();
+        let (sender, receiver) = oneshot::channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);
         let message = AgentActions::RequestProps(request_id);
@@ -108,7 +108,7 @@ impl Agent {
     }
 
     pub async fn stop_chat_stream(&self) -> Result<()> {
-        let (request_sender, request_receiver) = channel::<RequestResponses>();
+        let (request_sender, request_receiver) = oneshot::channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, request_sender);
         if self.chat_sender.write().await.take().is_some() {
@@ -153,7 +153,7 @@ impl Agent {
     }
 
     pub async fn edit_props(&self, prop: property) -> Result<HashMap<String, String>> {
-        let (sender, receiver) = channel::<RequestResponses>();
+        let (sender, receiver) = oneshot::channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);
         self.send(AgentActions::EditProp(request_id, prop)).await?;
@@ -178,7 +178,7 @@ impl Agent {
         )
         .execute(&self.dbpool)
         .await?;
-        let (sender, receiver) = channel::<RequestResponses>();
+        let (sender, receiver) = oneshot::channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);
         self.send(AgentActions::StartQuery(
@@ -195,7 +195,7 @@ impl Agent {
     }
 
     pub async fn start_chat_loop(&self, client: Arc<Client>) -> Result<()> {
-        let (request_sender, request_receiver) = channel::<RequestResponses>();
+        let (request_sender, request_receiver) = oneshot::channel::<RequestResponses>();
         let (chat_sender, chat_receiver) = mpsc::unbounded_channel::<String>();
         tokio::spawn(chat_loop(
             self.chat_channel()
@@ -216,7 +216,7 @@ impl Agent {
     }
 
     pub async fn start_server(&self) -> Result<()> {
-        let (sender, receiver) = channel::<RequestResponses>();
+        let (sender, receiver) = oneshot::channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);
         self.send(AgentActions::SvStart(request_id)).await?;
@@ -228,7 +228,7 @@ impl Agent {
     }
 
     pub async fn stop_server(&self) -> Result<()> {
-        let (sender, receiver) = channel::<RequestResponses>();
+        let (sender, receiver) = oneshot::channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);
         self.send(AgentActions::SvStop(request_id)).await?;
@@ -263,7 +263,7 @@ impl Agent {
     }
 
     pub async fn message_chat(&self, command: ServerCommands) -> Result<()> {
-        let (request_sender, request_receiver) = channel::<RequestResponses>();
+        let (request_sender, request_receiver) = oneshot::channel::<RequestResponses>();
         let uuid = Uuid::new_v4();
         self.pending_requests.insert(uuid, request_sender);
         self.send(AgentActions::ServerCommand(uuid, command))
@@ -282,9 +282,11 @@ impl Agent {
         info!("Lost Connection, last seen and sender changed!");
     }
 
+    #[instrument(skip(self))]
     pub async fn reconnect(&self, sender: mpsc::UnboundedSender<AgentActions>) {
         *self.sender.lock().await = Some(sender);
         *self.last_seen.lock().await = None;
+        debug!("Reconnection complete for {}", self.id());
     }
 
     pub async fn since_last_seen(&self) -> Option<Duration> {

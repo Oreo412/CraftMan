@@ -17,6 +17,7 @@ pub async fn start_chat(
     let agent = appstate.find_connection_by_guild(id)?;
     let response = CreateInteractionResponseMessage::new();
     if let Err(e) = agent.start_chat_loop(client.clone()).await {
+        tracing::info!("Start Chat Loop Failed: {}", e);
         interaction
             .create_response(
                 &ctx.http,

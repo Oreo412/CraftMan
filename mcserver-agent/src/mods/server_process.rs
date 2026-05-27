@@ -91,7 +91,7 @@ async fn chat_listener(
                     Some(new_message) => {
                         tracing::info!("{}", new_message);
                         if *watcher.borrow()
-                        {sender.send(ServerActions::NewMessage(new_message))?;
+                        {sender.send(ServerActions::ChatMessage(new_message))?;
                     }}
                     None => break, // stdout closed
                 }

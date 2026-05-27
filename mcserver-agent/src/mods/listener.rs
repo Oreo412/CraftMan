@@ -30,7 +30,7 @@ where
             next_msg = receiver.next() => {
                 if let Some(msg) = next_msg {
                     if let Err(e) = websocket_action(handler, &sender, msg?, &agent_to_tui).await {
-                        agent_to_tui.send(GuiEvents::AddStdoutLine(format!("Error handling AgentAction: {}", e)));
+                        tracing::error!("Error handling websocket action: {}", e);
                     }
                 }
                 else {
@@ -76,11 +76,13 @@ async fn websocket_action(
             tracing::info!("Starting server");
             if handler.start_server(sender.clone()).is_ok() {
                 sender.send(ServerActions::StartResponse(id))?;
+                agent_to_tui.send(GuiEvents::ServerStarted)?;
             }
         }
         AgentActions::SvStop(id) => {
             if handler.stop_server().await.is_ok() {
                 sender.send(ServerActions::StopResponse(id))?;
+                agent_to_tui.send(GuiEvents::ServerStopped)?;
             }
         }
         AgentActions::StartQuery(request_id, options) => {
@@ -97,7 +99,6 @@ async fn websocket_action(
         }
         AgentActions::RequestProps(request_id) => {
             tracing::info!("Received request_props action with ID: {}", request_id);
-            // Here you would gather the properties and send them back to the agent
             let props = handler
                 .update_properties()
                 .properties

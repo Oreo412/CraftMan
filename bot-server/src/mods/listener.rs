@@ -76,12 +76,12 @@ async fn handle_message(
             if let Some((channel_id, message_id)) = agent.query_ids().await? {
                 update_header(message_id, channel_id, description, image, &twilight_client).await?;
             } else {
-                debug!("Update query header received without an associated monitor");
+                warn!("Update query header received without an associated monitor");
                 agent.send(AgentActions::StopQuery).await?;
             }
         }
-        ServerActions::NewMessage(message) => {
-            warn!("New message, a testing enum received");
+        ServerActions::ChatMessage(message) => {
+            debug!("Handling Message To Chat");
             agent.send_chat(message).await?;
         }
         ServerActions::StartResponse(id) => {

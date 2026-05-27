@@ -18,6 +18,7 @@ pub async fn stop_minecraft_server(
     let agent = appstate.find_connection_by_guild(get_guild(ctx, interaction).await?)?;
     let response = CreateInteractionResponseMessage::new();
     if let Err(e) = agent.stop_server().await {
+        tracing::warn!("Stop server failed: {}", e);
         interaction
             .create_response(
                 &ctx.http,

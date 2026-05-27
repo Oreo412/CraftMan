@@ -27,7 +27,7 @@ async fn main() {
 
     let (mut agent_to_tui, mut tui_from_agent) = mpsc::unbounded_channel::<GuiEvents>();
 
-    tokio::spawn(handler(
+    let tui = tokio::spawn(handler(
         config.clone(),
         tui_to_agent.clone(),
         tui_from_agent,
@@ -37,7 +37,14 @@ async fn main() {
 
     let writer = TuiWriter::new(agent_to_tui.clone());
 
-    let file_appender = tracing_appender::rolling::daily("logs", "app.log");
+    let file_appender = tracing_appender::rolling::Builder::new()
+        .rotation(tracing_appender::rolling::Rotation::DAILY)
+        .filename_prefix("craftman")
+        .filename_suffix("log")
+        .max_log_files(7)
+        .build("logs")
+        .expect("failed to initialize rolling file appender");
+
     let (file_writer, _log_guard) = tracing_appender::non_blocking(file_appender);
 
     let tui_layer = fmt::layer()
@@ -56,16 +63,35 @@ async fn main() {
         .with(file_layer)
         .init();
 
-    loop {
-        match connect(&mut handler, &mut agent_from_tui, agent_to_tui.clone()).await {
-            Ok(()) => {
-                tracing::info!("Disconnected. Reconnecting...");
+    let backend = async {
+        loop {
+            match connect(&mut handler, &mut agent_from_tui, agent_to_tui.clone()).await {
+                Ok(()) => {
+                    tracing::info!("Disconnected. Reconnecting...");
+                }
+                Err(e) => {
+                    tracing::info!("Connection failed: {e}");
+                }
             }
-            Err(e) => {
-                tracing::info!("Connection failed: {e}");
+
+            tokio::time::sleep(Duration::from_secs(3)).await;
+        }
+    };
+
+    tokio::select! {
+        result = tui => {
+            match result {
+                Ok(_) => tracing::info!("TUI exited. Shutting down app."),
+                Err(e) => tracing::error!("TUI task failed: {e}"),
             }
         }
 
-        tokio::time::sleep(Duration::from_secs(3)).await;
+        _ = backend => {
+            tracing::info!("App task ended.");
+        }
+    }
+
+    if let Err(e) = handler.stop_server().await {
+        tracing::error!("Error shutting down server: {}", e)
     }
 }

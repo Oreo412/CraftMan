@@ -180,7 +180,7 @@ async fn query_loop(
     let mut interval = time::interval(Duration::from_secs(10));
 
     loop {
-        tracing::info!("Updating???");
+        tracing::info!("Updating query monitor");
         tokio::select! {
             _ = interval.tick() => {
                 if let Err(e) = query_handler.update(sender.clone()).await {

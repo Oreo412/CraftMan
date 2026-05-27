@@ -74,7 +74,7 @@ pub async fn build_view(
         .create_response(interaction_id, &serenity_interaction.token, &response)
         .await
     {
-        eprintln!("Failed to send twilight response: {}", e);
+        tracing::warn!("Failed to send twilight response: {}", e);
     }
 
     let message = interaction_client

@@ -9,12 +9,23 @@ use sqlx::postgres::PgPoolOptions;
 use std::{env, time::Duration};
 use tokio::sync::mpsc;
 use tracing::{Instrument, debug, error, info, info_span, instrument};
+use tracing_subscriber::EnvFilter;
 
 use crate::mods::*;
 
 #[tokio::main]
 async fn main() {
-    tracing_subscriber::fmt::init();
+    let file_appender = tracing_appender::rolling::daily("logs", "craftman-server.log");
+    let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
+
+    tracing_subscriber::fmt()
+        .with_ansi(false)
+        .with_writer(non_blocking)
+        .with_env_filter(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info")),
+        )
+        .init();
 
     dotenvy::dotenv().ok();
     let url = env::var("DATABASE_URL").expect("No database url found");

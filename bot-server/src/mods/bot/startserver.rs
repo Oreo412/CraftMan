@@ -14,6 +14,7 @@ pub async fn start_mc_server(
 
     let response = CreateInteractionResponseMessage::new();
     if let Err(e) = agent.start_server().await {
+        tracing::warn!("Start Server Failed: {}", e);
         interaction
             .create_response(
                 &ctx.http,

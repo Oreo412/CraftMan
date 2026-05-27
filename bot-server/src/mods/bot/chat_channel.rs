@@ -16,7 +16,7 @@ pub async fn set_chat_channel(
     let _entered = span.enter();
     let response = CreateInteractionResponseMessage::new();
     if let Err(e) = agent.set_chat_channel(interaction.channel_id.get()).await {
-        warn!("Request failed");
+        warn!("Set Chat Channel Request failed");
         interaction
             .create_response(
                 &ctx.http,
