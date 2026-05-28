@@ -174,7 +174,7 @@ impl Agent {
         }
     }
 
-    pub async fn start_query(
+    pub async fn new_query(
         &self,
         options: HashSet<String>,
         message_id: Id<MessageMarker>,

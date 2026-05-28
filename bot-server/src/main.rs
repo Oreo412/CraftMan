@@ -9,7 +9,6 @@ use sqlx::postgres::PgPoolOptions;
 use std::{env, time::Duration};
 use tokio::sync::mpsc;
 use tracing::{Instrument, debug, error, info, info_span, instrument};
-use tracing_subscriber::EnvFilter;
 
 use crate::mods::*;
 

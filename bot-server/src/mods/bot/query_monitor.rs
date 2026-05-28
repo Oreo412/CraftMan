@@ -42,10 +42,7 @@ pub async fn builder_modal(
 }
 
 pub fn register() -> CreateCommand {
-    let id = CreateCommandOption::new(CommandOptionType::String, "name", "Name of socket");
-    CreateCommand::new("thumbnail")
-        .description("see the header")
-        .add_option(id)
+    CreateCommand::new("monitor").description("see the header")
 }
 
 pub async fn build_view(
@@ -87,7 +84,7 @@ pub async fn build_view(
 
     let agent = appstate.find_connection(&uuid)?;
 
-    let (description, image, status) = agent.start_query(options, message_id, channel_id).await?;
+    let (description, image, status) = agent.new_query(options, message_id, channel_id).await?;
     let filename = format!("{}.png", uuid::Uuid::new_v4());
     let mut attachment =
         Attachment::from_bytes(filename.clone(), image.unwrap_or(DEFAULT_ICON.to_vec()), 1);

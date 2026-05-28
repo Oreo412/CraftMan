@@ -6,7 +6,6 @@ pub mod get_guild;
 pub mod message_chat;
 pub mod props_modals;
 pub mod query_monitor;
-pub mod send_ws;
 pub mod settingscreen;
 pub mod settingsview;
 pub mod si2tr;

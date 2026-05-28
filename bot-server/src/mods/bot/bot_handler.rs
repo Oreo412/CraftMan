@@ -2,7 +2,6 @@ use crate::bot::*;
 use crate::mods::bot::props_modals::props_modal;
 use crate::mods::bot::start_chat::start_chat;
 use crate::mods::bot::stop_chat::stop_chat;
-use anyhow::Context as cont;
 use anyhow::{Result, anyhow, bail};
 use protocol::properties::property;
 use serenity::all::{ActionRowComponent, CreateModal};
@@ -40,7 +39,6 @@ impl EventHandler for Handler {
         info!("{} is connected!", ready.user.name);
 
         let create_commands = vec![
-            send_ws::register(),
             startserver::register(),
             stopserver::register(),
             settingsview::register(),
@@ -157,9 +155,6 @@ impl Handler {
                 println!("Received command interaction: {command:#?}");
                 let command_name = command.data.name.as_str();
                 match command_name {
-                    "send_ws" => {
-                        crate::bot::send_ws::run(&command, self.app_state.clone()).await?;
-                    }
                     "startserver" => {
                         crate::bot::startserver::start_mc_server(&ctx, &command, &self.app_state)
                             .await?;
@@ -182,12 +177,7 @@ impl Handler {
                         .await?;
                     }
                     "stopchat" => {
-                        stop_chat(
-                            &ctx,
-                            &command,
-                            &self.app_state,
-                        )
-                        .await?;
+                        stop_chat(&ctx, &command, &self.app_state).await?;
                     }
                     "serverproperties" => {
                         crate::bot::settingsview::run(
@@ -198,7 +188,7 @@ impl Handler {
                         )
                         .await?;
                     }
-                    "thumbnail" => {
+                    "monitor" => {
                         crate::bot::query_monitor::builder_modal(
                             &ctx,
                             &self.twilight_client,

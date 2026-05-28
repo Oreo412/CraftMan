@@ -1015,3 +1015,1158 @@
 2026-05-27T18:51:14.640966Z DEBUG listen:handle_message{StopResponse(eaf36310-198d-4f37-8ed9-5ac6eb515392)}:complete_request{id=eaf36310-198d-4f37-8ed9-5ac6eb515392}: bot_server::mods::agents: Request sender found. Sending response
 2026-05-27T18:51:14.641380Z DEBUG request{self=Http { client: Client { accepts: Accepts, proxies: [Matcher], referer: true, default_headers: {"accept": "*/*"} }, ratelimiter: Some(Ratelimiter { client: Client { accepts: Accepts, proxies: [Matcher], referer: true, default_headers: {"accept": "*/*"} }, global: Mutex { data: () }, routes: RwLock { data: {RatelimitingBucket(Some((Discriminant(96), Some(1509267687878950953)))): Mutex { data: Ratelimit { limit: 5, remaining: 4, reset: Some(SystemTime { tv_sec: 1779907858, tv_nsec: 387280770 }), reset_after: Some(200ms) } }, RatelimitingBucket(Some((Discriminant(28), None))): Mutex { data: Ratelimit { limit: 9223372036854775807, remaining: 9223372036854775807, reset: None, reset_after: None } }, RatelimitingBucket(Some((Discriminant(96), Some(1509267670581907466)))): Mutex { data: Ratelimit { limit: 5, remaining: 4, reset: Some(SystemTime { tv_sec: 1779907854, tv_nsec: 370500191 }), reset_after: Some(200ms) } }, RatelimitingBucket(Some((Discriminant(96), Some(1509267731915210982)))): Mutex { data: Ratelimit { limit: 5, remaining: 4, reset: Some(SystemTime { tv_sec: 1779907868, tv_nsec: 954218179 }), reset_after: Some(200ms) } }, RatelimitingBucket(Some((Discriminant(101), Some(1466915203022196839)))): Mutex { data: Ratelimit { limit: 2, remaining: 1, reset: Some(SystemTime { tv_sec: 1779907873, tv_nsec: 778026058 }), reset_after: Some(30s) } }} }, token: Secret([REDACTED alloc::string::String]), absolute_ratelimits: false, ratelimit_callback: "Fn(RatelimitInfo)" }), proxy: None, token: Secret([REDACTED alloc::string::String]), application_id: 1466915203022196839, default_allowed_mentions: None } req=Request { body: Some([123, 34, 116, 121, 112, 101, 34, 58, 52, 44, 34, 100, 97, 116, 97, 34, 58, 123, 34, 99, 111, 110, 116, 101, 110, 116, 34, 58, 34, 83, 117, 99, 99, 101, 115, 115, 102, 117, 108, 108, 121, 32, 115, 116, 111, 112, 112, 101, 100, 32, 115, 101, 114, 118, 101, 114, 34, 44, 34, 97, 116, 116, 97, 99, 104, 109, 101, 110, 116, 115, 34, 58, 91, 93, 125, 125]), multipart: None, headers: None, method: Post, route: InteractionResponse { interaction_id: InteractionId(1509267758087667773), token: "aW50ZXJhY3Rpb246MTUwOTI2Nzc1ODA4NzY2Nzc3Mzp1Z0h5ekdLWnFzV0tSWFhNUlBjT3RrZmZlNDIwaDBHZUhKQ3J0UDlua0QwNHZPbFoxdDVEOURnYmZ4ZEE1VUo0RFVTZ3BxZDNtUmhzVW1tOGJqTkNPV1pIZEpkeGpGc2R1anRHTk1lZlZEWlF4VDRGNXRIWVdEOUpUWmVnRGJjMA" }, params: None }}:perform{self=Ratelimiter { client: Client { accepts: Accepts, proxies: [Matcher], referer: true, default_headers: {"accept": "*/*"} }, global: Mutex { data: () }, routes: RwLock { data: {RatelimitingBucket(Some((Discriminant(96), Some(1509267687878950953)))): Mutex { data: Ratelimit { limit: 5, remaining: 4, reset: Some(SystemTime { tv_sec: 1779907858, tv_nsec: 387280770 }), reset_after: Some(200ms) } }, RatelimitingBucket(Some((Discriminant(28), None))): Mutex { data: Ratelimit { limit: 9223372036854775807, remaining: 9223372036854775807, reset: None, reset_after: None } }, RatelimitingBucket(Some((Discriminant(96), Some(1509267670581907466)))): Mutex { data: Ratelimit { limit: 5, remaining: 4, reset: Some(SystemTime { tv_sec: 1779907854, tv_nsec: 370500191 }), reset_after: Some(200ms) } }, RatelimitingBucket(Some((Discriminant(96), Some(1509267731915210982)))): Mutex { data: Ratelimit { limit: 5, remaining: 4, reset: Some(SystemTime { tv_sec: 1779907868, tv_nsec: 954218179 }), reset_after: Some(200ms) } }, RatelimitingBucket(Some((Discriminant(101), Some(1466915203022196839)))): Mutex { data: Ratelimit { limit: 2, remaining: 1, reset: Some(SystemTime { tv_sec: 1779907873, tv_nsec: 778026058 }), reset_after: Some(30s) } }} }, token: Secret([REDACTED alloc::string::String]), absolute_ratelimits: false, ratelimit_callback: "Fn(RatelimitInfo)" } req=Request { body: Some([123, 34, 116, 121, 112, 101, 34, 58, 52, 44, 34, 100, 97, 116, 97, 34, 58, 123, 34, 99, 111, 110, 116, 101, 110, 116, 34, 58, 34, 83, 117, 99, 99, 101, 115, 115, 102, 117, 108, 108, 121, 32, 115, 116, 111, 112, 112, 101, 100, 32, 115, 101, 114, 118, 101, 114, 34, 44, 34, 97, 116, 116, 97, 99, 104, 109, 101, 110, 116, 115, 34, 58, 91, 93, 125, 125]), multipart: None, headers: None, method: Post, route: InteractionResponse { interaction_id: InteractionId(1509267758087667773), token: "aW50ZXJhY3Rpb246MTUwOTI2Nzc1ODA4NzY2Nzc3Mzp1Z0h5ekdLWnFzV0tSWFhNUlBjT3RrZmZlNDIwaDBHZUhKQ3J0UDlua0QwNHZPbFoxdDVEOURnYmZ4ZEE1VUo0RFVTZ3BxZDNtUmhzVW1tOGJqTkNPV1pIZEpkeGpGc2R1anRHTk1lZlZEWlF4VDRGNXRIWVdEOUpUWmVnRGJjMA" }, params: None }}: hyper_util::client::legacy::pool: reuse idle connection for ("https", discord.com)
 2026-05-27T18:51:14.918283Z DEBUG request{self=Http { client: Client { accepts: Accepts, proxies: [Matcher], referer: true, default_headers: {"accept": "*/*"} }, ratelimiter: Some(Ratelimiter { client: Client { accepts: Accepts, proxies: [Matcher], referer: true, default_headers: {"accept": "*/*"} }, global: Mutex { data: () }, routes: RwLock { data: {RatelimitingBucket(Some((Discriminant(96), Some(1509267687878950953)))): Mutex { data: Ratelimit { limit: 5, remaining: 4, reset: Some(SystemTime { tv_sec: 1779907858, tv_nsec: 387280770 }), reset_after: Some(200ms) } }, RatelimitingBucket(Some((Discriminant(28), None))): Mutex { data: Ratelimit { limit: 9223372036854775807, remaining: 9223372036854775807, reset: None, reset_after: None } }, RatelimitingBucket(Some((Discriminant(96), Some(1509267670581907466)))): Mutex { data: Ratelimit { limit: 5, remaining: 4, reset: Some(SystemTime { tv_sec: 1779907854, tv_nsec: 370500191 }), reset_after: Some(200ms) } }, RatelimitingBucket(Some((Discriminant(96), Some(1509267731915210982)))): Mutex { data: Ratelimit { limit: 5, remaining: 4, reset: Some(SystemTime { tv_sec: 1779907868, tv_nsec: 954218179 }), reset_after: Some(200ms) } }, RatelimitingBucket(Some((Discriminant(101), Some(1466915203022196839)))): Mutex { data: Ratelimit { limit: 2, remaining: 1, reset: Some(SystemTime { tv_sec: 1779907873, tv_nsec: 778026058 }), reset_after: Some(30s) } }} }, token: Secret([REDACTED alloc::string::String]), absolute_ratelimits: false, ratelimit_callback: "Fn(RatelimitInfo)" }), proxy: None, token: Secret([REDACTED alloc::string::String]), application_id: 1466915203022196839, default_allowed_mentions: None } req=Request { body: Some([123, 34, 116, 121, 112, 101, 34, 58, 52, 44, 34, 100, 97, 116, 97, 34, 58, 123, 34, 99, 111, 110, 116, 101, 110, 116, 34, 58, 34, 83, 117, 99, 99, 101, 115, 115, 102, 117, 108, 108, 121, 32, 115, 116, 111, 112, 112, 101, 100, 32, 115, 101, 114, 118, 101, 114, 34, 44, 34, 97, 116, 116, 97, 99, 104, 109, 101, 110, 116, 115, 34, 58, 91, 93, 125, 125]), multipart: None, headers: None, method: Post, route: InteractionResponse { interaction_id: InteractionId(1509267758087667773), token: "aW50ZXJhY3Rpb246MTUwOTI2Nzc1ODA4NzY2Nzc3Mzp1Z0h5ekdLWnFzV0tSWFhNUlBjT3RrZmZlNDIwaDBHZUhKQ3J0UDlua0QwNHZPbFoxdDVEOURnYmZ4ZEE1VUo0RFVTZ3BxZDNtUmhzVW1tOGJqTkNPV1pIZEpkeGpGc2R1anRHTk1lZlZEWlF4VDRGNXRIWVdEOUpUWmVnRGJjMA" }, params: None }}:perform{self=Ratelimiter { client: Client { accepts: Accepts, proxies: [Matcher], referer: true, default_headers: {"accept": "*/*"} }, global: Mutex { data: () }, routes: RwLock { data: {RatelimitingBucket(Some((Discriminant(96), Some(1509267687878950953)))): Mutex { data: Ratelimit { limit: 5, remaining: 4, reset: Some(SystemTime { tv_sec: 1779907858, tv_nsec: 387280770 }), reset_after: Some(200ms) } }, RatelimitingBucket(Some((Discriminant(28), None))): Mutex { data: Ratelimit { limit: 9223372036854775807, remaining: 9223372036854775807, reset: None, reset_after: None } }, RatelimitingBucket(Some((Discriminant(96), Some(1509267670581907466)))): Mutex { data: Ratelimit { limit: 5, remaining: 4, reset: Some(SystemTime { tv_sec: 1779907854, tv_nsec: 370500191 }), reset_after: Some(200ms) } }, RatelimitingBucket(Some((Discriminant(96), Some(1509267731915210982)))): Mutex { data: Ratelimit { limit: 5, remaining: 4, reset: Some(SystemTime { tv_sec: 1779907868, tv_nsec: 954218179 }), reset_after: Some(200ms) } }, RatelimitingBucket(Some((Discriminant(101), Some(1466915203022196839)))): Mutex { data: Ratelimit { limit: 2, remaining: 1, reset: Some(SystemTime { tv_sec: 1779907873, tv_nsec: 778026058 }), reset_after: Some(30s) } }} }, token: Secret([REDACTED alloc::string::String]), absolute_ratelimits: false, ratelimit_callback: "Fn(RatelimitInfo)" } req=Request { body: Some([123, 34, 116, 121, 112, 101, 34, 58, 52, 44, 34, 100, 97, 116, 97, 34, 58, 123, 34, 99, 111, 110, 116, 101, 110, 116, 34, 58, 34, 83, 117, 99, 99, 101, 115, 115, 102, 117, 108, 108, 121, 32, 115, 116, 111, 112, 112, 101, 100, 32, 115, 101, 114, 118, 101, 114, 34, 44, 34, 97, 116, 116, 97, 99, 104, 109, 101, 110, 116, 115, 34, 58, 91, 93, 125, 125]), multipart: None, headers: None, method: Post, route: InteractionResponse { interaction_id: InteractionId(1509267758087667773), token: "aW50ZXJhY3Rpb246MTUwOTI2Nzc1ODA4NzY2Nzc3Mzp1Z0h5ekdLWnFzV0tSWFhNUlBjT3RrZmZlNDIwaDBHZUhKQ3J0UDlua0QwNHZPbFoxdDVEOURnYmZ4ZEE1VUo0RFVTZ3BxZDNtUmhzVW1tOGJqTkNPV1pIZEpkeGpGc2R1anRHTk1lZlZEWlF4VDRGNXRIWVdEOUpUWmVnRGJjMA" }, params: None }}: hyper_util::client::legacy::pool: pooling idle connection for ("https", discord.com)
+2026-05-27T19:45:22.575327Z  WARN listen: bot_server::mods::listener: Received unhandled message in websocket.
+2026-05-27T19:45:22.577141Z  INFO listen:lost_connection: bot_server::mods::agents: Lost Connection, last seen and sender changed!
+2026-05-27T19:45:22.577463Z  INFO Connection{id=4a5af980-afa3-400d-8553-2d0045a04e78}:write: bot_server: MPSC receiver for write loop returned none. Stopping loop
+2026-05-27T19:46:39.983824Z  INFO bot_server: Evironment variables initialized
+2026-05-27T19:46:40.057128Z  INFO bot_server: Appstate created
+2026-05-27T19:46:40.057269Z  INFO bot_server: Cleaning task started
+2026-05-27T19:46:40.057422Z  INFO bot_server: App created
+2026-05-27T19:46:40.227507Z  INFO start_bot:start:start_connection{start_shard=0 end_shard=0 total_shards=1}:initialize:boot{shard_info=[ShardId(0), ShardId(1)]}: serenity::gateway::bridge::shard_manager: Telling shard queuer to start shard 0
+2026-05-27T19:46:40.455057Z  INFO run: serenity::gateway::bridge::shard_runner: [ShardRunner ShardInfo { id: ShardId(0), total: 1 }] Running
+2026-05-27T19:46:40.685310Z  INFO ready: bot_server::mods::bot::bot_handler: SuggestionsBot is connected!
+2026-05-27T19:47:44.074844Z  INFO bot_server: Evironment variables initialized
+2026-05-27T19:47:44.140589Z  INFO bot_server: Appstate created
+2026-05-27T19:47:44.140746Z  INFO bot_server: Cleaning task started
+2026-05-27T19:47:44.140953Z  INFO bot_server: App created
+2026-05-27T19:47:44.323152Z  INFO start_bot:start:start_connection{start_shard=0 end_shard=0 total_shards=1}:initialize:boot{shard_info=[ShardId(0), ShardId(1)]}: serenity::gateway::bridge::shard_manager: Telling shard queuer to start shard 0
+2026-05-27T19:47:44.555128Z  INFO run: serenity::gateway::bridge::shard_runner: [ShardRunner ShardInfo { id: ShardId(0), total: 1 }] Running
+2026-05-27T19:47:44.884166Z  INFO ready: bot_server::mods::bot::bot_handler: SuggestionsBot is connected!
+2026-05-27T19:47:45.102823Z  INFO ready: bot_server::mods::bot::bot_handler: Registered the following guild slash commands: [
+    Command {
+        id: CommandId(
+            1468141747572969492,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "startserver",
+        name_localized: None,
+        name_localizations: None,
+        description: "Start your minecraft server",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1486910644312604683,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1468165451065327700,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "stopserver",
+        name_localized: None,
+        name_localizations: None,
+        description: "Stop your minecraft server",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1486918151961710622,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1471365882918731902,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "serverproperties",
+        name_localized: None,
+        name_localizations: None,
+        description: "edit server properties",
+        description_localized: None,
+        description_localizations: None,
+        options: [
+            CommandOption {
+                kind: String,
+                name: "name",
+                name_localizations: None,
+                description: "Name of socket",
+                description_localizations: None,
+                required: false,
+                choices: [],
+                options: [],
+                channel_types: [],
+                min_value: None,
+                max_value: None,
+                min_length: None,
+                max_length: None,
+                autocomplete: false,
+            },
+        ],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1471365882918731903,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1473529712247701546,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "thumbnail",
+        name_localized: None,
+        name_localizations: None,
+        description: "see the header",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1509281979798126622,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1485470545817374801,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "set_chat",
+        name_localized: None,
+        name_localizations: None,
+        description: "Set this channel as your minecraft server chat",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487317155249655909,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1486803973607391433,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "startchat",
+        name_localized: None,
+        name_localizations: None,
+        description: "Forward chat from minecraft to discord",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487641460294680656,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1486803973607391434,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "stopchat",
+        name_localized: None,
+        name_localizations: None,
+        description: "Stop forwarding chat to discord",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487641460294680657,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1486803973607391435,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "verify",
+        name_localized: None,
+        name_localizations: None,
+        description: "Verify code",
+        description_localized: None,
+        description_localizations: None,
+        options: [
+            CommandOption {
+                kind: String,
+                name: "code",
+                name_localizations: None,
+                description: "Insert Connection Key",
+                description_localizations: None,
+                required: false,
+                choices: [],
+                options: [],
+                channel_types: [],
+                min_value: None,
+                max_value: None,
+                min_length: None,
+                max_length: None,
+                autocomplete: false,
+            },
+        ],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1486803973607391438,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1487890908644114492,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "say",
+        name_localized: None,
+        name_localizations: None,
+        description: "Say something in your minecraft server",
+        description_localized: None,
+        description_localizations: None,
+        options: [
+            CommandOption {
+                kind: String,
+                name: "message",
+                name_localizations: None,
+                description: "The message you're sending to minecraft chat",
+                description_localizations: None,
+                required: true,
+                choices: [],
+                options: [],
+                channel_types: [],
+                min_value: None,
+                max_value: None,
+                min_length: None,
+                max_length: None,
+                autocomplete: false,
+            },
+        ],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487902162200821993,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1487890908644114493,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "command",
+        name_localized: None,
+        name_localizations: None,
+        description: "Send a command in your minecraft server",
+        description_localized: None,
+        description_localizations: None,
+        options: [
+            CommandOption {
+                kind: String,
+                name: "command",
+                name_localizations: None,
+                description: "The command you're sending to chat",
+                description_localizations: None,
+                required: true,
+                choices: [],
+                options: [],
+                channel_types: [],
+                min_value: None,
+                max_value: None,
+                min_length: None,
+                max_length: None,
+                autocomplete: false,
+            },
+        ],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487902162200821994,
+        ),
+        handler: None,
+    },
+]
+2026-05-27T19:47:52.292025Z  INFO handler: bot_server: New websocket connection request received
+2026-05-27T19:49:52.616390Z  INFO bot_server: Evironment variables initialized
+2026-05-27T19:49:52.681052Z  INFO bot_server: Appstate created
+2026-05-27T19:49:52.681199Z  INFO bot_server: Cleaning task started
+2026-05-27T19:49:52.681344Z  INFO bot_server: App created
+2026-05-27T19:49:52.857284Z  INFO start_bot:start:start_connection{start_shard=0 end_shard=0 total_shards=1}:initialize:boot{shard_info=[ShardId(0), ShardId(1)]}: serenity::gateway::bridge::shard_manager: Telling shard queuer to start shard 0
+2026-05-27T19:49:53.080392Z  INFO run: serenity::gateway::bridge::shard_runner: [ShardRunner ShardInfo { id: ShardId(0), total: 1 }] Running
+2026-05-27T19:49:53.415145Z  INFO ready: bot_server::mods::bot::bot_handler: SuggestionsBot is connected!
+2026-05-27T19:49:53.648551Z  INFO ready: bot_server::mods::bot::bot_handler: Registered the following guild slash commands: [
+    Command {
+        id: CommandId(
+            1468141747572969492,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "startserver",
+        name_localized: None,
+        name_localizations: None,
+        description: "Start your minecraft server",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1486910644312604683,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1468165451065327700,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "stopserver",
+        name_localized: None,
+        name_localizations: None,
+        description: "Stop your minecraft server",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1486918151961710622,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1471365882918731902,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "serverproperties",
+        name_localized: None,
+        name_localizations: None,
+        description: "edit server properties",
+        description_localized: None,
+        description_localizations: None,
+        options: [
+            CommandOption {
+                kind: String,
+                name: "name",
+                name_localizations: None,
+                description: "Name of socket",
+                description_localizations: None,
+                required: false,
+                choices: [],
+                options: [],
+                channel_types: [],
+                min_value: None,
+                max_value: None,
+                min_length: None,
+                max_length: None,
+                autocomplete: false,
+            },
+        ],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1471365882918731903,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1509282518980100106,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "monitor",
+        name_localized: None,
+        name_localizations: None,
+        description: "see the header",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1509282518980100107,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1485470545817374801,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "set_chat",
+        name_localized: None,
+        name_localizations: None,
+        description: "Set this channel as your minecraft server chat",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487317155249655909,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1486803973607391433,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "startchat",
+        name_localized: None,
+        name_localizations: None,
+        description: "Forward chat from minecraft to discord",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487641460294680656,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1486803973607391434,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "stopchat",
+        name_localized: None,
+        name_localizations: None,
+        description: "Stop forwarding chat to discord",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487641460294680657,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1486803973607391435,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "verify",
+        name_localized: None,
+        name_localizations: None,
+        description: "Verify code",
+        description_localized: None,
+        description_localizations: None,
+        options: [
+            CommandOption {
+                kind: String,
+                name: "code",
+                name_localizations: None,
+                description: "Insert Connection Key",
+                description_localizations: None,
+                required: false,
+                choices: [],
+                options: [],
+                channel_types: [],
+                min_value: None,
+                max_value: None,
+                min_length: None,
+                max_length: None,
+                autocomplete: false,
+            },
+        ],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1486803973607391438,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1487890908644114492,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "say",
+        name_localized: None,
+        name_localizations: None,
+        description: "Say something in your minecraft server",
+        description_localized: None,
+        description_localizations: None,
+        options: [
+            CommandOption {
+                kind: String,
+                name: "message",
+                name_localizations: None,
+                description: "The message you're sending to minecraft chat",
+                description_localizations: None,
+                required: true,
+                choices: [],
+                options: [],
+                channel_types: [],
+                min_value: None,
+                max_value: None,
+                min_length: None,
+                max_length: None,
+                autocomplete: false,
+            },
+        ],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487902162200821993,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1487890908644114493,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "command",
+        name_localized: None,
+        name_localizations: None,
+        description: "Send a command in your minecraft server",
+        description_localized: None,
+        description_localizations: None,
+        options: [
+            CommandOption {
+                kind: String,
+                name: "command",
+                name_localizations: None,
+                description: "The command you're sending to chat",
+                description_localizations: None,
+                required: true,
+                choices: [],
+                options: [],
+                channel_types: [],
+                min_value: None,
+                max_value: None,
+                min_length: None,
+                max_length: None,
+                autocomplete: false,
+            },
+        ],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487902162200821994,
+        ),
+        handler: None,
+    },
+]
+2026-05-27T19:49:55.035918Z  INFO handler: bot_server: New websocket connection request received
+2026-05-27T19:52:10.603619Z  WARN listen: bot_server::mods::listener: Received unhandled message in websocket.
+2026-05-27T19:52:10.603908Z  INFO listen:lost_connection: bot_server::mods::agents: Lost Connection, last seen and sender changed!
+2026-05-27T19:52:10.604004Z  INFO Connection{id=4a5af980-afa3-400d-8553-2d0045a04e78}:write: bot_server: MPSC receiver for write loop returned none. Stopping loop
+2026-05-27T19:54:27.821973Z  INFO bot_server: Evironment variables initialized
+2026-05-27T19:54:27.918866Z  INFO bot_server: Appstate created
+2026-05-27T19:54:27.921213Z  INFO bot_server: Cleaning task started
+2026-05-27T19:54:27.924477Z  INFO bot_server: App created
+2026-05-27T19:54:28.129774Z  INFO start_bot:start:start_connection{start_shard=0 end_shard=0 total_shards=1}:initialize:boot{shard_info=[ShardId(0), ShardId(1)]}: serenity::gateway::bridge::shard_manager: Telling shard queuer to start shard 0
+2026-05-27T19:54:28.361409Z  INFO run: serenity::gateway::bridge::shard_runner: [ShardRunner ShardInfo { id: ShardId(0), total: 1 }] Running
+2026-05-27T19:54:28.728606Z  INFO ready: bot_server::mods::bot::bot_handler: SuggestionsBot is connected!
+2026-05-27T19:54:28.864925Z  INFO ready: bot_server::mods::bot::bot_handler: Registered the following guild slash commands: [
+    Command {
+        id: CommandId(
+            1468141747572969492,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "startserver",
+        name_localized: None,
+        name_localizations: None,
+        description: "Start your minecraft server",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1486910644312604683,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1468165451065327700,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "stopserver",
+        name_localized: None,
+        name_localizations: None,
+        description: "Stop your minecraft server",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1486918151961710622,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1471365882918731902,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "serverproperties",
+        name_localized: None,
+        name_localizations: None,
+        description: "edit server properties",
+        description_localized: None,
+        description_localizations: None,
+        options: [
+            CommandOption {
+                kind: String,
+                name: "name",
+                name_localizations: None,
+                description: "Name of socket",
+                description_localizations: None,
+                required: false,
+                choices: [],
+                options: [],
+                channel_types: [],
+                min_value: None,
+                max_value: None,
+                min_length: None,
+                max_length: None,
+                autocomplete: false,
+            },
+        ],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1471365882918731903,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1509282518980100106,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "monitor",
+        name_localized: None,
+        name_localizations: None,
+        description: "see the header",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1509282518980100107,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1485470545817374801,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "set_chat",
+        name_localized: None,
+        name_localizations: None,
+        description: "Set this channel as your minecraft server chat",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487317155249655909,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1486803973607391433,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "startchat",
+        name_localized: None,
+        name_localizations: None,
+        description: "Forward chat from minecraft to discord",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487641460294680656,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1486803973607391434,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "stopchat",
+        name_localized: None,
+        name_localizations: None,
+        description: "Stop forwarding chat to discord",
+        description_localized: None,
+        description_localizations: None,
+        options: [],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487641460294680657,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1486803973607391435,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "verify",
+        name_localized: None,
+        name_localizations: None,
+        description: "Verify code",
+        description_localized: None,
+        description_localizations: None,
+        options: [
+            CommandOption {
+                kind: String,
+                name: "code",
+                name_localizations: None,
+                description: "Insert Connection Key",
+                description_localizations: None,
+                required: false,
+                choices: [],
+                options: [],
+                channel_types: [],
+                min_value: None,
+                max_value: None,
+                min_length: None,
+                max_length: None,
+                autocomplete: false,
+            },
+        ],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1486803973607391438,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1487890908644114492,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "say",
+        name_localized: None,
+        name_localizations: None,
+        description: "Say something in your minecraft server",
+        description_localized: None,
+        description_localizations: None,
+        options: [
+            CommandOption {
+                kind: String,
+                name: "message",
+                name_localizations: None,
+                description: "The message you're sending to minecraft chat",
+                description_localizations: None,
+                required: true,
+                choices: [],
+                options: [],
+                channel_types: [],
+                min_value: None,
+                max_value: None,
+                min_length: None,
+                max_length: None,
+                autocomplete: false,
+            },
+        ],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487902162200821993,
+        ),
+        handler: None,
+    },
+    Command {
+        id: CommandId(
+            1487890908644114493,
+        ),
+        kind: ChatInput,
+        application_id: ApplicationId(
+            1466915203022196839,
+        ),
+        guild_id: Some(
+            GuildId(
+                1418696775627182224,
+            ),
+        ),
+        name: "command",
+        name_localized: None,
+        name_localizations: None,
+        description: "Send a command in your minecraft server",
+        description_localized: None,
+        description_localizations: None,
+        options: [
+            CommandOption {
+                kind: String,
+                name: "command",
+                name_localizations: None,
+                description: "The command you're sending to chat",
+                description_localizations: None,
+                required: true,
+                choices: [],
+                options: [],
+                channel_types: [],
+                min_value: None,
+                max_value: None,
+                min_length: None,
+                max_length: None,
+                autocomplete: false,
+            },
+        ],
+        default_member_permissions: None,
+        dm_permission: None,
+        nsfw: false,
+        integration_types: [],
+        contexts: None,
+        version: CommandVersionId(
+            1487902162200821994,
+        ),
+        handler: None,
+    },
+]
+2026-05-27T19:54:39.217461Z  INFO handler: bot_server: New websocket connection request received
+2026-05-27T19:56:51.461872Z  WARN listen: bot_server::mods::listener: Received unhandled message in websocket.
+2026-05-27T19:56:51.462066Z  INFO listen:lost_connection: bot_server::mods::agents: Lost Connection, last seen and sender changed!
+2026-05-27T19:56:51.462187Z  INFO Connection{id=4a5af980-afa3-400d-8553-2d0045a04e78}:write: bot_server: MPSC receiver for write loop returned none. Stopping loop
+2026-05-27T19:56:56.140273Z  INFO handler: bot_server: New websocket connection request received
+2026-05-27T20:15:21.296117Z  INFO run:recv_event:handle_event{event=Err(Tungstenite(Protocol(ResetWithoutClosingHandshake)))}: serenity::gateway::shard: [ShardInfo { id: ShardId(0), total: 1 }] Websocket error: Protocol(ResetWithoutClosingHandshake)
+2026-05-27T20:15:21.296293Z  INFO run:recv_event:handle_event{event=Err(Tungstenite(Protocol(ResetWithoutClosingHandshake)))}: serenity::gateway::shard: [ShardInfo { id: ShardId(0), total: 1 }] Will attempt to auto-reconnect
+2026-05-27T20:15:21.620157Z  INFO run:recv_event:handle_event{event=Ok(Dispatch(7, Resumed(ResumedEvent)))}:handle_gateway_dispatch{seq=7 event=Resumed(ResumedEvent)}: serenity::gateway::shard: [ShardInfo { id: ShardId(0), total: 1 }] Resumed
+2026-05-27T23:21:04.715283Z  INFO run:recv_event:handle_event{event=Ok(Dispatch(8, Resumed(ResumedEvent)))}:handle_gateway_dispatch{seq=8 event=Resumed(ResumedEvent)}: serenity::gateway::shard: [ShardInfo { id: ShardId(0), total: 1 }] Resumed

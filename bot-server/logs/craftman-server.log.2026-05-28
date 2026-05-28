@@ -1,0 +1,1 @@
+2026-05-28T00:43:27.894316Z  INFO run:recv_event:handle_event{event=Ok(Dispatch(9, Resumed(ResumedEvent)))}:handle_gateway_dispatch{seq=9 event=Resumed(ResumedEvent)}: serenity::gateway::shard: [ShardInfo { id: ShardId(0), total: 1 }] Resumed
