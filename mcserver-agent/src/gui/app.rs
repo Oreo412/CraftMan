@@ -84,6 +84,7 @@ pub enum AppState {
     Default,
     Validate(String),
     EditMemory(EditMemory),
+    Exiting,
 }
 
 pub struct EditMemory {

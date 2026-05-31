@@ -1,44 +1,40 @@
-use crate::appstate::AppState;
-use crate::mods::bot::get_guild::get_guild;
+use crate::{appstate::AppState, mods::bot::get_guild::get_guild};
 use anyhow::Result;
 use serenity::all::Context;
 use serenity::builder::*;
 use serenity::model::application::CommandInteraction;
-use std::sync::Arc;
-use twilight_http::Client;
+use tracing::{info_span, warn};
 
-pub async fn start_chat(
+pub async fn set_chat_channel(
     ctx: &Context,
     interaction: &CommandInteraction,
     appstate: &AppState,
-    client: Arc<Client>,
 ) -> Result<()> {
     let id = get_guild(ctx, interaction).await?;
     let agent = appstate.find_connection_by_guild(id)?;
+    let span = info_span!("bot request for agent", agent_id = %agent.id());
+    let _entered = span.enter();
     let response = CreateInteractionResponseMessage::new();
-    if let Err(e) = agent.start_chat_loop(client.clone()).await {
-        tracing::info!("Start Chat Loop Failed: {}", e);
+    if let Err(e) = agent.set_chat_channel(interaction.channel_id.get()).await {
+        warn!("Set Chat Channel Request failed");
         interaction
             .create_response(
                 &ctx.http,
                 CreateInteractionResponse::Message(
-                    response.content(format!("Error starting chat loop: {}", e)),
+                    response.content(format!("Error setting chat channel: {}", e)),
                 ),
             )
-            .await?;
+            .await?
     } else {
         interaction
             .create_response(
                 &ctx.http,
                 CreateInteractionResponse::Message(
-                    response.content("Successfully started chat loop"),
+                    response.content("Successfully set chat channel"),
                 ),
             )
             .await?;
     }
-    Ok(())
-}
 
-pub fn register() -> CreateCommand {
-    CreateCommand::new("startchat").description("Forward chat from minecraft to discord")
+    Ok(())
 }

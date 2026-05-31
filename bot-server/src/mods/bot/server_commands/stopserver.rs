@@ -35,7 +35,3 @@ pub async fn stop_minecraft_server(
     }
     Ok(())
 }
-
-pub fn register() -> CreateCommand {
-    CreateCommand::new("stopserver").description("Stop your minecraft server")
-}

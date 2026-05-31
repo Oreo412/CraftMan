@@ -34,14 +34,18 @@ use tokio::{
 use tracing::{debug, error, info, instrument};
 use uuid::Uuid;
 
-use crate::mods::listener;
+use crate::mods::{
+    bot::query_monitor::{update_header, update_monitor},
+    listener,
+};
 
 pub struct Agent {
     id: Uuid,
     sender: Mutex<Option<mpsc::UnboundedSender<AgentActions>>>,
     pending_requests: DashMap<Uuid, OneshotSender<RequestResponses>>,
     chat_channel_cache: RwLock<Cached<Option<Id<ChannelMarker>>>>,
-    query_monitor_cache: RwLock<Cached<Option<(Id<ChannelMarker>, Id<MessageMarker>)>>>,
+    query_monitor_id_cache: RwLock<Cached<Option<(Id<ChannelMarker>, Id<MessageMarker>)>>>,
+    query_monitor_options_cache: RwLock<Cached<Option<QueryOptions>>>,
     dbpool: PgPool,
     chat_sender: RwLock<Option<UnboundedSender<String>>>,
     last_seen: Mutex<Option<AtomicInstant>>,
@@ -70,7 +74,8 @@ impl Agent {
             sender: Mutex::new(Some(sender)),
             pending_requests: DashMap::new(),
             chat_channel_cache: RwLock::new(Cached::NotCached),
-            query_monitor_cache: RwLock::new(Cached::NotCached),
+            query_monitor_id_cache: RwLock::new(Cached::NotCached),
+            query_monitor_options_cache: RwLock::new(Cached::NotCached),
             dbpool,
             chat_sender: RwLock::new(None),
             last_seen: Mutex::new(None),
@@ -180,10 +185,12 @@ impl Agent {
         message_id: Id<MessageMarker>,
         channel_id: Id<ChannelMarker>,
     ) -> Result<(String, Option<Vec<u8>>, ServerStatus)> {
+        let query_options = QueryOptions::new(options);
         sqlx::query!(
-            "UPDATE servers SET query_channel_id = $1, query_message_id = $2 WHERE agent_id = $3",
+            "UPDATE servers SET query_channel_id = $1, query_message_id = $2, query_monitor_options =$3 WHERE agent_id = $4",
             channel_id.get() as i64,
             message_id.get() as i64,
+            serde_json::to_value(query_options.clone())?,
             self.id
         )
         .execute(&self.dbpool)
@@ -191,17 +198,36 @@ impl Agent {
         let (sender, receiver) = oneshot::channel::<RequestResponses>();
         let request_id = Uuid::new_v4();
         self.pending_requests.insert(request_id, sender);
-        self.send(AgentActions::StartQuery(
-            request_id,
-            QueryOptions::new(options),
-        ))
-        .await?;
+        self.send(AgentActions::StartQuery(request_id, query_options))
+            .await?;
         match timeout(TTL, receiver).await {
             Ok(Ok(RequestResponses::QueryResponse(description, image_bytes, query))) => {
                 Ok((description, image_bytes, query))
             }
             Ok(_) => bail!("Received inmproper response format"),
-            Err(_) => bail!("start_query timed out"),
+            Err(_) => bail!("new_query timed out"),
+        }
+    }
+
+    pub async fn start_query(&self) -> Result<()> {
+        if let Some(options) = self.query_monitor_options().await?
+            && self.query_ids().await?.is_some()
+        {
+            let (sender, receiver) = oneshot::channel::<RequestResponses>();
+            let request_id = Uuid::new_v4();
+            self.pending_requests.insert(request_id, sender);
+            self.send(AgentActions::StartQuery(request_id, options))
+                .await?;
+            match timeout(TTL, receiver).await {
+                Ok(Ok(RequestResponses::QueryResponse(_, _, _))) => {
+                    tracing::debug!("Query started");
+                    Ok(())
+                }
+                Ok(_) => bail!("Received improper response format"),
+                Err(_) => bail!("start_query timed out"),
+            }
+        } else {
+            bail!("No query monitor found");
         }
     }
 
@@ -251,7 +277,7 @@ impl Agent {
     }
 
     pub async fn query_ids(&self) -> Result<Option<(Id<ChannelMarker>, Id<MessageMarker>)>> {
-        if let Cached::Cached(ids) = *self.query_monitor_cache.read().await {
+        if let Cached::Cached(ids) = *self.query_monitor_id_cache.read().await {
             Ok(ids)
         } else {
             let record = sqlx::query!(
@@ -268,8 +294,28 @@ impl Agent {
             } else {
                 None
             };
-            *self.query_monitor_cache.write().await = Cached::Cached(ids);
+            *self.query_monitor_id_cache.write().await = Cached::Cached(ids);
             Ok(ids)
+        }
+    }
+
+    pub async fn query_monitor_options(&self) -> Result<Option<QueryOptions>> {
+        if let Cached::Cached(options) = &*self.query_monitor_options_cache.read().await {
+            Ok(options.clone())
+        } else {
+            let record = sqlx::query!(
+                "SELECT query_monitor_options FROM servers WHERE agent_id = $1",
+                self.id
+            )
+            .fetch_one(&self.dbpool)
+            .await?;
+            let options = if let Some(value) = record.query_monitor_options {
+                Some(serde_json::from_value(value)?)
+            } else {
+                None
+            };
+            *self.query_monitor_options_cache.write().await = Cached::Cached(options.clone());
+            Ok(options)
         }
     }
 
@@ -297,6 +343,7 @@ impl Agent {
     pub async fn reconnect(&self, sender: mpsc::UnboundedSender<AgentActions>) {
         *self.sender.lock().await = Some(sender);
         *self.last_seen.lock().await = None;
+        let _ = self.start_query().await;
         debug!("Reconnection complete for {}", self.id());
     }
 

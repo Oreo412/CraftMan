@@ -1,8 +1,10 @@
 use crate::bot::*;
-use crate::mods::bot::props_modals::props_modal;
-use crate::mods::bot::start_chat::start_chat;
-use crate::mods::bot::stop_chat::stop_chat;
+use crate::mods::bot::chat_commands::start_chat::start_chat;
+use crate::mods::bot::chat_commands::stop_chat::stop_chat;
+use crate::mods::bot::server_commands::properties::props_modals::props_modal;
+use crate::mods::bot::server_commands::{startserver, stopserver};
 use anyhow::{Result, anyhow, bail};
+use properties::settingscreen::SettingScreen;
 use protocol::properties::property;
 use serenity::all::{ActionRowComponent, CreateModal};
 use serenity::async_trait;
@@ -11,7 +13,7 @@ use serenity::model::application::{InputTextStyle, Interaction};
 use serenity::model::gateway::Ready;
 use serenity::model::id::GuildId;
 use serenity::prelude::*;
-use settingscreen::SettingScreen;
+use server_commands::properties;
 use std::env;
 use std::str::FromStr;
 use std::sync::Arc;
@@ -39,16 +41,10 @@ impl EventHandler for Handler {
         info!("{} is connected!", ready.user.name);
 
         let create_commands = vec![
-            startserver::register(),
-            stopserver::register(),
-            settingsview::register(),
+            server_commands::server_command::register_server_command(),
             query_monitor::register(),
-            chat_channel::register(),
-            start_chat::register(),
-            stop_chat::register(),
+            chat_commands::chat_commands_register::register_chat_command(),
             connect_to_server::register(),
-            message_chat::register_say(),
-            message_chat::register_command(),
         ];
 
         let commands = if cfg!(debug_assertions) {
@@ -155,39 +151,57 @@ impl Handler {
                 println!("Received command interaction: {command:#?}");
                 let command_name = command.data.name.as_str();
                 match command_name {
-                    "startserver" => {
-                        crate::bot::startserver::start_mc_server(&ctx, &command, &self.app_state)
+                    "server" => match command.data.options[0].name.as_str() {
+                        "start" => {
+                            startserver::start_mc_server(&ctx, &command, &self.app_state).await?;
+                        }
+                        "stop" => {
+                            stopserver::stop_minecraft_server(&ctx, &command, &self.app_state)
+                                .await?;
+                        }
+                        "properties" => {
+                            server_commands::properties::settingsview::run(
+                                &ctx,
+                                &self.twilight_client,
+                                command,
+                                &self.app_state,
+                            )
                             .await?;
-                    }
-                    "stopserver" => {
-                        crate::bot::stopserver::stop_minecraft_server(
-                            &ctx,
-                            &command,
-                            &self.app_state,
-                        )
-                        .await?;
-                    }
-                    "startchat" => {
-                        start_chat(
-                            &ctx,
-                            &command,
-                            &self.app_state,
-                            self.twilight_client.clone(),
-                        )
-                        .await?;
-                    }
-                    "stopchat" => {
-                        stop_chat(&ctx, &command, &self.app_state).await?;
-                    }
-                    "serverproperties" => {
-                        crate::bot::settingsview::run(
-                            &ctx,
-                            &self.twilight_client,
-                            command,
-                            &self.app_state,
-                        )
-                        .await?;
-                    }
+                        }
+                        _ => {}
+                    },
+                    "chat" => match command.data.options[0].name.as_str() {
+                        "start" => {
+                            start_chat(
+                                &ctx,
+                                &command,
+                                &self.app_state,
+                                self.twilight_client.clone(),
+                            )
+                            .await?;
+                        }
+                        "stop" => {
+                            stop_chat(&ctx, &command, &self.app_state).await?;
+                        }
+                        "set" => {
+                            chat_commands::chat_channel::set_chat_channel(
+                                &ctx,
+                                &command,
+                                &self.app_state,
+                            )
+                            .await?;
+                        }
+                        "say" | "command" => {
+                            chat_commands::message_chat::send_to_minecraft(
+                                &ctx,
+                                &command,
+                                &self.app_state,
+                                command.data.options[0].name.as_str(),
+                            )
+                            .await?;
+                        }
+                        _ => {}
+                    },
                     "monitor" => {
                         crate::bot::query_monitor::builder_modal(
                             &ctx,
@@ -197,21 +211,8 @@ impl Handler {
                         )
                         .await?;
                     }
-                    "set_chat" => {
-                        crate::bot::chat_channel::set_chat_channel(&ctx, &command, &self.app_state)
-                            .await?;
-                    }
                     "verify" => {
                         connect_to_server::connect_server(&ctx, &command, &self.app_state).await?;
-                    }
-                    "say" | "command" => {
-                        message_chat::send_to_minecraft(
-                            &ctx,
-                            &command,
-                            &self.app_state,
-                            command_name,
-                        )
-                        .await?;
                     }
                     _ => {
                         command
@@ -236,7 +237,7 @@ impl Handler {
                 match action {
                     ComponentAction::Edit(property) => {
                         let props = agent.edit_props(property).await?;
-                        crate::bot::settingsview::update_settings_view(
+                        server_commands::properties::settingsview::update_settings_view(
                             &self.twilight_client,
                             component.channel_id.get(),
                             component.message.id.get(),
@@ -257,7 +258,7 @@ impl Handler {
                     }
                     ComponentAction::ChangeScreen(screen) => {
                         let props = agent.request_props().await?;
-                        crate::bot::settingsview::update_settings_view(
+                        server_commands::properties::settingsview::update_settings_view(
                             &self.twilight_client,
                             component.channel_id.get(),
                             component.message.id.get(),
@@ -399,7 +400,7 @@ impl Handler {
                             .ok_or_else(|| anyhow!("Message not attatched to any modal"))?;
                         let agent = self.app_state.find_connection(&id)?;
                         let props = agent.edit_props(prop).await?;
-                        crate::bot::settingsview::update_settings_view(
+                        properties::settingsview::update_settings_view(
                             &self.twilight_client,
                             modal.channel_id.get(),
                             message.id.get(),

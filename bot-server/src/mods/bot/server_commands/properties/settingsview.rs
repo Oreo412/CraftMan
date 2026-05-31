@@ -1,6 +1,6 @@
 use crate::appstate::AppState;
 use crate::mods::bot::get_guild::get_guild;
-use crate::mods::bot::settingscreen::SettingScreen;
+use crate::mods::bot::server_commands::properties::settingscreen::SettingScreen;
 use crate::mods::bot::si2tr::si2tr;
 use anyhow::Result;
 use anyhow::anyhow;
@@ -59,13 +59,6 @@ fn screen_from_message(message: &serenity::model::channel::Message) -> Option<&S
     }
 
     None
-}
-
-pub fn register() -> CreateCommand {
-    let id = CreateCommandOption::new(CommandOptionType::String, "name", "Name of socket");
-    CreateCommand::new("serverproperties")
-        .description("edit server properties")
-        .add_option(id)
 }
 
 pub fn allow_flight(allow: bool, id: &str) -> Section {
@@ -234,7 +227,7 @@ pub async fn update_settings_view(
     Ok(())
 }
 
-pub fn difficulty(difficulty: &String, id: &str) -> Section {
+pub fn difficulty(difficulty: &str, id: &str) -> Section {
     let displaytext = TextDisplay {
         id: None,
         content: "Difficulty: ".to_string(),
@@ -256,7 +249,7 @@ fn capitalize(s: &str) -> String {
     }
 }
 
-pub fn gamemode(gamemode: &String, id: &str) -> Section {
+pub fn gamemode(gamemode: &str, id: &str) -> Section {
     let displaytext = TextDisplay {
         id: None,
         content: "Gamemode: ".to_string(),

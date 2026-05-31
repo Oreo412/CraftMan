@@ -5,5 +5,6 @@ CREATE TABLE servers (
 	guild_id BIGINT NOT NULL,
 	chat_channel_id BIGINT,
 	query_channel_id BIGINT,
-	query_message_id BIGINT
+	query_message_id BIGINT,
+	query_monitor_options JSONB
 )

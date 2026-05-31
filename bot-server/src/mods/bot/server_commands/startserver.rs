@@ -32,7 +32,3 @@ pub async fn start_mc_server(
     }
     Ok(())
 }
-
-pub fn register() -> CreateCommand {
-    CreateCommand::new("startserver").description("Start your minecraft server")
-}

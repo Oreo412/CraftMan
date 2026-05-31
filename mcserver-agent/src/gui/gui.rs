@@ -78,7 +78,7 @@ pub async fn handler(
                     Some(Ok(Event::Key(key))) => {
                         if key.kind == KeyEventKind::Press {
                             match &mut app.state { AppState::Default =>  match key.code {
-                                KeyCode::Char('q') => {break;}
+                                KeyCode::Char('q') => {app.state = AppState::Exiting;}
                                 KeyCode::Char('c') => {
                                     if let Ok((file, directory)) = file_explorer::file_selection(&mut terminal) &&
                                         let Err(e) = app.edit_config(app.config.clone().set_dir(directory).set_jar(file)).await {
@@ -128,6 +128,13 @@ pub async fn handler(
                                     } else {
                                         current.state = EditMemoryState::Editxms;
 
+                                }
+                            }
+                            AppState::Exiting => {
+                                match key.code {
+                                    KeyCode::Char('q') | KeyCode::Enter => {break;},
+                                    KeyCode::Esc => {app.state = AppState::Default}
+                                    _ => {}
                                 }
                             }
                             _ => {}
@@ -237,6 +244,18 @@ fn ui(frame: &mut Frame, app: &App) {
 
     if let AppState::EditMemory(current) = &app.state {
         edit_memory(frame, current);
+    }
+
+    if let AppState::Exiting = &app.state {
+        let area = frame.area();
+
+        let popup_area = area.centered(Constraint::Percentage(60), Constraint::Percentage(30));
+
+        let popup = Paragraph::new("Are you sure you would like to exit?\nPress enter or q to exit. Press escape to go back")
+            .block(Block::default().title("Popup").borders(Borders::ALL));
+
+        frame.render_widget(Clear, popup_area);
+        frame.render_widget(popup, popup_area);
     }
 }
 

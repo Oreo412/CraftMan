@@ -17,9 +17,13 @@ pub async fn send_to_minecraft(
     appstate: &AppState,
     command: &str,
 ) -> Result<()> {
+    tracing::info!("Gonna send something to the minecraft server");
     let agent = appstate.find_connection_by_guild(get_guild(ctx, interaction).await?)?;
     let response = CreateInteractionResponseMessage::new();
-    let command_data = if let Some(data) = interaction.data.options[0].value.as_str() {
+    let command_data = if let CommandDataOptionValue::SubCommand(sub_options) =
+        interaction.data.options[0].value.clone()
+        && let CommandDataOptionValue::String(data) = sub_options[0].value.clone()
+    {
         data
     } else {
         interaction
@@ -30,6 +34,7 @@ pub async fn send_to_minecraft(
             .await?;
         return Ok(());
     };
+    tracing::info!("Sending following message: {}", command_data);
     let servercommand = match command {
         "say" => ServerCommands::Say(command_data.to_string()),
         "command" => ServerCommands::Command(command_data.to_string()),
@@ -53,28 +58,4 @@ pub async fn send_to_minecraft(
             .await?;
     }
     Ok(())
-}
-
-pub fn register_say() -> CreateCommand {
-    let message = CreateCommandOption::new(
-        CommandOptionType::String,
-        "message",
-        "The message you're sending to minecraft chat",
-    )
-    .required(true);
-    CreateCommand::new("say")
-        .description("Say something in your minecraft server")
-        .add_option(message)
-}
-
-pub fn register_command() -> CreateCommand {
-    let command = CreateCommandOption::new(
-        CommandOptionType::String,
-        "command",
-        "The command you're sending to chat",
-    )
-    .required(true);
-    CreateCommand::new("command")
-        .description("Send a command in your minecraft server")
-        .add_option(command)
 }
