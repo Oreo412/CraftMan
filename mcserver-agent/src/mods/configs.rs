@@ -41,10 +41,7 @@ impl Configs {
     fn build() -> Self {
         let mut path = Configs::path();
 
-        println!("extra poopy");
-
         if path.exists() {
-            println!("Path exists");
             let data = std::fs::read_to_string(&path).expect("Failed to read config");
 
             serde_json::from_str::<Configs>(&data).expect("Invalid config format")
