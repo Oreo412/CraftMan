@@ -5,7 +5,6 @@ use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::{BufReader, BufWriter, Seek, SeekFrom};
 use tokio::sync::mpsc::UnboundedSender;
-use tokio_tungstenite::tungstenite::protocol::Message;
 use uuid::Uuid;
 
 pub struct ServerProperties {
@@ -27,7 +26,7 @@ impl ServerProperties {
         self.properties.get(key)
     }
     pub fn set(&mut self, key: &str, value: &str) -> Result<()> {
-        if self.properties.get(key).is_none() {
+        if !self.properties.contains_key(key) {
             bail!("Key {} not found", key);
         }
         let mut file = OpenOptions::new()

@@ -1,23 +1,17 @@
 use std::{collections::VecDeque, path::PathBuf};
 
-use anyhow::{Result, anyhow, bail};
-use mods::configs::Configs;
-use protocol::agentactions::AgentActions;
+use crate::mods::configs::Configs;
+use anyhow::{Result, bail};
 use tokio::sync::{mpsc::UnboundedSender, oneshot};
-use tui_file_explorer::{FileExplorer, FileExplorerBuilder};
+use tui_file_explorer::FileExplorer;
 
-use crate::{
-    gui::gui_actions::{ConfigRequest, EditRequestReturn},
-    mods,
-};
+use crate::gui::gui_actions::{ConfigRequest, EditRequestReturn};
 
 pub struct App {
-    explorer: FileExplorer,
     pub state: AppState,
     agent_sender: UnboundedSender<ConfigRequest>,
     pub server_running: bool,
     pub stdout: VecDeque<String>,
-    pub scroll: u16,
     pub config: Configs,
 }
 
@@ -35,12 +29,10 @@ impl App {
             explorer.cursor = index;
         }
         App {
-            explorer,
             state: AppState::Default,
             agent_sender,
             server_running: false,
             stdout: VecDeque::new(),
-            scroll: 0,
             config,
         }
     }

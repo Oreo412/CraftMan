@@ -10,16 +10,13 @@ use tokio::io::AsyncBufReadExt;
 use tokio::process::{ChildStdin, ChildStdout};
 use tokio::{
     io::BufReader,
-    process::{Child, Command},
+    process::Command,
     sync::{mpsc::UnboundedSender, watch},
 };
-use tokio_tungstenite::tungstenite::Message;
 
 pub struct ServerProcess {
-    child: Child,
     watch_sender: watch::Sender<bool>,
     command_sender: UnboundedSender<ServerCommands>,
-    ws_sender: UnboundedSender<ServerActions>,
 }
 
 impl ServerProcess {
@@ -56,9 +53,7 @@ impl ServerProcess {
         tokio::spawn(commander(command_receiver, stdin));
         tokio::spawn(chat_listener(lines, ws_sender.clone(), watch_receiver));
         Ok(ServerProcess {
-            child,
             watch_sender,
-            ws_sender,
             command_sender,
         })
     }

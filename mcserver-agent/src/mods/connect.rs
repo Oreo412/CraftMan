@@ -1,19 +1,15 @@
-use crate::gui::gui::GuiEvents;
 use crate::gui::gui_actions::ConfigRequest;
-use crate::mods::{configs::Configs, server_handler::ServerHandler, *};
+use crate::gui::tui::GuiEvents;
+use crate::mods::{server_handler::ServerHandler, *};
 use anyhow::Result;
 use futures_util::{
     sink::{Sink, SinkExt},
-    stream::{SplitStream, StreamExt},
+    stream::StreamExt,
 };
 use protocol::serveractions::ServerActions;
-use std::env;
 use tokio::sync::mpsc;
 use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
-use tokio_tungstenite::{
-    connect_async,
-    tungstenite::{WebSocket, protocol::Message},
-};
+use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 
 pub const URL: &str = match option_env!("AGENT_DOMAIN") {
     Some(domain) => domain,

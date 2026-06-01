@@ -2,8 +2,8 @@ mod gui;
 mod mods;
 use crate::{
     gui::{
-        gui::{GuiEvents, handler},
         gui_actions::ConfigRequest,
+        tui::{GuiEvents, handler},
     },
     mods::{server_handler::ServerHandler, stdout_writer::TuiWriter, *},
 };

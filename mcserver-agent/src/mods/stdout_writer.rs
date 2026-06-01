@@ -1,4 +1,4 @@
-use crate::gui::gui::GuiEvents;
+use crate::gui::tui::GuiEvents;
 use std::io;
 use std::io::Write;
 use tokio::sync::mpsc::UnboundedSender;

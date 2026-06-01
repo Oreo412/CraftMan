@@ -9,27 +9,25 @@ use crate::{
     mods::configs::Configs,
 };
 use crossterm::{
-    event::{self, Event, EventStream, KeyCode, KeyEventKind},
+    event::{Event, EventStream, KeyCode, KeyEventKind},
     execute,
     terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
 use futures::{FutureExt, StreamExt};
-use protocol::agentactions::AgentActions;
 use ratatui::{
     Frame, Terminal,
-    layout::{Alignment, Constraint, Direction, Layout, Margin, Rect},
+    layout::{Alignment, Constraint, Direction, Layout, Margin},
     prelude::CrosstermBackend,
     style::{Color, Style, Stylize},
-    text::{Line, Span, Text},
-    widgets::{Block, Borders, Clear, List, ListItem, Paragraph, Wrap},
+    text::{Line, Span},
+    widgets::{Block, Borders, Clear, Paragraph},
 };
 
 use anyhow::Result;
 use tokio::{
-    sync::mpsc::{self, UnboundedReceiver, UnboundedSender},
+    sync::mpsc::{UnboundedReceiver, UnboundedSender},
     time::interval,
 };
-use tui_file_explorer::FileExplorer;
 
 pub enum GuiEvents {
     Validate(String),

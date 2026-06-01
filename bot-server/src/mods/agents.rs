@@ -1,7 +1,6 @@
 use anyhow::anyhow;
 use atomic_time::AtomicInstant;
 use dashmap::DashMap;
-use futures_util::stream::SplitStream;
 use sqlx::PgPool;
 use std::{
     collections::{HashMap, HashSet},
@@ -10,7 +9,6 @@ use std::{
 };
 use tokio::sync::oneshot::Sender as OneshotSender;
 use tokio::{sync::oneshot, time::timeout};
-use tokio_tungstenite::tungstenite::WebSocket;
 use twilight_http::Client;
 use twilight_model::id::{
     Id,
@@ -31,13 +29,8 @@ use tokio::{
     },
     time::interval,
 };
-use tracing::{debug, error, info, instrument};
+use tracing::{debug, info, instrument};
 use uuid::Uuid;
-
-use crate::mods::{
-    bot::query_monitor::{update_header, update_monitor},
-    listener,
-};
 
 pub struct Agent {
     id: Uuid,

@@ -1,4 +1,3 @@
-use anyhow::Result;
 use crossterm::{
     execute,
     terminal::{EnterAlternateScreen, enable_raw_mode},
@@ -39,7 +38,7 @@ impl Configs {
     }
 
     fn build() -> Self {
-        let mut path = Configs::path();
+        let path = Configs::path();
 
         if path.exists() {
             let data = std::fs::read_to_string(&path).expect("Failed to read config");

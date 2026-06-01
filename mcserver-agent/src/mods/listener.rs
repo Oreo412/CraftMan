@@ -1,6 +1,6 @@
 use crate::gui::{
-    gui::GuiEvents,
     gui_actions::{ConfigRequest, EditRequestReturn},
+    tui::GuiEvents,
 };
 use futures_util::Stream;
 use futures_util::stream::StreamExt;

@@ -1,11 +1,10 @@
 use crate::appstate::AppState;
 use crate::mods::bot::get_guild::get_guild;
 use crate::mods::bot::si2tr::si2tr;
-use anyhow::{Result, anyhow};
+use anyhow::Result;
 use protocol::query_options::{QueryStatus, ServerStatus};
 use serenity::all::Context;
-use serenity::builder::{CreateCommand, CreateCommandOption};
-use serenity::model::application::CommandOptionType;
+use serenity::builder::CreateCommand;
 use std::collections::HashSet;
 use twilight_model::channel::message::Component;
 use twilight_model::channel::message::MessageFlags;

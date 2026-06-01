@@ -122,6 +122,8 @@ impl AppState {
         self.find_connection(self.find_id_by_guild(guild_id)?.as_ref())
     }
 
+    //It says it's not used but I wanna keep for safety. Future features very well may end up using
+    //this
     pub async fn send_message(&self, id: Uuid, message: AgentActions) -> Result<()> {
         print!("Sending message to agent connected on guild: {}", id);
         let agent = self.find_connection(&id)?;
