@@ -42,8 +42,7 @@ async fn main() {
     app_state.start_clean_task(Duration::from_secs(300), Duration::from_secs(120));
     info!("Cleaning task started");
     let app = Router::new()
-        .route("/", get(|| async { "Axum all over you!" }))
-        .route("/ws", get(handler))
+        .route("/craftman", get(handler))
         .with_state(app_state.clone());
     info!("App created");
 

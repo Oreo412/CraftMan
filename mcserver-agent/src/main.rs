@@ -10,22 +10,15 @@ use crate::{
 use connect::connect;
 use std::time::Duration;
 use tokio::sync::mpsc;
-use tracing_appender;
-use tracing_subscriber::{
-    filter::LevelFilter,
-    fmt,
-    layer::{Layer, SubscriberExt},
-    util::SubscriberInitExt,
-};
+use tracing_subscriber::{filter::LevelFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tokio::main]
 async fn main() {
-    dotenvy::dotenv().ok();
     let config = configs::Configs::new();
 
-    let (mut tui_to_agent, mut agent_from_tui) = mpsc::unbounded_channel::<ConfigRequest>();
+    let (tui_to_agent, mut agent_from_tui) = mpsc::unbounded_channel::<ConfigRequest>();
 
-    let (mut agent_to_tui, mut tui_from_agent) = mpsc::unbounded_channel::<GuiEvents>();
+    let (agent_to_tui, tui_from_agent) = mpsc::unbounded_channel::<GuiEvents>();
 
     let tui = tokio::spawn(handler(
         config.clone(),

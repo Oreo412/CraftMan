@@ -15,12 +15,17 @@ use tokio_tungstenite::{
     tungstenite::{WebSocket, protocol::Message},
 };
 
+pub const URL: &str = match option_env!("AGENT_DOMAIN") {
+    Some(domain) => domain,
+    None => "localhost:3000",
+};
+
 pub async fn connect(
     handler: &mut ServerHandler,
     agent_from_tui: &mut UnboundedReceiver<ConfigRequest>,
     agent_to_tui: UnboundedSender<GuiEvents>,
 ) -> anyhow::Result<()> {
-    let url = env::var("URL")?;
+    let url = format!("ws://{}/craftman", URL);
 
     let (ws_stream, _) = connect_async(url).await?;
 
