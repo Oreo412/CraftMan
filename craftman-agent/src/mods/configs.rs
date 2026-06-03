@@ -54,7 +54,7 @@ impl Configs {
             let mut terminal =
                 Terminal::new(backend).expect("Can not create new Terminal. Fatal Error");
 
-            let (file, directory) = file_explorer::file_selection(&mut terminal).unwrap();
+            let (file, directory) = file_explorer::blocking_file_selection(&mut terminal).unwrap();
             Configs {
                 id: Uuid::new_v4(),
                 xms: 1024,

@@ -4,13 +4,14 @@ use anyhow::Result;
 use crossterm::event::{self, Event, KeyCode};
 use ratatui::{
     Terminal,
+    layout::{Constraint, Direction, Layout},
     prelude::CrosstermBackend,
     style::{Color, Modifier, Style},
-    widgets::{Block, Borders, FrameExt as _},
+    widgets::{Block, Borders, FrameExt as _, Paragraph},
 };
 use ratatui_explorer::{FileExplorer, Theme};
 
-pub fn file_selection(
+pub fn blocking_file_selection(
     terminal: &mut Terminal<CrosstermBackend<Stdout>>,
 ) -> Result<(String, String)> {
     let theme = Theme::default()
@@ -35,8 +36,18 @@ pub fn file_selection(
 
     loop {
         terminal.draw(|frame| {
+            let chunks = Layout::default()
+                .direction(Direction::Vertical)
+                .constraints([Constraint::Min(1), Constraint::Length(3)])
+                .split(frame.area());
             let widget = explorer.widget();
-            frame.render_widget_ref(widget, frame.area());
+            frame.render_widget_ref(widget, chunks[0]);
+            let keys = Paragraph::new(
+                "Esc: Go back | Arrow Keys: Navigate files/directories | Enter: Select Server File",
+            )
+            .block(Block::default().borders(Borders::ALL));
+
+            frame.render_widget(keys, chunks[1]);
         })?;
 
         let event = event::read()?;

@@ -1,9 +1,9 @@
-use std::{collections::VecDeque, path::PathBuf};
+use std::collections::VecDeque;
 
 use crate::mods::configs::Configs;
 use anyhow::{Result, bail};
+use ratatui_explorer::FileExplorer;
 use tokio::sync::{mpsc::UnboundedSender, oneshot};
-use tui_file_explorer::FileExplorer;
 
 use crate::gui::gui_actions::{ConfigRequest, EditRequestReturn};
 
@@ -17,17 +17,6 @@ pub struct App {
 
 impl App {
     pub fn new(config: Configs, agent_sender: UnboundedSender<ConfigRequest>) -> Self {
-        let mut explorer = FileExplorer::builder(PathBuf::from(&config.dir))
-            .extension_filter(vec!["jar".into()])
-            .build();
-        if let Some(index) = explorer //I guess this doesn't need to fail if
-            //server_file doesn't actually load
-            .entries
-            .iter()
-            .position(|e| e.path == PathBuf::from(&config.jar))
-        {
-            explorer.cursor = index;
-        }
         App {
             state: AppState::Default,
             agent_sender,
@@ -74,6 +63,7 @@ impl App {
 
 pub enum AppState {
     Default,
+    FileSelection(FileExplorer),
     Validate(String),
     EditMemory(EditMemory),
     Exiting,

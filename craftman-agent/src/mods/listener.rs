@@ -236,6 +236,7 @@ async fn websocket_action(
 }
 
 async fn gui_action(handler: &mut ServerHandler, msg: ConfigRequest) -> anyhow::Result<()> {
+    tracing::info!("Handling gui action");
     match msg {
         ConfigRequest::Request(sender) => {
             sender
@@ -243,6 +244,7 @@ async fn gui_action(handler: &mut ServerHandler, msg: ConfigRequest) -> anyhow::
                 .map_err(|_| anyhow::anyhow!("failed to send config"))?;
         }
         ConfigRequest::Edit(sender, config) => {
+            tracing::info!("Received edit request. Handling");
             if let Err(e) = handler.edit_config(config) {
                 sender
                     .send(EditRequestReturn::EditInvalid(e.to_string()))

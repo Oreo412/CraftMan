@@ -3,7 +3,6 @@ use std::{io, time::Duration};
 use crate::{
     gui::{
         app::{App, AppState, EditMemory, EditMemoryState},
-        file_explorer,
         gui_actions::ConfigRequest,
     },
     mods::configs::Configs,
@@ -18,12 +17,13 @@ use ratatui::{
     Frame, Terminal,
     layout::{Alignment, Constraint, Direction, Layout, Margin},
     prelude::CrosstermBackend,
-    style::{Color, Style, Stylize},
+    style::{Color, Modifier, Style, Stylize},
     text::{Line, Span},
-    widgets::{Block, Borders, Clear, Paragraph},
+    widgets::{Block, Borders, Clear, FrameExt, Paragraph},
 };
 
 use anyhow::Result;
+use ratatui_explorer::{FileExplorerBuilder, Theme};
 use tokio::{
     sync::mpsc::{UnboundedReceiver, UnboundedSender},
     time::interval,
@@ -59,36 +59,82 @@ pub async fn handler(
     let mut tick = interval(Duration::from_millis(33)); // ~30 FPS
 
     loop {
+        let mut config: Option<Configs> = None;
         tokio::select! {
-            Some(event) = tui_from_agent.recv() => {
-                match event {
-                    GuiEvents::AddStdoutLine(line) => app.stdout.push_back(line),
-                    GuiEvents::Validate(key) => app.start_validation(key),
-                    GuiEvents::Validated => app.complete_validation(),
-                    GuiEvents::ServerStarted => app.server_running = true,
-                    GuiEvents::ServerStopped => app.server_running = false,
-                }
+                    Some(event) = tui_from_agent.recv() => {
+                        match event {
+                            GuiEvents::AddStdoutLine(line) => app.stdout.push_back(line),
+                            GuiEvents::Validate(key) => app.start_validation(key),
+                            GuiEvents::Validated => app.complete_validation(),
+                            GuiEvents::ServerStarted => app.server_running = true,
+                            GuiEvents::ServerStopped => app.server_running = false,
+                        }
 
-            }
+                    }
 
-            maybe_event = reader.next().fuse() => {
-                match maybe_event {
-                    Some(Ok(Event::Key(key))) => {
-                        if key.kind == KeyEventKind::Press {
-                            match &mut app.state { AppState::Default =>  match key.code {
-                                KeyCode::Char('q') => {app.state = AppState::Exiting;}
-                                KeyCode::Char('c') => {
-                                    if let Ok((file, directory)) = file_explorer::file_selection(&mut terminal) &&
-                                        let Err(e) = app.edit_config(app.config.clone().set_dir(directory).set_jar(file)).await {
-                                            tracing::error!("Error editing selected file: {}", e);
+                    maybe_event = reader.next().fuse() => {
+            match maybe_event {
+                Some(Ok(event)) => {
+                    if let Event::Key(key) = &event &&
+                        key.kind == KeyEventKind::Press {
+                            let code = key.code;
+
+                            match &mut app.state {
+                                AppState::Default => match code {
+                                    KeyCode::Char('q') => {
+                                        app.state = AppState::Exiting;
                                     }
-                                }
-                                KeyCode::Char('x') => {
-                                    app.state = AppState::EditMemory(EditMemory::new());
-                                }
-                                _ => {}
-                            }
-                            AppState::EditMemory(current) => {
+                                    KeyCode::Char('c') => {
+                                        let theme = Theme::default()
+                                                    .add_default_title()
+                                                    .with_block(Block::default().borders(Borders::ALL))
+                                                    .with_highlight_item_style(Style::default().fg(Color::Black).bg(Color::Yellow).add_modifier(Modifier::BOLD),)
+                                                    .with_highlight_dir_style(Style::default().fg(Color::Black).bg(Color::Cyan).add_modifier(Modifier::BOLD),)
+                                                    .with_highlight_symbol(">> ");
+
+                                        let mut explorer = match FileExplorerBuilder::default().working_dir(app.config.dir.clone()).build() {
+                                            Err(e) => {
+
+                                            tracing::error!("Error building file explorer: {}", e);
+                                            break;
+
+                                            }
+                                            Ok(explorer) => {
+                                                explorer
+                                            }
+                                        };
+                                        explorer.set_theme(theme);
+                                        app.state = AppState::FileSelection(explorer);
+                                    }
+                                    KeyCode::Char('x') => {
+                                        app.state = AppState::EditMemory(EditMemory::new());
+                                    }
+                                    _ => {}
+                                },
+
+                                AppState::FileSelection(explorer) => match code {
+                                    KeyCode::Enter => {
+                                        tracing::info!("File selected. Exiting file_selection");
+                                        let current = explorer.current();
+                                        config = Some(
+                                            app.config
+                                                .clone()
+                                                .set_jar(current.name.to_string())
+                                                .set_dir(explorer.cwd().display().to_string()),
+                                        );
+
+                                        app.state = AppState::Default;
+                                    }
+                                    KeyCode::Esc => {
+                                        anyhow::bail!("file selection cancelled");
+                                    }
+                                    _ => {
+                                        explorer.handle(&event)?;
+                                    }
+                                },
+
+                                // keep the rest of your states here
+                                AppState::EditMemory(current) => {
                                 if current.state != EditMemoryState::IsThisCorrect {
                                     // This is hilarious, Rust is so cool
                                     let editing = if current.state == EditMemoryState::Editxms {
@@ -135,25 +181,27 @@ pub async fn handler(
                                     _ => {}
                                 }
                             }
-                            _ => {}
+                                _ => {}
                             }
-
-
                         }
-                    }
-                    Some(Ok(_)) => {}
-                    Some(Err(_)) => {
-                        // handle error if needed
-                    }
-                    None => {
-                        // stream ended (rare)
-                        break;
+
+                }
+
+                Some(Err(e)) => {
+                    tracing::error!("TUI error has occured: {}", e);
+                }
+
+                None => break,
+            }
+        }
+                    _ = tick.tick() => {
+                        terminal.draw(|f| ui(f, &app))?;
                     }
                 }
-            }
-            _ = tick.tick() => {
-                terminal.draw(|f| ui(f, &app))?;
-            }
+        if let Some(config) = config
+            && let Err(e) = app.edit_config(config).await
+        {
+            tracing::error!("Failed to edit config: {}", e);
         }
     }
 
@@ -166,6 +214,21 @@ pub async fn handler(
 
 fn ui(frame: &mut Frame, app: &App) {
     frame.render_widget(Clear, frame.area());
+    if let AppState::FileSelection(explorer) = &app.state {
+        let chunks = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints([Constraint::Min(1), Constraint::Length(3)])
+            .split(frame.area());
+        let widget = explorer.widget();
+        frame.render_widget_ref(widget, chunks[0]);
+        let keys = Paragraph::new(
+            "Esc: Go back | Arrow Keys: Navigate files/directories | Enter: Select Server File",
+        )
+        .block(Block::default().borders(Borders::ALL));
+
+        frame.render_widget(keys, chunks[1]);
+        return;
+    }
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
