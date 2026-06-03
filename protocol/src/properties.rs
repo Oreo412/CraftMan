@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub enum property {
+pub enum Property {
     AllowFlight,
     Difficulty,
     Gamemode,

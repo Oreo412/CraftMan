@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE servers SET query_channel_id = $1, query_message_id = $2, query_monitor_options =$3 WHERE agent_id = $4",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Jsonb",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "d5f08ea7a245e9a836375bd5de259b3d26f146e40c9853d837be657a69ca88f1"
+}

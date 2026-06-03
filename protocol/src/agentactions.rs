@@ -1,5 +1,5 @@
 use crate::query_options::QueryOptions;
-use crate::{properties::property, server_commands::ServerCommands};
+use crate::{properties::Property, server_commands::ServerCommands};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -9,7 +9,7 @@ pub enum AgentActions {
     SvStop(Uuid),
     Message(String),
     RequestProps(Uuid),
-    EditProp(Uuid, property),
+    EditProp(Uuid, Property),
     StartQuery(Uuid, QueryOptions),
     StopQuery,
     StartChatStream(Uuid),

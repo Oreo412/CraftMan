@@ -1,0 +1,9 @@
+services:
+  craftman-server:
+    image: ghcr.io/Oreo412/craftman-server:latest
+    container_name: craftman-server
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"

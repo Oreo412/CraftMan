@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Default, Serialize, Deserialize, Clone)]
 pub struct QueryOptions {
     version: bool,
     player_count: bool,
@@ -12,22 +12,6 @@ pub struct QueryOptions {
     software: bool,
     plugins: bool,
     mods: bool,
-}
-
-impl Default for QueryOptions {
-    fn default() -> Self {
-        QueryOptions {
-            version: false,
-            player_count: false,
-            player_list: false,
-            description: false,
-            map: false,
-            gamemode: false,
-            software: false,
-            plugins: false,
-            mods: false,
-        }
-    }
 }
 
 impl QueryOptions {
@@ -82,7 +66,7 @@ impl QueryOptions {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq)]
 pub struct QueryStatus {
     version: Option<String>,
     player_count: Option<String>,
@@ -93,22 +77,6 @@ pub struct QueryStatus {
     software: Option<String>,
     plugins: Option<Vec<String>>,
     mods: Option<Vec<String>>,
-}
-
-impl Default for QueryStatus {
-    fn default() -> Self {
-        QueryStatus {
-            version: None,
-            player_count: None,
-            player_list: None,
-            description: None,
-            map: None,
-            gamemode: None,
-            software: None,
-            plugins: None,
-            mods: None,
-        }
-    }
 }
 
 impl QueryStatus {
