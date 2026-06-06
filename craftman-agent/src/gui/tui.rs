@@ -114,6 +114,17 @@ pub async fn handler(
 
                                 AppState::FileSelection(explorer) => match code {
                                     KeyCode::Enter => {
+                                        app.state = AppState::FileSelectionConfirm(explorer.clone());
+                                    }
+                                    KeyCode::Esc => {
+                                        app.state = AppState::Default;
+                                    }
+                                    _ => {
+                                        explorer.handle(&event)?;
+                                    }
+                                },
+                                AppState::FileSelectionConfirm(explorer) => match code {
+                                    KeyCode::Enter => {
                                         tracing::info!("File selected. Exiting file_selection");
                                         let current = explorer.current();
                                         config = Some(
@@ -126,17 +137,18 @@ pub async fn handler(
                                         app.state = AppState::Default;
                                     }
                                     KeyCode::Esc => {
-                                        anyhow::bail!("file selection cancelled");
+                                        app.state = AppState::FileSelection(explorer.clone())
                                     }
-                                    _ => {
-                                        explorer.handle(&event)?;
+                                    _ => {}
+                                }
+                                AppState::Validate(_) => {
+                                    if let KeyCode::Char('q') = code {
+                                        break;
                                     }
-                                },
+                                }
 
-                                // keep the rest of your states here
                                 AppState::EditMemory(current) => {
                                 if current.state != EditMemoryState::IsThisCorrect {
-                                    // This is hilarious, Rust is so cool
                                     let editing = if current.state == EditMemoryState::Editxms {
                                         &mut current.xms_string
                                     } else {
@@ -214,7 +226,8 @@ pub async fn handler(
 
 fn ui(frame: &mut Frame, app: &App) {
     frame.render_widget(Clear, frame.area());
-    if let AppState::FileSelection(explorer) = &app.state {
+    if let AppState::FileSelection(explorer) | AppState::FileSelectionConfirm(explorer) = &app.state
+    {
         let chunks = Layout::default()
             .direction(Direction::Vertical)
             .constraints([Constraint::Min(1), Constraint::Length(3)])
@@ -227,6 +240,23 @@ fn ui(frame: &mut Frame, app: &App) {
         .block(Block::default().borders(Borders::ALL));
 
         frame.render_widget(keys, chunks[1]);
+
+        if let AppState::FileSelectionConfirm(_) = &app.state {
+            let area = frame.area();
+
+            let popup_area = area.centered(Constraint::Percentage(60), Constraint::Percentage(30));
+
+            let popup = Paragraph::new(format!(
+                "Select this file?\n{}/{}",
+                explorer.cwd().display(),
+                explorer.current().name
+            ))
+            .block(Block::default().title("Popup").borders(Borders::ALL));
+
+            frame.render_widget(Clear, popup_area);
+            frame.render_widget(popup, popup_area);
+        }
+
         return;
     }
     let chunks = Layout::default()

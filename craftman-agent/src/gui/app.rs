@@ -64,6 +64,7 @@ impl App {
 pub enum AppState {
     Default,
     FileSelection(FileExplorer),
+    FileSelectionConfirm(FileExplorer),
     Validate(String),
     EditMemory(EditMemory),
     Exiting,
