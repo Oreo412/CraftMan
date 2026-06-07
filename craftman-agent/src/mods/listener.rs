@@ -3,7 +3,10 @@ use crate::gui::{
     tui::GuiEvents,
 };
 use futures_util::Stream;
-use futures_util::stream::StreamExt;
+use futures_util::{
+    sink::{Sink, SinkExt},
+    stream::StreamExt,
+};
 use protocol::agentactions::AgentActions;
 use protocol::serveractions::ServerActions;
 use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
@@ -15,21 +18,26 @@ use protocol::properties::Property;
 
 use crate::mods::server_handler::ServerHandler;
 
-pub async fn listen<R>(
-    mut receiver: R,
-    sender: UnboundedSender<ServerActions>,
+pub async fn listen<R, S>(
+    mut ws_receiver: R,                            //Websocket receiver
+    mut ws_sender: S,                              //Websocket sender
+    server_sender: UnboundedSender<ServerActions>, // Agent should send server actions through this
     handler: &mut ServerHandler,
-    agent_receiver: &mut UnboundedReceiver<ConfigRequest>,
-    agent_to_tui: UnboundedSender<GuiEvents>,
+    agent_from_tui: &mut UnboundedReceiver<ConfigRequest>, // Agent receives requests from TUI here
+    agent_to_tui: UnboundedSender<GuiEvents>,              // Agent should send to TUI from here
+    forward_receiver: &mut UnboundedReceiver<ServerActions>, // Agent sends server requests here to
+                                                           // be sent over websocket
 ) -> Result<()>
 where
     R: Stream<Item = Result<Message, Error>> + Unpin,
+    S: Sink<Message> + Unpin,
+    S::Error: std::error::Error + Send + Sync + 'static,
 {
     loop {
         tokio::select! {
-            next_msg = receiver.next() => {
+            next_msg = ws_receiver.next() => {
                 if let Some(msg) = next_msg {
-                    if let Err(e) = websocket_action(handler, &sender, msg?, &agent_to_tui).await {
+                    if let Err(e) = websocket_action(handler, &server_sender, msg?, &agent_to_tui).await {
                         tracing::error!("Error handling websocket action: {}", e);
                     }
                 }
@@ -40,7 +48,7 @@ where
 
             }
 
-            next_msg = agent_receiver.recv() => {
+            next_msg = agent_from_tui.recv() => {
                 if let Some(msg) = next_msg {
                     if let Err(e) = gui_action(handler, msg).await {
                         tracing::error!("Error handling AgentAction: {}", e);
@@ -50,6 +58,18 @@ where
                     tracing::warn!("GUI lost");
                     return Ok(());
                 }
+
+            }
+
+            message = forward_receiver.recv() => {
+                tracing::info!("Sending server action");
+                ws_sender
+                    .send(Message::Text(
+                            serde_json::to_string(&message)
+                            .expect("send_task serialization failed. This should not be possible. Major programming bug")
+                            .into(),
+                            ))
+                    .await?;
 
             }
 

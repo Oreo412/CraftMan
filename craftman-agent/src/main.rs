@@ -8,6 +8,7 @@ use crate::{
     mods::{server_handler::ServerHandler, stdout_writer::TuiWriter, *},
 };
 use connect::connect;
+use protocol::serveractions::ServerActions;
 use std::time::Duration;
 use tokio::sync::mpsc;
 use tracing_subscriber::{filter::LevelFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
@@ -59,9 +60,19 @@ async fn main() {
         .with(file_layer)
         .init();
 
+    let (sender, mut receiver) = mpsc::unbounded_channel::<ServerActions>();
+
     let backend = async {
         loop {
-            match connect(&mut handler, &mut agent_from_tui, agent_to_tui.clone()).await {
+            match connect(
+                &mut handler,
+                &mut agent_from_tui,
+                agent_to_tui.clone(),
+                sender.clone(),
+                &mut receiver,
+            )
+            .await
+            {
                 Ok(()) => {
                     tracing::info!("Disconnected. Reconnecting...");
                 }
