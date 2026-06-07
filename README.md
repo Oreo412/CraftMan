@@ -10,6 +10,12 @@ It consists of:
 
 Together, these components enable real-time server management, configuration, and monitoring — all from within Discord.
 
+# Add the bot to your server!
+https://discord.com/oauth2/authorize?client_id=1511495371451535542&permissions=2147592192&integration_type=0&scope=bot
+
+# Download the server agent!
+
+
 ---
 
 ## 🚀 Features
