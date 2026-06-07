@@ -7,7 +7,7 @@ use tokio::sync::mpsc::{self, UnboundedReceiver};
 
 use anyhow::{Result, anyhow};
 use tokio::io::AsyncBufReadExt;
-use tokio::process::{ChildStdin, ChildStdout};
+use tokio::process::{ChildStderr, ChildStdin, ChildStdout};
 use tokio::{
     io::BufReader,
     process::Command,
@@ -36,6 +36,7 @@ impl ServerProcess {
             .arg("nogui")
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
             .spawn()?;
         let (watch_sender, watch_receiver) = watch::channel(false);
 
@@ -43,7 +44,12 @@ impl ServerProcess {
             .stdout
             .take()
             .ok_or_else(|| anyhow!("No stdout found for child. Initialization failed"))?;
+        let stderr = child
+            .stderr
+            .take()
+            .ok_or_else(|| anyhow!("No stderr found for child. Initialization failed"))?;
         let lines = BufReader::new(stdout).lines();
+        let err_lines = BufReader::new(stderr).lines();
         let stdin = child
             .stdin
             .take()
@@ -51,7 +57,12 @@ impl ServerProcess {
 
         let (command_sender, command_receiver) = mpsc::unbounded_channel::<ServerCommands>();
         tokio::spawn(commander(command_receiver, stdin));
-        tokio::spawn(chat_listener(lines, ws_sender.clone(), watch_receiver));
+        tokio::spawn(chat_listener(
+            lines,
+            err_lines,
+            ws_sender.clone(),
+            watch_receiver,
+        ));
         Ok(ServerProcess {
             watch_sender,
             command_sender,
@@ -76,12 +87,24 @@ impl ServerProcess {
 
 async fn chat_listener(
     mut lines: Lines<BufReader<ChildStdout>>,
+    mut err_lines: Lines<BufReader<ChildStderr>>,
     sender: UnboundedSender<ServerActions>,
     mut watcher: watch::Receiver<bool>,
 ) -> Result<()> {
     loop {
         select! {
             line = lines.next_line() => {
+                match line? {
+                    Some(new_message) => {
+                        tracing::info!("{}", new_message);
+                        if *watcher.borrow()
+                        {sender.send(ServerActions::ChatMessage(new_message))?;
+                    }}
+                    None => break, // stdout closed
+                }
+            }
+
+            line = err_lines.next_line() => {
                 match line? {
                     Some(new_message) => {
                         tracing::info!("{}", new_message);
