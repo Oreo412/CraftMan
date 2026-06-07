@@ -1,6 +1,6 @@
 # CraftMan (Discord ↔ Minecraft Server Bridge)
 
-CraftMan is a full-stack system that allows you to control and monitor a Minecraft server directly from Discord.
+CraftMan is a full-stack system that allows you to control and monitor a Minecraft server directly from Discord. CraftMan offers a way to provide access to remotely managing and interacting with a Minecraft server without the need for remotely connecting via SSH or use of a dedicated server panel to do simple tasks. This also gives access to other users being able to start, stop and manage the server without managing ssh permissions or dedicated logins for each user, simply by managing command permissions on Discord
 
 It consists of:
 
@@ -32,20 +32,12 @@ Together, these components enable real-time server management, configuration, an
 * **Persistent WebSocket Connection**
 
   * Local agent connects to the central server for real-time communication
-
----
-
-### 🚧 In Progress
-
-* **Minecraft Chat ↔ Discord Bridge**
-
-  * View in-game chat directly in Discord
-  * Send messages/commands from Discord into Minecraft
-
-* **User Authentication / Server Linking**
-
-  * Unique server IDs for secure connections
-  * Agent-based authentication flow
+ 
+* **Verification**
+  * Agents can be verified and attached to individual Discord servers
+ 
+* **Minecraft Chat**
+  * Agents can forward Minecraft server output to Discord, allowing users to see and interact with the Minecraft servers chat while not actively in the server
 
 ---
 
@@ -184,18 +176,31 @@ Instead of restarting when hitting limitations, I:
 This approach mirrors real-world engineering constraints where maintaining momentum and stability is critical.
 
 
-## 🔐 Planned Authentication Flow
+---
 
-* Each Discord server is assigned a **unique ID**
-* Users configure their local agent with this ID
-* Agent authenticates with the central server on connection
-* Ensures proper routing of commands and isolation between servers
+## Project Status
+
+CraftMan is currently in an early public release stage.
+
+The core functionality is implemented and usable, and I am actively using it to manage a Minecraft server with friends. Most testing has been manual and based on real usage rather than a complete automated test suite, so bugs and rough edges should be expected.
 
 ---
 
-## 📦 Getting Started (Planned)
+## 📦 Usage Guide
 
-> Setup instructions will be added once authentication and deployment are finalized.
+* First, add the bot to the server you plan on connecting your minecraft server to
+* To get started, download the craftman-agent binary, enter the directory it's installed in and run ```./craftman-agent``` (alternatively, you can move craftman-agent to your /bin directory, allowing you to run ```craftman-agent``` from anywhere
+* Use the arrow keys to navigate the file selection, and select the server jar file that you will run your minecraft server from
+* The agent should connect to the server, and a pop up should appear with the verification code
+* On Discord, run ```/verify ####``` and enter your code to connect the agent to the discord server.
+* Before running the server from Discord, be sure you have agreed to the EULA and have run the Minecraft server at least once afterwards
+* Now you can start and stop the Minecraft server with ```/server start``` and ```/server stop```
+* Within the Discord channel where you'd like the bot to forward the chat from minecraft, run ```/chat set``` (It is recommended you mute this channel server wide)
+* Start and stop the chat stream to and from the Minecraft server with ```/chat start``` and ```/chat stop```
+* Send a message to users in the Minecraft server with ```/chat say```
+* Run a command in the Minecraft server with ```/chat command```
+* View and manage the properties of the Minecraft server with ```/server properties```
+* Run ```/monitor``` to build a live monitor that monitors the current status of the minecraft server
 
 ---
 
@@ -210,13 +215,6 @@ This project was built as a portfolio piece to demonstrate:
 * Practical problem-solving without unnecessary rewrites
 
 ---
-
-## 📌 Future Improvements
-
-* Full chat synchronization
-* Role-based permissions in Discord
-* Web dashboard (optional)
-* Plugin/mod support for deeper Minecraft integration
 
 ---
 
