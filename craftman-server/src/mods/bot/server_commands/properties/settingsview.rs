@@ -97,6 +97,9 @@ pub fn build_settings_view(
             if let Some(generate_value) = props.get("generate-structure") {
                 properties_message
                     .push(generate_structures(generate_value.parse::<bool>()?, id).into());
+            } else if let Some(generate_value) = props.get("generate-structures") {
+                properties_message
+                    .push(generate_structures(generate_value.parse::<bool>()?, id).into());
             }
 
             if let Some(max_world_value) = props.get("max-world-size") {
