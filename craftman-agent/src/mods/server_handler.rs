@@ -168,6 +168,7 @@ impl ServerHandler {
 
     pub fn edit_config(&mut self, config: Configs) -> Result<()> {
         self.config = config;
+        self.config.save();
         Ok(())
     }
 }

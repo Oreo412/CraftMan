@@ -18,7 +18,7 @@ async fn main() {
         .install_default()
         .expect("failed to install rustls crypto provider");
     let file_appender = tracing_appender::rolling::daily("logs", "craftman-server.log");
-    let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
+    let (_non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
 
     mods::init_tracing::init_tracing();
 

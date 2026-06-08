@@ -90,102 +90,92 @@ pub fn build_settings_view(
     screen: &SettingScreen,
 ) -> Result<Vec<Component>> {
     let id = &uuid.to_string();
-    let mut properties = match screen {
+    let mut properties_message = Vec::<Component>::new();
+
+    match screen {
         SettingScreen::WorldGeneration => {
-            let generate_value = props
-                .get("generate-structures")
-                .ok_or_else(|| anyhow!("generate-structures not found"))?
-                .parse::<bool>()?;
-            let allow_nether_value = props
-                .get("allow-nether")
-                .ok_or_else(|| anyhow!("allow nether not found"))?
-                .parse::<bool>()?;
-            let max_world_value = props
-                .get("max-world-size")
-                .ok_or_else(|| anyhow!("max world size not found"))?
-                .parse::<u32>()?;
-            let spawn_npc_value = props
-                .get("spawn-npcs")
-                .ok_or_else(|| anyhow!("spawn npcs not found"))?
-                .parse::<bool>()?;
-            let spawn_animals_value = props
-                .get("spawn-animals")
-                .ok_or_else(|| anyhow!("spawn animals not found"))?
-                .parse::<bool>()?;
-            let spawn_monsters_value = props
-                .get("spawn-monsters")
-                .ok_or_else(|| anyhow!("spawn monsters not found"))?
-                .parse::<bool>()?;
-            vec![
-                generate_structures(generate_value, id).into(),
-                max_world_size(max_world_value, id).into(),
-                allow_nether(allow_nether_value, id).into(),
-                spawn_npcs(spawn_npc_value, id).into(),
-                spawn_animals(spawn_animals_value, id).into(),
-                spawn_monsters(spawn_monsters_value, id).into(),
-            ]
+            if let Some(generate_value) = props.get("generate-structure") {
+                properties_message
+                    .push(generate_structures(generate_value.parse::<bool>()?, id).into());
+            }
+
+            if let Some(max_world_value) = props.get("max-world-size") {
+                properties_message.push(max_world_size(max_world_value.parse::<u32>()?, id).into());
+            }
+
+            if let Some(allow_nether_value) = props.get("allow-nether") {
+                properties_message
+                    .push(allow_nether(allow_nether_value.parse::<bool>()?, id).into());
+            }
+
+            if let Some(spawn_npc_value) = props.get("spawn-npcs") {
+                properties_message.push(spawn_npcs(spawn_npc_value.parse::<bool>()?, id).into());
+            }
+
+            if let Some(spawn_animals_value) = props.get("spawn-animals") {
+                properties_message
+                    .push(spawn_animals(spawn_animals_value.parse::<bool>()?, id).into());
+            }
+
+            if let Some(spawn_monsters_value) = props.get("spawn-monsters") {
+                properties_message
+                    .push(spawn_monsters(spawn_monsters_value.parse::<bool>()?, id).into());
+            }
         }
+
         SettingScreen::Gameplay => {
-            let allow_flight_value = props
-                .get("allow-flight")
-                .ok_or_else(|| anyhow!("allow-flight not found"))?
-                .parse::<bool>()?;
-            let difficulty_value = props
-                .get("difficulty")
-                .ok_or_else(|| anyhow!("difficulty not found"))?;
-            let gamemode_value = props
-                .get("gamemode")
-                .ok_or_else(|| anyhow!("Gamemode not found"))?;
-            let hardcore_value = props
-                .get("hardcore")
-                .ok_or_else(|| anyhow!("hardcore not found"))?
-                .parse::<bool>()?;
-            let spawn_protection_value = props
-                .get("spawn-protection")
-                .ok_or_else(|| anyhow!("spawn protection not found"))?
-                .parse::<u32>()?;
-            let pvp_value = props
-                .get("pvp")
-                .ok_or_else(|| anyhow!("pvp not found"))?
-                .parse::<bool>()?;
-            vec![
-                allow_flight(allow_flight_value, id).into(),
-                difficulty(difficulty_value, id).into(),
-                gamemode(gamemode_value, id).into(),
-                hardcore(hardcore_value, id).into(),
-                spawn_protection(spawn_protection_value, id).into(),
-                pvp(pvp_value, id).into(),
-            ]
+            if let Some(allow_flight_value) = props.get("allow-flight") {
+                properties_message
+                    .push(allow_flight(allow_flight_value.parse::<bool>()?, id).into());
+            }
+
+            if let Some(difficulty_value) = props.get("difficulty") {
+                properties_message.push(difficulty(difficulty_value, id).into());
+            }
+
+            if let Some(gamemode_value) = props.get("gamemode") {
+                properties_message.push(gamemode(gamemode_value, id).into());
+            }
+
+            if let Some(hardcore_value) = props.get("hardcore") {
+                properties_message.push(hardcore(hardcore_value.parse::<bool>()?, id).into());
+            }
+
+            if let Some(spawn_protection_value) = props.get("spawn-protection") {
+                properties_message
+                    .push(spawn_protection(spawn_protection_value.parse::<u32>()?, id).into());
+            }
+
+            if let Some(pvp_value) = props.get("pvp") {
+                properties_message.push(pvp(pvp_value.parse::<bool>()?, id).into());
+            }
         }
+
         SettingScreen::Admin => {
-            let whitelist_value = props
-                .get("white-list")
-                .ok_or_else(|| anyhow!("whitelist not found"))?
-                .parse::<bool>()?;
+            if let Some(whitelist_value) = props.get("white-list") {
+                properties_message.push(whitelist(whitelist_value.parse::<bool>()?, id).into());
+            }
 
-            let motd_value = props.get("motd").ok_or_else(|| anyhow!("motd not found"))?;
-            let max_players_value = props
-                .get("max-players")
-                .ok_or_else(|| anyhow!("max players not found"))?
-                .parse::<u32>()?;
+            if let Some(motd_value) = props.get("motd") {
+                properties_message.push(motd(motd_value, id).into());
+            }
 
-            let view_distance_value = props
-                .get("view-distance")
-                .ok_or_else(|| anyhow!("view distance not found"))?
-                .parse::<u32>()?;
-            let simulation_distance_value = props
-                .get("simulation-distance")
-                .ok_or_else(|| anyhow!("simulation distance not found"))?
-                .parse::<u32>()?;
-            vec![
-                whitelist(whitelist_value, id).into(),
-                motd(motd_value, id).into(),
-                max_players(max_players_value, id).into(),
-                view_distance(view_distance_value, id).into(),
-                simulation_distance(simulation_distance_value, id).into(),
-            ]
+            if let Some(max_players_value) = props.get("max-players") {
+                properties_message.push(max_players(max_players_value.parse::<u32>()?, id).into());
+            }
+
+            if let Some(view_distance_value) = props.get("view-distance") {
+                properties_message
+                    .push(view_distance(view_distance_value.parse::<u32>()?, id).into());
+            }
+
+            if let Some(simulation_distance_value) = props.get("simulation-distance") {
+                properties_message.push(
+                    simulation_distance(simulation_distance_value.parse::<u32>()?, id).into(),
+                );
+            }
         }
-    };
+    }
     let world_button = ButtonBuilder::new(ButtonStyle::Secondary)
         .custom_id(format!("screen:world:{}", id))
         .label("World Generation")
@@ -206,8 +196,9 @@ pub fn build_settings_view(
         .component(gameplay_button)
         .component(admin_button)
         .build();
-    properties.push(last_row.into());
-    Ok(properties)
+    properties_message.push(last_row.into());
+
+    Ok(properties_message)
 }
 
 pub async fn update_settings_view(

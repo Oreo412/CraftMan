@@ -370,7 +370,9 @@ pub async fn chat_loop(
             }
             _ = interval.tick() => {
                 if !buffer.is_empty() {
-                    client.create_message(channel_id).content(&buffer.join("\n")).await?;
+                    if let Err(e) = client.create_message(channel_id).content(&buffer.join("\n")).await {
+                        tracing::error!("Error forwarding chat! {}", e);
+                    }
                     buffer.clear();
                 }
             }
