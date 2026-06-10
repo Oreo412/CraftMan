@@ -1,4 +1,4 @@
-use crate::mods::configs::Configs;
+use crate::mods::configs::{Configs, RunType};
 use crate::mods::query_handler::QueryHandler;
 use crate::mods::server_process::ServerProcess;
 use crate::mods::server_properties::ServerProperties;
@@ -40,6 +40,7 @@ impl ServerHandler {
             &self.config.jar,
             &self.config.dir,
             ws_sender,
+            &self.config.run_type,
         )?);
         tracing::info!("Started server");
         Ok(())
@@ -166,7 +167,18 @@ impl ServerHandler {
         self.config.clone()
     }
 
-    pub fn edit_config(&mut self, config: Configs) -> Result<()> {
+    pub fn edit_config(&mut self, mut config: Configs) -> Result<()> {
+        if config.jar.ends_with(".sh") && matches!(config.run_type, RunType::CustomJar(..)) {
+            bail!("Extra arguments are not allowed for scripts");
+        }
+
+        if config.jar.ends_with(".sh") && config.run_type != RunType::Script {
+            config.run_type = RunType::Script;
+        }
+
+        if config.jar.ends_with(".jar") && config.run_type == RunType::Script {
+            config.run_type = RunType::Default;
+        }
         self.config = config;
         self.config.save();
         Ok(())

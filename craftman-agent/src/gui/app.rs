@@ -2,7 +2,9 @@ use std::collections::VecDeque;
 
 use crate::mods::configs::Configs;
 use anyhow::{Result, bail};
+use ratatui::widgets::ListState;
 use ratatui_explorer::FileExplorer;
+use ratatui_textarea::TextArea;
 use tokio::sync::{mpsc::UnboundedSender, oneshot};
 
 use crate::gui::gui_actions::{ConfigRequest, EditRequestReturn};
@@ -67,7 +69,18 @@ pub enum AppState {
     FileSelectionConfirm(FileExplorer),
     Validate(String),
     EditMemory(EditMemory),
+    EditArgs(Vec<String>, ListState, EditArgState),
+    CustomArgNotAllowed,
     Exiting,
+}
+
+pub enum EditArgState {
+    Default,
+    ExitWithoutSaving,
+    SaveAndExit,
+    Clear,
+    Edit(TextArea<'static>, usize),
+    Add(TextArea<'static>),
 }
 
 pub struct EditMemory {

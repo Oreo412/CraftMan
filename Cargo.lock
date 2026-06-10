@@ -476,6 +476,7 @@ dependencies = [
  "protocol",
  "ratatui",
  "ratatui-explorer",
+ "ratatui-textarea",
  "rust-mc-status",
  "rustls 0.23.40",
  "serde",
@@ -2604,6 +2605,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "ratatui-textarea"
+version = "0.9.1"
+source = "git+https://github.com/ratatui/ratatui-textarea.git#0c449dfb7748a5d773315ab04059daca68e95216"
+dependencies = [
+ "ratatui-core",
+ "ratatui-crossterm",
+ "ratatui-widgets",
+ "unicode-segmentation",
+ "unicode-width",
+]
+
+[[package]]
 name = "ratatui-widgets"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4284,9 +4297,9 @@ dependencies = [
 
 [[package]]
 name = "unicode-width"
-version = "0.2.2"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b4ac048d71ede7ee76d585517add45da530660ef4390e49b098733c6e897f254"
+checksum = "1fc81956842c57dac11422a97c3b8195a1ff727f06e85c84ed2e8aa277c9a0fd"
 
 [[package]]
 name = "unicode-xid"

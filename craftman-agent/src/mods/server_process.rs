@@ -1,5 +1,6 @@
 use protocol::server_commands::ServerCommands;
 use protocol::serveractions::ServerActions;
+use std::path::Path;
 use std::process::Stdio;
 use tokio::io::{AsyncWriteExt, Lines};
 use tokio::select;
@@ -14,6 +15,8 @@ use tokio::{
     sync::{mpsc::UnboundedSender, watch},
 };
 
+use crate::mods::configs::RunType;
+
 pub struct ServerProcess {
     watch_sender: watch::Sender<bool>,
     command_sender: UnboundedSender<ServerCommands>,
@@ -26,18 +29,56 @@ impl ServerProcess {
         jar: &str,
         dir: &str,
         ws_sender: UnboundedSender<ServerActions>,
+        run_type: &RunType,
     ) -> Result<Self> {
-        let mut child = Command::new("java")
-            .current_dir(dir)
-            .arg(format!("-Xmx{}M", xmx))
-            .arg(format!("-Xms{}M", xms))
-            .arg("-jar")
-            .arg(jar)
-            .arg("nogui")
-            .stdin(Stdio::piped())
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .spawn()?;
+        let mut child = match run_type {
+            RunType::Default => Command::new("java")
+                .current_dir(dir)
+                .arg(format!("-Xmx{}M", xmx))
+                .arg(format!("-Xms{}M", xms))
+                .arg("-jar")
+                .arg(jar)
+                .arg("nogui")
+                .stdin(Stdio::piped())
+                .stdout(Stdio::piped())
+                .stderr(Stdio::piped())
+                .spawn()?,
+            RunType::Script => {
+                update_user_jvm_args(&Path::new(dir).join("user_jvm_args.txt"), xms, xmx)?;
+                Command::new(format!("./{}", jar))
+                    .current_dir(dir)
+                    .arg("nogui")
+                    .stdin(Stdio::piped())
+                    .stdout(Stdio::piped())
+                    .stderr(Stdio::piped())
+                    .spawn()?
+            }
+            RunType::CustomJar(args) => {
+                let mut process = Command::new("java");
+                process.current_dir(dir);
+
+                if args.iter().any(|arg| arg == "@user_jvm_args.txt") {
+                    update_user_jvm_args(&Path::new(dir).join("user_jvm_args.txt"), xms, xmx)?;
+                } else if !args
+                    .iter()
+                    .any(|arg| arg.starts_with("-Xms") || arg.starts_with("-Xmx"))
+                {
+                    process
+                        .arg(format!("-Xms{}M", xms))
+                        .arg(format!("-Xmx{}M", xmx));
+                }
+
+                for arg in args.iter() {
+                    process.arg(arg);
+                }
+
+                process
+                    .stdin(Stdio::piped())
+                    .stdout(Stdio::piped())
+                    .stderr(Stdio::piped())
+                    .spawn()?
+            }
+        };
         let (watch_sender, watch_receiver) = watch::channel(false);
 
         let stdout = child
@@ -144,4 +185,23 @@ async fn commander(
         }
     }
     Ok(())
+}
+
+fn update_user_jvm_args(path: &Path, xms_mb: u32, xmx_mb: u32) -> std::io::Result<()> {
+    let existing = std::fs::read_to_string(path).unwrap_or_default();
+
+    let mut lines: Vec<String> = existing
+        .lines()
+        .filter(|line| {
+            let trimmed = line.trim();
+            !trimmed.starts_with("-Xms") && !trimmed.starts_with("-Xmx")
+        })
+        .map(|line| line.to_string())
+        .collect();
+
+    lines.insert(0, format!("-Xmx{}M", xmx_mb));
+    lines.insert(0, format!("-Xms{}M", xms_mb));
+
+    let output = format!("{}\n", lines.join("\n"));
+    std::fs::write(path, output)
 }

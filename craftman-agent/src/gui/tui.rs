@@ -2,13 +2,13 @@ use std::{io, time::Duration};
 
 use crate::{
     gui::{
-        app::{App, AppState, EditMemory, EditMemoryState},
+        app::{App, AppState, EditArgState, EditMemory, EditMemoryState},
         gui_actions::ConfigRequest,
     },
-    mods::configs::Configs,
+    mods::configs::{Configs, RunType},
 };
 use crossterm::{
-    event::{Event, EventStream, KeyCode, KeyEventKind},
+    event::{Event, EventStream, KeyCode, KeyEvent, KeyEventKind},
     execute,
     terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
@@ -19,11 +19,14 @@ use ratatui::{
     prelude::CrosstermBackend,
     style::{Color, Modifier, Style, Stylize},
     text::{Line, Span},
-    widgets::{Block, Borders, Clear, FrameExt, Paragraph},
+    widgets::{
+        Block, Borders, Clear, FrameExt, List, ListDirection, ListItem, ListState, Paragraph,
+    },
 };
 
 use anyhow::Result;
 use ratatui_explorer::{FileExplorerBuilder, Theme};
+use ratatui_textarea::{Input, TextArea};
 use tokio::{
     sync::mpsc::{UnboundedReceiver, UnboundedSender},
     time::interval,
@@ -52,7 +55,7 @@ pub async fn handler(
     let mut app = App::new(config, tui_to_agent);
 
     terminal.clear()?;
-    terminal.draw(|f| ui(f, &app))?;
+    terminal.draw(|f| ui(f, &mut app))?;
 
     let mut reader = EventStream::new();
 
@@ -109,6 +112,14 @@ pub async fn handler(
                                     KeyCode::Char('x') => {
                                         app.state = AppState::EditMemory(EditMemory::new());
                                     }
+                                    KeyCode::Char('a') => {
+                                        if app.config.jar.ends_with(".sh") {
+                                            app.state = AppState::CustomArgNotAllowed;
+                                        } else {
+                                            let args = if let RunType::CustomJar(ref args) = app.config.run_type {args.clone()} else { Vec::<String>::new()};
+                                            app.state = AppState::EditArgs(args, ListState::default(), EditArgState::Default);
+                                        }
+                                    }
                                     _ => {}
                                 },
 
@@ -146,6 +157,24 @@ pub async fn handler(
                                         break;
                                     }
                                 }
+                                AppState::EditArgs(args, list_state, edit_state) => {
+                                    let mut key = *key;
+                                    match handle_edit_arg(&mut key, args, list_state, edit_state) {
+                                        ExitEditArgs::SaveAndExit(args) => {
+                                            config = Some( app.config.clone().set_run_type(RunType::CustomJar(args)) );
+                                            app.state = AppState::Default;
+                                        }
+                                        ExitEditArgs::ExitWithoutSave => {
+                                            app.state = AppState::Default;
+                                        }
+                                        ExitEditArgs::Clear => {
+                                            config = Some( app.config.clone().set_run_type(RunType::Default) );
+                                            app.state = AppState::Default;
+                                        }
+                                        ExitEditArgs::None => {}
+                                    }
+                                }
+
 
                                 AppState::EditMemory(current) => {
                                 if current.state != EditMemoryState::IsThisCorrect {
@@ -193,7 +222,9 @@ pub async fn handler(
                                     _ => {}
                                 }
                             }
-                                _ => {}
+                            AppState::CustomArgNotAllowed => {
+                                app.state = AppState::Default;
+                            }
                             }
                         }
 
@@ -207,7 +238,7 @@ pub async fn handler(
             }
         }
                     _ = tick.tick() => {
-                        terminal.draw(|f| ui(f, &app))?;
+                        terminal.draw(|f| ui(f, &mut app))?;
                     }
                 }
         if let Some(config) = config
@@ -224,7 +255,117 @@ pub async fn handler(
     Ok(())
 }
 
-fn ui(frame: &mut Frame, app: &App) {
+fn handle_edit_arg(
+    event: &mut KeyEvent,
+    args: &mut Vec<String>,
+    list_state: &mut ListState,
+    edit_state: &mut EditArgState,
+) -> ExitEditArgs {
+    match edit_state {
+        EditArgState::Default => match event.code {
+            KeyCode::Esc => {
+                *edit_state = EditArgState::ExitWithoutSaving;
+            }
+            KeyCode::Char('s') => {
+                *edit_state = EditArgState::SaveAndExit;
+            }
+            KeyCode::Char('n') => {
+                let mut arg = TextArea::new(Vec::<String>::new());
+                arg.set_block(Block::bordered());
+                *edit_state = EditArgState::Add(arg);
+            }
+            KeyCode::Char('e') => {
+                if let Some(selected) = list_state.selected() {
+                    let mut arg = TextArea::new(vec![args[selected].clone()]);
+                    arg.set_block(Block::bordered());
+                    *edit_state = EditArgState::Edit(arg, selected);
+                }
+            }
+            KeyCode::Char('d') => {
+                if let Some(selected) = list_state.selected() {
+                    args.remove(selected);
+                }
+            }
+            KeyCode::Char('c') => {
+                *edit_state = EditArgState::Clear;
+            }
+            KeyCode::Down => {
+                list_state.select_next();
+            }
+            KeyCode::Up => {
+                list_state.select_previous();
+            }
+            _ => {}
+        },
+        EditArgState::Add(text) => match event.code {
+            KeyCode::Esc => {
+                *edit_state = EditArgState::Default;
+            }
+            KeyCode::Enter => {
+                let line = text.lines().first();
+                if let Some(arg) = line {
+                    args.push(arg.clone());
+                }
+                *edit_state = EditArgState::Default;
+            }
+            _ => {
+                text.input(Input::from(*event));
+            }
+        },
+        EditArgState::Edit(text, location) => match event.code {
+            KeyCode::Esc => {
+                *edit_state = EditArgState::Default;
+            }
+            KeyCode::Enter => {
+                let line = text.lines().first();
+                if let Some(arg) = line {
+                    args[*location] = arg.clone();
+                }
+                *edit_state = EditArgState::Default;
+            }
+            _ => {
+                text.input(Input::from(*event));
+            }
+        },
+        EditArgState::SaveAndExit => match event.code {
+            KeyCode::Esc => {
+                *edit_state = EditArgState::Default;
+            }
+            KeyCode::Enter => {
+                return ExitEditArgs::SaveAndExit(args.clone());
+            }
+            _ => {}
+        },
+        EditArgState::ExitWithoutSaving => match event.code {
+            KeyCode::Esc => {
+                *edit_state = EditArgState::Default;
+            }
+            KeyCode::Enter => {
+                return ExitEditArgs::ExitWithoutSave;
+            }
+            _ => {}
+        },
+        EditArgState::Clear => match event.code {
+            KeyCode::Esc => {
+                *edit_state = EditArgState::Default;
+            }
+            KeyCode::Enter => {
+                return ExitEditArgs::Clear;
+            }
+            _ => {}
+        },
+    }
+    ExitEditArgs::None
+}
+
+enum ExitEditArgs {
+    SaveAndExit(Vec<String>),
+    ExitWithoutSave,
+    Clear,
+    None,
+}
+
+fn ui(frame: &mut Frame, app: &mut App) {
     frame.render_widget(Clear, frame.area());
     if let AppState::FileSelection(explorer) | AppState::FileSelectionConfirm(explorer) = &app.state
     {
@@ -282,11 +423,20 @@ fn ui(frame: &mut Frame, app: &App) {
 
     frame.render_widget(status, chunks[0]);
 
+    let run_type_text = match &app.config.run_type {
+        RunType::Default => "Default".to_string(),
+        RunType::Script => "Script".to_string(),
+        RunType::CustomJar(args) => {
+            format!("Custom: {}", args.join(" "))
+        }
+    };
+
     let config_text: Vec<Line<'_>> = [
         Span::from(format!("Directory: {}", app.config.dir)),
         Span::from(format!("Min Memory: {}", app.config.xms)),
         Span::from(format!("Max Memory: {}", app.config.xmx)),
         Span::from(format!("Server Jar: {}", app.config.jar)),
+        Span::from(format!("Run Type: {}", run_type_text)),
     ]
     .iter()
     .map(|j| Line::from(j.clone()))
@@ -316,8 +466,10 @@ fn ui(frame: &mut Frame, app: &App) {
 
     frame.render_widget(stdout, chunks[2]);
 
-    let keys = Paragraph::new("q: quit | c: change server file | x: edit min and max memory")
-        .block(Block::default().borders(Borders::ALL));
+    let keys = Paragraph::new(
+        "q: quit | c: change server file | x: edit min and max memory | a: edit arguments (Advanced)",
+    )
+    .block(Block::default().borders(Borders::ALL));
 
     frame.render_widget(keys, chunks[3]);
 
@@ -347,6 +499,80 @@ fn ui(frame: &mut Frame, app: &App) {
 
         frame.render_widget(Clear, popup_area);
         frame.render_widget(popup, popup_area);
+    }
+    if let AppState::EditArgs(args, list_state, edit_state) = &mut app.state {
+        let area = frame.area();
+
+        let popup_area = area.centered(Constraint::Percentage(80), Constraint::Percentage(50));
+        frame.render_widget(Clear, popup_area);
+        let chunks = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints([
+                Constraint::Min(4),
+                Constraint::Length(5),
+                Constraint::Length(3),
+            ])
+            .split(popup_area);
+
+        if let EditArgState::SaveAndExit = edit_state {
+            let paragraph =
+                Paragraph::new("Save arguments?\nPress enter to save and escape to go back")
+                    .alignment(Alignment::Center)
+                    .block(Block::bordered());
+            frame.render_widget(paragraph, chunks[0]);
+            return;
+        } else if let EditArgState::ExitWithoutSaving = edit_state {
+            let paragraph = Paragraph::new(
+                "Exit without saving arguments?\nPress enter to exit and escape to go back",
+            )
+            .alignment(Alignment::Center)
+            .block(Block::bordered());
+            frame.render_widget(paragraph, chunks[0]);
+            return;
+        } else if let EditArgState::Clear = edit_state {
+            let paragraph = Paragraph::new(
+                "Clear arguments and return to default?\nPress enter to confirm and escape to go back",
+            ).centered().block(Block::bordered());
+            frame.render_widget(paragraph, chunks[0]);
+            return;
+        }
+
+        if let EditArgState::Edit(arg, _) | EditArgState::Add(arg) = edit_state {
+            let area = frame.area();
+            let popup_area = area.centered(Constraint::Percentage(60), Constraint::Length(3));
+            frame.render_widget(Clear, popup_area);
+            frame.render_widget_ref(&*arg, popup_area);
+        }
+
+        let items: Vec<ListItem> = args.iter().map(|s| ListItem::new(s.as_str())).collect();
+        let list = List::new(items)
+            .block(Block::bordered().title("Arguments"))
+            .style(Style::new().white())
+            .highlight_style(Style::new().italic())
+            .highlight_symbol(">>")
+            .repeat_highlight_symbol(true)
+            .direction(ListDirection::TopToBottom);
+        frame.render_stateful_widget(list, chunks[0], list_state);
+        let guide = Paragraph::new("Please enter all arguments listed after Java when you run the server\nEnter -Xms and -Xmx to automatically use configured min and max\nIncluding @user_jvm_args.txt will automatically update script with configured minimum and maximum memory").alignment(Alignment::Center).block(Block::bordered());
+        frame.render_widget(guide, chunks[1]);
+        let keys = Paragraph::new(
+            "esc: Exit without saving | n: new argument | e: edit argument | d: delete argument | s: save arguments | c: clear arguments (return to default)",
+        )
+        .block(Block::default().borders(Borders::ALL));
+
+        frame.render_widget(keys, chunks[2]);
+    }
+
+    if let AppState::CustomArgNotAllowed = &app.state {
+        let area = frame.area();
+
+        let popup_area = area.centered(Constraint::Percentage(40), Constraint::Percentage(20));
+
+        frame.render_widget(Clear, popup_area);
+
+        let text = Paragraph::new("Custom arguments are not allowed for running a .sh script\nPress any key to exit popup").centered().block(Block::bordered());
+
+        frame.render_widget(text, popup_area);
     }
 }
 

@@ -18,6 +18,14 @@ pub struct Configs {
     pub xmx: u32,
     pub dir: String,
     pub jar: String,
+    pub run_type: RunType,
+}
+
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
+pub enum RunType {
+    Default,
+    Script,
+    CustomJar(Vec<String>),
 }
 
 impl Configs {
@@ -55,12 +63,18 @@ impl Configs {
                 Terminal::new(backend).expect("Can not create new Terminal. Fatal Error");
 
             let (file, directory) = file_explorer::blocking_file_selection(&mut terminal).unwrap();
+            let run_type = if file.ends_with(".sh") {
+                RunType::Script
+            } else {
+                RunType::Default
+            };
             Configs {
                 id: Uuid::new_v4(),
                 xms: 1024,
                 xmx: 1024,
                 dir: directory,
                 jar: file,
+                run_type,
             }
         }
     }
@@ -86,7 +100,15 @@ impl Configs {
     }
 
     pub fn set_jar(mut self, jar: String) -> Self {
+        if jar.ends_with(".sh") {
+            self.run_type = RunType::Script;
+        }
         self.jar = jar;
+        self
+    }
+
+    pub fn set_run_type(mut self, run_type: RunType) -> Self {
+        self.run_type = run_type;
         self
     }
 }
