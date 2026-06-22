@@ -48,7 +48,7 @@ pub async fn handler(
     let mut stdout = io::stdout();
     execute!(stdout, EnterAlternateScreen)?;
 
-    let mut terminal = ratatui::try_init()?;
+    let mut terminal = ratatui::init();
 
     let mut app = App::new(config, tui_to_agent);
 
