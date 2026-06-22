@@ -2,7 +2,6 @@ use crossterm::{
     execute,
     terminal::{EnterAlternateScreen, enable_raw_mode},
 };
-use ratatui::{Terminal, prelude::CrosstermBackend};
 use std::{io, path::PathBuf};
 
 use directories::ProjectDirs;

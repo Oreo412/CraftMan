@@ -1,4 +1,4 @@
-use std::{io, time::Duration};
+use std::time::Duration;
 
 use crate::{
     gui::{
@@ -7,11 +7,7 @@ use crate::{
     },
     mods::configs::{Configs, RunType},
 };
-use crossterm::{
-    event::{Event, EventStream, KeyCode, KeyEvent, KeyEventKind},
-    execute,
-    terminal::{EnterAlternateScreen, enable_raw_mode},
-};
+use crossterm::event::{Event, EventStream, KeyCode, KeyEvent, KeyEventKind};
 use futures::{FutureExt, StreamExt};
 use ratatui::{
     Frame,
@@ -44,10 +40,6 @@ pub async fn handler(
     tui_to_agent: UnboundedSender<ConfigRequest>,
     mut tui_from_agent: UnboundedReceiver<GuiEvents>,
 ) -> Result<()> {
-    enable_raw_mode()?;
-    let mut stdout = io::stdout();
-    execute!(stdout, EnterAlternateScreen)?;
-
     let mut terminal = ratatui::init();
 
     let mut app = App::new(config, tui_to_agent);
