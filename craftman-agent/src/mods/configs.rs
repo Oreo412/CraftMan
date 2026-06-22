@@ -56,11 +56,9 @@ impl Configs {
             enable_raw_mode().expect("Can not enable raw mode. Fatal error");
             let mut stdout = io::stdout();
             execute!(stdout, EnterAlternateScreen)
-                .expect("Can not edecute EnterAlternateScreen. Fatal error");
+                .expect("Can not execute EnterAlternateScreen. Fatal error");
 
-            let backend = CrosstermBackend::new(stdout);
-            let mut terminal =
-                Terminal::new(backend).expect("Can not create new Terminal. Fatal Error");
+            let mut terminal = ratatui::init();
 
             let (file, directory) = file_explorer::blocking_file_selection(&mut terminal).unwrap();
             let run_type = if file.ends_with(".sh") {
@@ -68,6 +66,7 @@ impl Configs {
             } else {
                 RunType::Default
             };
+            ratatui::restore();
             Configs {
                 id: Uuid::new_v4(),
                 xms: 1024,
