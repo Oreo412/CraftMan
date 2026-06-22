@@ -1,8 +1,4 @@
-use crossterm::{
-    execute,
-    terminal::{EnterAlternateScreen, enable_raw_mode},
-};
-use std::{io, path::PathBuf};
+use std::path::PathBuf;
 
 use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
@@ -52,11 +48,6 @@ impl Configs {
 
             serde_json::from_str::<Configs>(&data).expect("Invalid config format")
         } else {
-            enable_raw_mode().expect("Can not enable raw mode. Fatal error");
-            let mut stdout = io::stdout();
-            execute!(stdout, EnterAlternateScreen)
-                .expect("Can not execute EnterAlternateScreen. Fatal error");
-
             let mut terminal = ratatui::init();
 
             let (file, directory) = file_explorer::blocking_file_selection(&mut terminal).unwrap();

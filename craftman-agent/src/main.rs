@@ -18,19 +18,10 @@ async fn main() {
     rustls::crypto::ring::default_provider()
         .install_default()
         .expect("failed to install rustls crypto provider");
-    let config = configs::Configs::new();
 
     let (tui_to_agent, mut agent_from_tui) = mpsc::unbounded_channel::<ConfigRequest>();
 
     let (agent_to_tui, tui_from_agent) = mpsc::unbounded_channel::<GuiEvents>();
-
-    let tui = tokio::spawn(handler(
-        config.clone(),
-        tui_to_agent.clone(),
-        tui_from_agent,
-    ));
-
-    let mut handler = ServerHandler::new(config);
 
     let writer = TuiWriter::new(agent_to_tui.clone());
 
@@ -59,6 +50,16 @@ async fn main() {
         .with(tui_layer)
         .with(file_layer)
         .init();
+
+    let config = configs::Configs::new();
+
+    let tui = tokio::spawn(handler(
+        config.clone(),
+        tui_to_agent.clone(),
+        tui_from_agent,
+    ));
+
+    let mut handler = ServerHandler::new(config);
 
     let (sender, mut receiver) = mpsc::unbounded_channel::<ServerActions>();
 
