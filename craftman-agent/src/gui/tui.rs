@@ -10,13 +10,12 @@ use crate::{
 use crossterm::{
     event::{Event, EventStream, KeyCode, KeyEvent, KeyEventKind},
     execute,
-    terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
+    terminal::{EnterAlternateScreen, enable_raw_mode},
 };
 use futures::{FutureExt, StreamExt};
 use ratatui::{
-    Frame, Terminal,
+    Frame,
     layout::{Alignment, Constraint, Direction, Layout, Margin},
-    prelude::CrosstermBackend,
     style::{Color, Modifier, Style, Stylize},
     text::{Line, Span},
     widgets::{
@@ -49,8 +48,7 @@ pub async fn handler(
     let mut stdout = io::stdout();
     execute!(stdout, EnterAlternateScreen)?;
 
-    let backend = CrosstermBackend::new(stdout);
-    let mut terminal = Terminal::new(backend)?;
+    let mut terminal = ratatui::try_init()?;
 
     let mut app = App::new(config, tui_to_agent);
 
@@ -248,9 +246,7 @@ pub async fn handler(
         }
     }
 
-    disable_raw_mode()?;
-    execute!(terminal.backend_mut(), LeaveAlternateScreen)?;
-    terminal.show_cursor()?;
+    ratatui::restore();
 
     Ok(())
 }
