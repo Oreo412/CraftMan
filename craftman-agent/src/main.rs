@@ -3,7 +3,7 @@ mod mods;
 use crate::{
     gui::{
         gui_actions::ConfigRequest,
-        tui::{GuiEvents, handler},
+        tui::{GuiEvents, handler as tui_handler},
     },
     mods::{server_handler::ServerHandler, stdout_writer::TuiWriter, *},
 };
@@ -54,24 +54,20 @@ async fn main() {
     let config = configs::Configs::new();
     tracing::info!("Config generated");
 
-    let tui = tokio::spawn(handler(
-        config.clone(),
-        tui_to_agent.clone(),
-        tui_from_agent,
-    ));
-
-    tracing::info!("TUI created");
-
-    let mut handler = ServerHandler::new(config);
+    let mut server_handler = ServerHandler::new(config.clone());
 
     tracing::info!("Handler created");
+
+    let tui = tokio::spawn(tui_handler(config, tui_to_agent.clone(), tui_from_agent));
+
+    tracing::info!("TUI created");
 
     let (sender, mut receiver) = mpsc::unbounded_channel::<ServerActions>();
 
     let backend = async {
         loop {
             match connect(
-                &mut handler,
+                &mut server_handler,
                 &mut agent_from_tui,
                 agent_to_tui.clone(),
                 sender.clone(),
@@ -106,7 +102,7 @@ async fn main() {
         }
     }
 
-    if let Err(e) = handler.stop_server().await {
+    if let Err(e) = server_handler.stop_server().await {
         tracing::error!("Error shutting down server: {}", e)
     }
 }
