@@ -52,6 +52,7 @@ async fn main() {
         .init();
 
     let config = configs::Configs::new();
+    tracing::info!("Config generated");
 
     let tui = tokio::spawn(handler(
         config.clone(),
@@ -59,7 +60,11 @@ async fn main() {
         tui_from_agent,
     ));
 
+    tracing::info!("TUI created");
+
     let mut handler = ServerHandler::new(config);
+
+    tracing::info!("Handler created");
 
     let (sender, mut receiver) = mpsc::unbounded_channel::<ServerActions>();
 
@@ -85,6 +90,8 @@ async fn main() {
             tokio::time::sleep(Duration::from_secs(3)).await;
         }
     };
+
+    tracing::info!("Backend started");
 
     tokio::select! {
         result = tui => {
