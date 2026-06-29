@@ -62,7 +62,7 @@ where
             }
 
             message = forward_receiver.recv() => {
-                tracing::info!("Sending server action");
+                tracing::debug!("Sending server action");
                 ws_sender
                     .send(Message::Text(
                             serde_json::to_string(&message)
